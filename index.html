@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102b46">
+  <meta name="description" content="Atlas Médical by @wredou — apprendre, comprendre, mémoriser et pratiquer.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/icon-192.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <title>Atlas Médical by @wredou</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Accueil Atlas Médical">
+        <span class="brand-mark">✚</span>
+        <span><strong>ATLAS MÉDICAL</strong><small>by @wredou</small></span>
+      </a>
+      <button class="icon-btn" id="installBtn" hidden aria-label="Installer l’application">⇩</button>
+    </header>
+
+    <main id="main">
+      <section class="hero">
+        <p class="eyebrow">TON COMPAGNON D’APPRENTISSAGE</p>
+        <h1>La médecine,<br><span>plus claire.</span></h1>
+        <p>Apprendre. Comprendre. Mémoriser. Pratiquer.</p>
+        <div class="hero-chip"><span class="pulse"></span> Premier parcours : cardiovasculaire</div>
+      </section>
+
+      <section class="section-head">
+        <div><p class="eyebrow">COMMENCER À EXPLORER</p><h2>Les modules</h2></div>
+        <span class="count" id="moduleCount">08 modules</span>
+      </section>
+      <label class="search-box">
+        <span aria-hidden="true">⌕</span>
+        <input id="searchInput" type="search" placeholder="Rechercher un cours, un syndrome, un ECG…" autocomplete="off">
+      </label>
+      <section id="moduleGrid" class="module-grid" aria-live="polite"></section>
+
+      <section class="study-card">
+        <div>
+          <p class="eyebrow">TON ESPACE</p>
+          <h2>Reprendre mes révisions</h2>
+          <p id="progressText">Tes favoris et ta progression seront conservés sur cet appareil.</p>
+        </div>
+        <div class="progress-ring" id="progressRing"><span id="progressNumber">0</span><small>%</small></div>
+      </section>
+      <p class="disclaimer">Outil pédagogique. Ne remplace pas les recommandations officielles, la supervision clinique ni le jugement d’un professionnel de santé.</p>
+    </main>
+
+    <nav class="bottom-nav" aria-label="Navigation principale">
+      <button class="nav-item active" data-page="home"><span>⌂</span><small>Accueil</small></button>
+      <button class="nav-item" data-page="atlas"><span>▤</span><small>Atlas</small></button>
+      <button class="nav-item" data-page="quiz"><span>☑</span><small>QCM</small></button>
+      <button class="nav-item" data-page="saved"><span>☆</span><small>Favoris</small></button>
+      <button class="nav-item" data-page="profile"><span>◉</span><small>Profil</small></button>
+    </nav>
+  </div>
+  <dialog id="moduleDialog" class="module-dialog">
+    <div class="dialog-top">
+      <span class="dialog-tag" id="dialogTag">MODULE</span>
+      <button class="icon-btn close-btn" id="closeDialog" aria-label="Fermer">×</button>
+    </div>
+    <div id="dialogContent"></div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js" defer></script>
+</body>
+</html>
