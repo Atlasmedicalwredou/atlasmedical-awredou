@@ -12,7 +12,48 @@ const $ = s => document.querySelector(s);
 const saved = new Set(JSON.parse(localStorage.getItem("atlas-favorites")||"[]"));
 let currentPage="home", deferredPrompt=null;
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2100)}
-function renderModules(list=modules){const grid=$("#moduleGrid");grid.innerHTML="";$("#moduleCount").textContent=String(list.length).padStart(2,"0")+" modules";if(!list.length){grid.innerHTML='<div class="empty">Aucun module trouvé. Essaie un autre mot-clé.</div>';return}
+
+function renderModules(list = modules) {
+  const grid = $("#moduleGrid");
+  grid.replaceChildren();
+
+  $("#moduleCount").textContent =
+    String(list.length).padStart(2, "0") + " modules";
+
+  if (!list.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent =
+      "Aucun module trouvé. Essaie un autre mot-clé.";
+    grid.appendChild(empty);
+    return;
+  }
+
+  list.forEach(m => {
+    const button = document.createElement("button");
+    button.className = "module-card";
+
+    const icon = document.createElement("span");
+    icon.className = "module-icon";
+    icon.style.backgroundColor = m.tone;
+    icon.textContent = m.icon;
+
+    const title = document.createElement("strong");
+    title.textContent = m.title;
+
+    const description = document.createElement("small");
+    description.textContent = m.desc;
+
+    button.append(icon, title, description);
+
+    button.addEventListener("click", () => {
+      openModule(m);
+    });
+
+    grid.appendChild(button);
+  });
+}
+
  list.forEach(m=>{const b=document.createElement("button");b.className="module-card";b.innerHTML=`<span class="module-icon" style="background:${m.tone}">${m.icon}</span><strong>${m.title}</strong><small>${m.desc}</small>`;b.addEventListener("click",()=>openModule(m));grid.appendChild(b)})}
 
 function openModule(m) {
