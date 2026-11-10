@@ -8,71 +8,226 @@
 (function () {
   "use strict";
 
-  const scores = [
-    // URGENCES ET RÉANIMATION
-    { id: "glasgow", name: "Score de Glasgow", specialty: "Urgences et réanimation", population: "Adulte et pédiatrie", purpose: "Évaluation du niveau de conscience" },
-    { id: "news2", name: "NEWS2", specialty: "Urgences et réanimation", population: "Adulte", purpose: "Détection de la détérioration clinique" },
-    { id: "qsofa", name: "qSOFA", specialty: "Urgences et réanimation", population: "Adulte", purpose: "Évaluation du risque en contexte infectieux" },
-    { id: "sofa", name: "SOFA", specialty: "Urgences et réanimation", population: "Adulte", purpose: "Évaluation des défaillances d'organes" },
-    { id: "apache2", name: "APACHE II", specialty: "Urgences et réanimation", population: "Adulte", purpose: "Évaluation de la gravité en réanimation" },
+  
+const scores = [
+  // URGENCES ET RÉANIMATION
+  {
+    id: "glasgow",
+    name: "Score de Glasgow",
+    specialty: "Urgences et réanimation",
+    population: "Adulte",
+    purpose: "Évaluation du niveau de conscience"
+  },
+  {
+    id: "news2",
+    name: "NEWS2",
+    specialty: "Urgences et réanimation",
+    population: "Adulte",
+    purpose: "Détection précoce de la détérioration clinique"
+  },
+  {
+    id: "qsofa",
+    name: "qSOFA",
+    specialty: "Urgences et réanimation",
+    population: "Adulte",
+    purpose: "Évaluation pronostique chez un patient suspect de sepsis"
+  },
+  {
+    id: "sofa",
+    name: "SOFA",
+    specialty: "Urgences et réanimation",
+    population: "Adulte",
+    purpose: "Évaluation de la défaillance des organes"
+  },
 
-    // CARDIOLOGIE
-    { id: "heart", name: "HEART", specialty: "Cardiologie", population: "Adulte", purpose: "Évaluation du risque cardiovasculaire en douleur thoracique" },
-    { id: "grace", name: "GRACE", specialty: "Cardiologie", population: "Adulte", purpose: "Stratification du risque dans les syndromes coronariens aigus" },
-    { id: "timi", name: "TIMI", specialty: "Cardiologie", population: "Adulte", purpose: "Évaluation du risque ischémique" },
-    { id: "chadsvasc", name: "CHA₂DS₂-VASc", specialty: "Cardiologie", population: "Adulte", purpose: "Évaluation du risque thromboembolique en fibrillation atriale" },
-    { id: "hasbled", name: "HAS-BLED", specialty: "Cardiologie", population: "Adulte", purpose: "Évaluation du risque hémorragique" },
-    { id: "killip", name: "Classification de Killip", specialty: "Cardiologie", population: "Adulte", purpose: "Évaluation clinique de l'insuffisance cardiaque dans l'infarctus" },
-    { id: "nyha", name: "Classification NYHA", specialty: "Cardiologie", population: "Adulte", purpose: "Évaluation fonctionnelle de l'insuffisance cardiaque" },
+  // CARDIOLOGIE
+  {
+    id: "heart",
+    name: "Score HEART",
+    specialty: "Cardiologie",
+    population: "Adulte",
+    purpose: "Évaluation du risque chez un patient avec douleur thoracique"
+  },
+  {
+    id: "chadsvasc",
+    name: "CHA₂DS₂-VASc",
+    specialty: "Cardiologie",
+    population: "Adulte",
+    purpose: "Évaluation du risque thromboembolique en fibrillation atriale"
+  },
+  {
+    id: "hasbled",
+    name: "HAS-BLED",
+    specialty: "Cardiologie",
+    population: "Adulte",
+    purpose: "Évaluation du risque hémorragique"
+  },
+  {
+    id: "killip",
+    name: "Classification de Killip",
+    specialty: "Cardiologie",
+    population: "Adulte",
+    purpose: "Évaluation clinique de l'insuffisance cardiaque lors d'un infarctus"
+  },
+  {
+    id: "nyha",
+    name: "Classification NYHA",
+    specialty: "Cardiologie",
+    population: "Adulte",
+    purpose: "Évaluation de la limitation fonctionnelle cardiaque"
+  },
 
-    // NEUROLOGIE
-    { id: "nihss", name: "NIHSS", specialty: "Neurologie", population: "Adulte", purpose: "Quantification du déficit neurologique après AVC" },
-    { id: "abcd2", name: "ABCD²", specialty: "Neurologie", population: "Adulte", purpose: "Évaluation du risque après AIT" },
-    { id: "rankin", name: "Échelle de Rankin modifiée", specialty: "Neurologie", population: "Adulte", purpose: "Évaluation du handicap fonctionnel" },
-    { id: "hunt-hess", name: "Hunt et Hess", specialty: "Neurologie", population: "Adulte", purpose: "Évaluation clinique de l'hémorragie sous-arachnoïdienne" },
+  // NEUROLOGIE
+  {
+    id: "nihss",
+    name: "NIHSS",
+    specialty: "Neurologie",
+    population: "Adulte",
+    purpose: "Évaluation de la sévérité d'un AVC"
+  },
+  {
+    id: "rankin",
+    name: "Échelle de Rankin modifiée",
+    specialty: "Neurologie",
+    population: "Adulte",
+    purpose: "Évaluation du handicap après AVC"
+  },
 
-    // PÉDIATRIE ET NÉONATOLOGIE
-    { id: "apgar", name: "Score d'Apgar", specialty: "Pédiatrie et néonatologie", population: "Nouveau-né", purpose: "Évaluation de l'adaptation à la naissance" },
-    { id: "silverman", name: "Silverman-Andersen", specialty: "Pédiatrie et néonatologie", population: "Nouveau-né", purpose: "Évaluation de la détresse respiratoire néonatale" },
-    { id: "pews", name: "PEWS", specialty: "Pédiatrie et néonatologie", population: "Enfant", purpose: "Surveillance de la détérioration clinique pédiatrique" },
-    { id: "westley", name: "Score de Westley", specialty: "Pédiatrie et néonatologie", population: "Enfant", purpose: "Évaluation de la gravité du croup" },
+  // PÉDIATRIE ET NÉONATOLOGIE
+  {
+    id: "apgar",
+    name: "Score d'Apgar",
+    specialty: "Pédiatrie et néonatologie",
+    population: "Nouveau-né",
+    purpose: "Évaluation de l'adaptation du nouveau-né à la naissance"
+  },
+  {
+    id: "silverman",
+    name: "Score de Silverman-Andersen",
+    specialty: "Pédiatrie et néonatologie",
+    population: "Nouveau-né",
+    purpose: "Évaluation de la détresse respiratoire néonatale"
+  },
+  {
+    id: "pews",
+    name: "PEWS",
+    specialty: "Pédiatrie et néonatologie",
+    population: "Enfant",
+    purpose: "Détection précoce de la détérioration clinique pédiatrique"
+  },
 
-    // PNEUMOLOGIE
-    { id: "curb65", name: "CURB-65", specialty: "Pneumologie", population: "Adulte", purpose: "Évaluation de la gravité d'une pneumonie communautaire" },
-    { id: "crb65", name: "CRB-65", specialty: "Pneumologie", population: "Adulte", purpose: "Évaluation clinique de la pneumonie communautaire" },
-    { id: "mmrc", name: "Échelle mMRC", specialty: "Pneumologie", population: "Adulte", purpose: "Évaluation de la dyspnée" },
-    { id: "bode", name: "Index BODE", specialty: "Pneumologie", population: "Adulte", purpose: "Évaluation pronostique dans la BPCO" },
+  // PNEUMOLOGIE
+  {
+    id: "curb65",
+    name: "CURB-65",
+    specialty: "Pneumologie",
+    population: "Adulte",
+    purpose: "Évaluation de la sévérité d'une pneumonie communautaire"
+  },
+  {
+    id: "mmrc",
+    name: "Échelle mMRC",
+    specialty: "Pneumologie",
+    population: "Adulte",
+    purpose: "Évaluation de la dyspnée"
+  },
 
-    // GASTRO-ENTÉROLOGIE
-    { id: "child", name: "Child-Pugh", specialty: "Gastro-entérologie", population: "Adulte", purpose: "Évaluation de la fonction hépatique dans la cirrhose" },
-    { id: "meld", name: "MELD-Na", specialty: "Gastro-entérologie", population: "Adulte", purpose: "Évaluation pronostique de la maladie hépatique" },
-    { id: "glasgow-blatchford", name: "Glasgow-Blatchford", specialty: "Gastro-entérologie", population: "Adulte", purpose: "Évaluation du risque d'hémorragie digestive haute" },
-    { id: "rockall", name: "Rockall", specialty: "Gastro-entérologie", population: "Adulte", purpose: "Évaluation du risque après hémorragie digestive haute" },
-    { id: "alvarado", name: "Alvarado", specialty: "Gastro-entérologie", population: "Adulte et enfant", purpose: "Aide à l'évaluation d'une suspicion d'appendicite" },
+  // GASTRO-ENTÉROLOGIE
+  {
+    id: "child",
+    name: "Child-Pugh",
+    specialty: "Gastro-entérologie",
+    population: "Adulte",
+    purpose: "Évaluation de la sévérité de la cirrhose"
+  },
+  {
+    id: "glasgowblatchford",
+    name: "Glasgow-Blatchford",
+    specialty: "Gastro-entérologie",
+    population: "Adulte",
+    purpose: "Évaluation du risque lors d'une hémorragie digestive haute"
+  },
+  {
+    id: "alvarado",
+    name: "Score d'Alvarado",
+    specialty: "Gastro-entérologie",
+    population: "Adulte",
+    purpose: "Évaluation de la probabilité d'appendicite aiguë"
+  },
 
-    // NÉPHROLOGIE
-    { id: "kdigo-ira", name: "Classification KDIGO de l'IRA", specialty: "Néphrologie", population: "Adulte et pédiatrie", purpose: "Classification de l'insuffisance rénale aiguë" },
-    { id: "ckd-epi", name: "CKD-EPI", specialty: "Néphrologie", population: "Adulte", purpose: "Estimation du débit de filtration glomérulaire" },
-    { id: "cockcroft", name: "Cockcroft-Gault", specialty: "Néphrologie", population: "Adulte", purpose: "Estimation de la clairance de la créatinine" },
+  // NÉPHROLOGIE
+  {
+    id: "kdigo",
+    name: "Classification KDIGO",
+    specialty: "Néphrologie",
+    population: "Adulte",
+    purpose: "Classification de l'insuffisance rénale aiguë"
+  },
 
-    // GYNÉCOLOGIE-OBSTÉTRIQUE
-    { id: "bishop", name: "Score de Bishop", specialty: "Gynécologie-obstétrique", population: "Femme enceinte", purpose: "Évaluation du col avant déclenchement du travail" },
-    { id: "malinas", name: "Score de Malinas", specialty: "Gynécologie-obstétrique", population: "Femme enceinte", purpose: "Évaluation du risque d'accouchement imminent" },
+  // GYNÉCOLOGIE-OBSTÉTRIQUE
+  {
+    id: "bishop",
+    name: "Score de Bishop",
+    specialty: "Gynécologie-obstétrique",
+    population: "Femme enceinte",
+    purpose: "Évaluation de la maturité cervicale avant déclenchement"
+  },
 
-    // INFECTIOLOGIE
-    { id: "centor", name: "Centor / McIsaac", specialty: "Infectiologie", population: "Adulte et enfant", purpose: "Évaluation d'une angine à streptocoque" },
+  // PSYCHIATRIE
+  {
+    id: "phq9",
+    name: "PHQ-9",
+    specialty: "Psychiatrie",
+    population: "Adulte",
+    purpose: "Dépistage et évaluation de la sévérité des symptômes dépressifs"
+  },
+  {
+    id: "gad7",
+    name: "GAD-7",
+    specialty: "Psychiatrie",
+    population: "Adulte",
+    purpose: "Évaluation des symptômes anxieux"
+  },
 
-    // PSYCHIATRIE
-    { id: "phq9", name: "PHQ-9", specialty: "Psychiatrie", population: "Adulte", purpose: "Dépistage et évaluation des symptômes dépressifs" },
-    { id: "gad7", name: "GAD-7", specialty: "Psychiatrie", population: "Adulte", purpose: "Évaluation des symptômes anxieux" },
+  // GÉRIATRIE
+  {
+    id: "katz",
+    name: "Indice de Katz",
+    specialty: "Gériatrie",
+    population: "Personne âgée",
+    purpose: "Évaluation de l'autonomie dans les activités de la vie quotidienne"
+  },
+  {
+    id: "cfs",
+    name: "Clinical Frailty Scale",
+    specialty: "Gériatrie",
+    population: "Personne âgée",
+    purpose: "Évaluation de la fragilité"
+  },
 
-    // GÉRIATRIE
-    { id: "katz", name: "Index de Katz", specialty: "Gériatrie", population: "Adulte âgé", purpose: "Évaluation de l'autonomie dans les activités quotidiennes" },
-    { id: "isar", name: "ISAR", specialty: "Gériatrie", population: "Personne âgée", purpose: "Repérage des patients âgés à risque" },
-
-    // ANESTHÉSIE
-    { id: "asa", name: "Classification ASA", specialty: "Anesthésie et chirurgie", population: "Adulte et pédiatrie", purpose: "Classification de l'état physique préopératoire" }
-  ];
+  // ANESTHÉSIE ET CHIRURGIE
+  {
+    id: "asa",
+    name: "Classification ASA",
+    specialty: "Anesthésie et chirurgie",
+    population: "Adulte",
+    purpose: "Évaluation de l'état physique préopératoire"
+  },
+  {
+    id: "mallampati",
+    name: "Classification de Mallampati",
+    specialty: "Anesthésie et chirurgie",
+    population: "Adulte",
+    purpose: "Évaluation prédictive de la difficulté d'intubation"
+  },
+  {
+    id: "aldrete",
+    name: "Score d'Aldrete",
+    specialty: "Anesthésie et chirurgie",
+    population: "Adulte",
+    purpose: "Évaluation de la récupération après anesthésie"
+  }
+];
 
   const categories = [
     "Toutes",
