@@ -315,13 +315,15 @@ card.addEventListener("click", () => {
 
     let interpretation = "";
 
-    if (total >= 13) {
-      interpretation = "Altération légère de la conscience";
-    } else if (total >= 9) {
-      interpretation = "Altération modérée de la conscience";
-    } else {
-      interpretation = "Altération sévère de la conscience";
-    }
+    if (total === 15) {
+  interpretation = "Score normal de Glasgow";
+} else if (total >= 13) {
+  interpretation = "Altération légère";
+} else if (total >= 9) {
+  interpretation = "Altération modérée";
+} else {
+  interpretation = "Altération sévère";
+}
 
     result.textContent =
       "Score total : " + total + "/15 — " + interpretation;
