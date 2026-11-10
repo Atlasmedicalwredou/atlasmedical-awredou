@@ -315,15 +315,17 @@ card.addEventListener("click", () => {
 
     let interpretation = "";
 
-    if (total === 15) {
-  interpretation = "Score normal de Glasgow";
+
+if (total === 15) {
+  interpretation = "Score maximal : aucune altération détectée par le GCS";
 } else if (total >= 13) {
-  interpretation = "Altération légère";
+  interpretation = "Altération légère de la conscience";
 } else if (total >= 9) {
-  interpretation = "Altération modérée";
+  interpretation = "Altération modérée de la conscience";
 } else {
-  interpretation = "Altération sévère";
+  interpretation = "Altération sévère de la conscience";
 }
+
 
     result.textContent =
       "Score total : " + total + "/15 — " + interpretation;
