@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "atlas-medical-v1";
+const CACHE_NAME = "atlas-medical-v2";
 
 const APP_FILES = [
   "./",
