@@ -208,11 +208,141 @@ const searchable = (
 
         card.appendChild(info);
 
-        card.addEventListener("click", () => {
-          toast(
-            "Ce score sera activé après vérification de ses critères et références."
-          );
-        });
+        
+card.addEventListener("click", () => {
+  if (score.id !== "glasgow") {
+    toast(
+      "Ce score sera activé après vérification de ses critères et références."
+    );
+    return;
+  }
+
+  const existing = card.querySelector(".score-details");
+
+  if (existing) {
+    existing.remove();
+    return;
+  }
+
+  const details = createElement("div", "score-details");
+
+  details.addEventListener("click", event => {
+    event.stopPropagation();
+  });
+
+  const heading = createElement(
+    "h4",
+    "",
+    "Calcul du score de Glasgow (GCS)"
+  );
+
+  const description = createElement(
+    "p",
+    "",
+    "Sélectionnez la meilleure réponse observée pour chaque composante."
+  );
+
+  function createScoreSelect(labelText, choices) {
+    const wrapper = createElement("div", "gcs-field");
+
+    const label = createElement("label", "", labelText);
+    const select = createElement("select", "gcs-select");
+
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "Choisir une réponse";
+    select.appendChild(placeholder);
+
+    choices.forEach(choice => {
+      const option = document.createElement("option");
+      option.value = choice[0];
+      option.textContent = choice[1];
+      select.appendChild(option);
+    });
+
+    wrapper.append(label, select);
+
+    return { wrapper, select };
+  }
+
+  const eyes = createScoreSelect("E — Ouverture des yeux", [
+    ["4", "4 — Spontanée"],
+    ["3", "3 — À la demande verbale"],
+    ["2", "2 — À la stimulation douloureuse"],
+    ["1", "1 — Aucune"]
+  ]);
+
+  const verbal = createScoreSelect("V — Réponse verbale", [
+    ["5", "5 — Orientée"],
+    ["4", "4 — Confuse"],
+    ["3", "3 — Mots inappropriés"],
+    ["2", "2 — Sons incompréhensibles"],
+    ["1", "1 — Aucune"]
+  ]);
+
+  const motor = createScoreSelect("M — Réponse motrice", [
+    ["6", "6 — Obéit aux ordres"],
+    ["5", "5 — Localise la douleur"],
+    ["4", "4 — Évitement / retrait"],
+    ["3", "3 — Flexion anormale"],
+    ["2", "2 — Extension anormale"],
+    ["1", "1 — Aucune"]
+  ]);
+
+  const result = createElement(
+    "div",
+    "gcs-result",
+    "Sélectionnez les trois composantes pour obtenir le résultat."
+  );
+
+  function calculate() {
+    const values = [
+      eyes.select.value,
+      verbal.select.value,
+      motor.select.value
+    ];
+
+    if (values.some(value => value === "")) {
+      result.textContent =
+        "Veuillez sélectionner les trois composantes.";
+      return;
+    }
+
+    const total = values.reduce(
+      (sum, value) => sum + Number(value),
+      0
+    );
+
+    let interpretation = "";
+
+    if (total >= 13) {
+      interpretation = "Altération légère de la conscience";
+    } else if (total >= 9) {
+      interpretation = "Altération modérée de la conscience";
+    } else {
+      interpretation = "Altération sévère de la conscience";
+    }
+
+    result.textContent =
+      "Score total : " + total + "/15 — " + interpretation;
+  }
+
+  [eyes, verbal, motor].forEach(field => {
+    field.select.addEventListener("change", calculate);
+  });
+
+  details.append(
+    heading,
+    description,
+    eyes.wrapper,
+    verbal.wrapper,
+    motor.wrapper,
+    result
+  );
+
+  card.appendChild(details);
+});
+
 
         list.appendChild(card);
       });
