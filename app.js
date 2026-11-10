@@ -14,7 +14,67 @@ let currentPage="home", deferredPrompt=null;
 function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2100)}
 function renderModules(list=modules){const grid=$("#moduleGrid");grid.innerHTML="";$("#moduleCount").textContent=String(list.length).padStart(2,"0")+" modules";if(!list.length){grid.innerHTML='<div class="empty">Aucun module trouvé. Essaie un autre mot-clé.</div>';return}
  list.forEach(m=>{const b=document.createElement("button");b.className="module-card";b.innerHTML=`<span class="module-icon" style="background:${m.tone}">${m.icon}</span><strong>${m.title}</strong><small>${m.desc}</small>`;b.addEventListener("click",()=>openModule(m));grid.appendChild(b)})}
-function openModule(m){$("#dialogTag").textContent="ATLAS CARDIOVASCULAIRE";const items=m.topics.map(x=>`<li>${x}</li>`).join("");$("#dialogContent").innerHTML=`<h2>${m.title}</h2><p>${m.detail}</p><ul class="content-list">${items}</ul><button class="primary-btn" id="favoriteBtn">${saved.has(m.id)?"★ Retirer des favoris":"☆ Ajouter aux favoris"}</button><p class="small-note">Version prototype : ces rubriques sont une structure de départ. Les fiches médicales détaillées devront être rédigées, sourcées et validées avant diffusion.</p>`;$("#favoriteBtn").addEventListener("click",()=>{saved.has(m.id)?saved.delete(m.id):saved.add(m.id);localStorage.setItem("atlas-favorites",JSON.stringify([...saved]));$("#favoriteBtn").textContent=saved.has(m.id)?"★ Retirer des favoris":"☆ Ajouter aux favoris";toast(saved.has(m.id)?"Ajouté aux favoris":"Retiré des favoris")});$("#moduleDialog").showModal()}
+
+function openModule(m) {
+  $("#dialogTag").textContent = "ATLAS CARDIOVASCULAIRE";
+
+  const content = $("#dialogContent");
+  content.replaceChildren();
+
+  const title = document.createElement("h2");
+  title.textContent = m.title;
+
+  const description = document.createElement("p");
+  description.textContent = m.detail;
+
+  const list = document.createElement("ul");
+  list.className = "content-list";
+
+  m.topics.forEach(topic => {
+    const item = document.createElement("li");
+    item.textContent = topic;
+    list.appendChild(item);
+  });
+
+  const favoriteButton = document.createElement("button");
+  favoriteButton.className = "primary-btn";
+  favoriteButton.textContent = saved.has(m.id)
+    ? "★ Retirer des favoris"
+    : "☆ Ajouter aux favoris";
+
+  favoriteButton.addEventListener("click", () => {
+    if (saved.has(m.id)) {
+      saved.delete(m.id);
+    } else {
+      saved.add(m.id);
+    }
+
+    localStorage.setItem(
+      "atlas-favorites",
+      JSON.stringify([...saved])
+    );
+
+    favoriteButton.textContent = saved.has(m.id)
+      ? "★ Retirer des favoris"
+      : "☆ Ajouter aux favoris";
+
+    toast(
+      saved.has(m.id)
+        ? "Ajouté aux favoris"
+        : "Retiré des favoris"
+    );
+  });
+
+  const note = document.createElement("p");
+  note.className = "small-note";
+  note.textContent =
+    "Version prototype : ces rubriques sont une structure de départ. Les fiches médicales détaillées devront être rédigées, sourcées et validées avant diffusion.";
+
+  content.append(title, description, list, favoriteButton, note);
+
+  $("#moduleDialog").showModal();
+}
+
 function setPage(page){currentPage=page;document.querySelectorAll(".nav-item").forEach(b=>b.classList.toggle("active",b.dataset.page===page));if(page==="home"||page==="atlas"){renderModules();$("#searchInput").placeholder=page==="atlas"?"Rechercher dans l’atlas…":"Rechercher un cours, un syndrome, un ECG…";$("#moduleGrid").style.display="grid";$(".study-card").style.display=page==="home"?"flex":"none";$(".hero").style.display=page==="home"?"block":"none";$(".section-head h2").textContent=page==="atlas"?"Atlas cardiovasculaire":"Les modules";$(".section-head .eyebrow").textContent=page==="atlas"?"PARCOURS CARDIOVASCULAIRE":"COMMENCER À EXPLORER";$(".search-box").style.display="flex";$("#searchInput").value=""}
  else if(page==="saved"){const list=modules.filter(m=>saved.has(m.id));renderModules(list);$(".hero").style.display="none";$(".study-card").style.display="none";$(".section-head h2").textContent="Mes favoris";$(".section-head .eyebrow").textContent="CONTENUS ENREGISTRÉS";$(".search-box").style.display="none";$("#moduleGrid").style.display="grid"}
  else if(page==="quiz"){renderQuiz();return}
