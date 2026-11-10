@@ -53,6 +53,29 @@ function renderModules(list = modules) {
     grid.appendChild(button);
   });
 }
+    const button = document.createElement("button");
+    button.className = "module-card";
+
+    const icon = document.createElement("span");
+    icon.className = "module-icon";
+    icon.style.backgroundColor = m.tone;
+    icon.textContent = m.icon;
+
+    const title = document.createElement("strong");
+    title.textContent = m.title;
+
+    const description = document.createElement("small");
+    description.textContent = m.desc;
+
+    button.append(icon, title, description);
+
+    button.addEventListener("click", () => {
+      openModule(m);
+    });
+
+    grid.appendChild(button);
+  });
+}
 
  list.forEach(m=>{const b=document.createElement("button");b.className="module-card";b.innerHTML=`<span class="module-icon" style="background:${m.tone}">${m.icon}</span><strong>${m.title}</strong><small>${m.desc}</small>`;b.addEventListener("click",()=>openModule(m));grid.appendChild(b)})}
 
