@@ -30,10 +30,6 @@ function renderModules(list = modules) {
   }
 
   list.forEach(m => {
-  
-    grid.appendChild(button);
-  });
-}
     const button = document.createElement("button");
     button.className = "module-card";
 
@@ -57,8 +53,6 @@ function renderModules(list = modules) {
     grid.appendChild(button);
   });
 }
-
- list.forEach(m=>{const b=document.createElement("button");b.className="module-card";b.innerHTML=`<span class="module-icon" style="background:${m.tone}">${m.icon}</span><strong>${m.title}</strong><small>${m.desc}</small>`;b.addEventListener("click",()=>openModule(m));grid.appendChild(b)})}
 
 function openModule(m) {
   $("#dialogTag").textContent = "ATLAS CARDIOVASCULAIRE";
