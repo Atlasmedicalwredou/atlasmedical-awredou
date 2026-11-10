@@ -157,13 +157,16 @@
         const matchesCategory =
           selectedCategory === "Toutes" ||
           score.specialty === selectedCategory;
-
-        const searchable = (
-          score.name + " " +
-          score.specialty + " " +
-          score.purpose + " " +
-          score.population
-        ).toLowerCase();
+const searchable = (
+  score.name + " " +
+  score.specialty + " " +
+  score.purpose + " " +
+  score.population
+)
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g, "")
+.toLowerCase();
+        
 
         return matchesCategory &&
           searchable.includes(searchTerm.toLowerCase());
@@ -216,9 +219,14 @@
     }
 
     search.addEventListener("input", () => {
-      searchTerm = search.value.trim();
-      renderList();
-    });
+  searchTerm = search.value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+
+  renderList();
+});
 
     container.append(
       heading,
