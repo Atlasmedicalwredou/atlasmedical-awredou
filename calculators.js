@@ -135,27 +135,47 @@
     {
       id: "terme",
       category: "Gynécologie-obstétrique",
-      title: "Âge gestationnel",
-      description: "Estimation à partir des dernières règles",
-      fields: [
-        { id: "lastPeriod", label: "Date des dernières règles", type: "date" }
-      ],
-      formula: "Âge gestationnel = différence entre la date du jour et le premier jour des dernières règles.",
-      calculate: v => {
-        const start = new Date(v.lastPeriod + "T12:00:00");
-        const today = new Date();
-        today.setHours(12, 0, 0, 0);
-        const days = Math.floor((today - start) / 86400000);
-        const weeks = Math.floor(days / 7);
-        return {
-          result: weeks + SA + " + " + (days % 7),
-          unit: "SA",
-          interpretation: "Estimation fondée sur la date des dernières règles."
-        };
-      },
-      note: "La datation échographique précoce peut être plus fiable. Vérifier la date et la régularité des cycles."
+      
+{
+  title: "Âge gestationnel",
+  description: "Estimation à partir des dernières règles",
+  fields: [
+    {
+      id: "lastPeriod",
+      label: "Date des dernières règles",
+      type: "date"
     },
     {
+      id: "calculationDate",
+      label: "Date de calcul",
+      type: "date"
+    }
+  ],
+  formula: "Âge gestationnel = différence entre la date de calcul et le premier jour des dernières règles.",
+  calculate: v => {
+    const start = new Date(v.lastPeriod + "T12:00:00");
+    const today = new Date(v.calculationDate + "T12:00:00");
+
+    const days = Math.floor(
+      (today - start) / 86400000
+    );
+
+    if (days < 0) {
+      throw new Error("La date de calcul doit être postérieure à la DDR.");
+    }
+
+    const weeks = Math.floor(days / 7);
+
+    return {
+      result: weeks + " + " + (days % 7),
+      unit: "SA",
+      interpretation:
+        "Âge gestationnel estimé à partir de la DDR."
+    };
+  },
+  note: "La datation échographique précoce peut être plus fiable. Vérifier la date et la régularité des cycles."
+},
+
       id: "termeprevu",
       category: "Gynécologie-obstétrique",
       title: "Date prévue d'accouchement",
