@@ -345,12 +345,18 @@ function showPlaceholder(title, description) {
 ========================================== */
 
 function renderMore() {
-  preparePage("Plus", "OUTILS ET ESPACE PERSONNEL", "3 rubriques");
+  preparePage("Plus", "OUTILS ET ESPACE PERSONNEL", "4 rubriques");
 
   const grid = $("#moduleGrid");
   grid.replaceChildren();
 
   const items = [
+    {
+      icon: "◎",
+      title: "Scores médicaux",
+      description: "Scores et classifications par spécialité",
+      page: "scores"
+    },
     {
       icon: "☑",
       title: "QCM et cas cliniques",
@@ -435,6 +441,38 @@ function renderExternalSection(type) {
     isCalculator
       ? "Les calculatrices seront progressivement intégrées. Les calculs seront effectués localement sur ton appareil."
       : "Cette rubrique accueillera les actualités médicales du Sénégal provenant de sources institutionnelles et scientifiques fiables. Une connexion internet sera nécessaire pour actualiser les informations."
+  );
+}
+
+/* ==========================================
+   SCORES MÉDICAUX
+========================================== */
+
+function renderScores() {
+  preparePage(
+    "Scores médicaux",
+    "OUTILS D'ÉVALUATION CLINIQUE",
+    "Bibliothèque"
+  );
+
+  const grid = $("#moduleGrid");
+  grid.replaceChildren();
+
+  if (
+    window.ATLAS_SCORES &&
+    typeof window.ATLAS_SCORES.render === "function"
+  ) {
+    try {
+      window.ATLAS_SCORES.render(grid, { toast });
+      return;
+    } catch (error) {
+      console.error("Erreur de chargement des scores :", error);
+    }
+  }
+
+  showPlaceholder(
+    "Scores médicaux indisponibles",
+    "Vérifie que le fichier scores.js est bien enregistré et chargé dans index.html."
   );
 }
 
@@ -536,7 +574,7 @@ function setPage(page) {
   currentPage = page;
 
   const activeTab =
-    ["quiz", "saved", "profile"].includes(page)
+    ["quiz", "saved", "profile", "scores"].includes(page)
       ? "more"
       : page;
 
@@ -575,6 +613,10 @@ function setPage(page) {
 
   else if (page === "calculators" || page === "news") {
     renderExternalSection(page);
+  }
+
+  else if (page === "scores") {
+    renderScores();
   }
 
   else if (page === "more") {
