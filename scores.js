@@ -2,7 +2,7 @@
 /* ==========================================
    ATLAS MÉDICAL — SCORES CLINIQUES
    Bibliothèque organisée par spécialité
-   Les fiches restent inactives jusqu'à validation
+   Version initiale : fiches non activées
 ========================================== */
 
 (function () {
@@ -92,8 +92,15 @@
 
   function createElement(tag, className, content) {
     const element = document.createElement(tag);
-    if (className) element.className = className;
-    if (content !== undefined) element.textContent = content;
+
+    if (className) {
+      element.className = className;
+    }
+
+    if (content !== undefined) {
+      element.textContent = content;
+    }
+
     return element;
   }
 
@@ -108,6 +115,7 @@
 
     const container = createElement("div", "scores-library");
     const heading = createElement("div", "scores-heading");
+
     heading.append(
       createElement("h2", "", "Scores médicaux"),
       createElement("p", "", "Scores et classifications cliniques par spécialité")
@@ -119,7 +127,6 @@
     search.setAttribute("aria-label", "Rechercher un score");
 
     const filters = createElement("div", "scores-filters");
-
     const list = createElement("div", "scores-list");
 
     function renderFilters() {
@@ -162,12 +169,13 @@
           searchable.includes(searchTerm.toLowerCase());
       });
 
-      const count = createElement(
-        "p",
-        "scores-count",
-        filtered.length + " score(s) trouvé(s)"
+      list.appendChild(
+        createElement(
+          "p",
+          "scores-count",
+          filtered.length + " score(s) trouvé(s)"
+        )
       );
-      list.appendChild(count);
 
       if (filtered.length === 0) {
         list.appendChild(
@@ -178,6 +186,7 @@
 
       filtered.forEach(score => {
         const card = createElement("article", "score-card");
+
         const title = createElement("h3", "", score.name);
         const specialty = createElement("p", "score-specialty", score.specialty);
         const purpose = createElement("p", "score-purpose", score.purpose);
@@ -185,7 +194,15 @@
         const status = createElement("span", "score-status", "Fiche en préparation");
 
         const info = createElement("div", "score-card-info");
-        info.append(title, specialty, purpose, population, status);
+
+        info.append(
+          title,
+          specialty,
+          purpose,
+          population,
+          status
+        );
+
         card.appendChild(info);
 
         card.addEventListener("click", () => {
