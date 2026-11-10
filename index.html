@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="fr">
 <head>
@@ -7,7 +8,7 @@
   <meta name="description" content="Atlas Médical by @wredou — apprendre, comprendre, mémoriser et pratiquer.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./9669E3DB-0FBB-4664-848B-4874AA643D4F.png" type="image/png">
-<link rel="apple-touch-icon" href="./9669E3DB-0FBB-4664-848B-4874AA643D4F.png">
+  <link rel="apple-touch-icon" href="./9669E3DB-0FBB-4664-848B-4874AA643D4F.png">
   <link rel="stylesheet" href="./styles.css">
   <title>Atlas Médical by @wredou</title>
 </head>
@@ -30,13 +31,18 @@
       </section>
 
       <section class="section-head">
-        <div><p class="eyebrow">COMMENCER À EXPLORER</p><h2>Les modules</h2></div>
+        <div>
+          <p class="eyebrow">COMMENCER À EXPLORER</p>
+          <h2>Les modules</h2>
+        </div>
         <span class="count" id="moduleCount">08 modules</span>
       </section>
-      <label class="search-box">
+
+      <label class="search-box" id="searchBox">
         <span aria-hidden="true">⌕</span>
         <input id="searchInput" type="search" placeholder="Rechercher un cours, un syndrome, un ECG…" autocomplete="off">
       </label>
+
       <section id="moduleGrid" class="module-grid" aria-live="polite"></section>
 
       <section class="study-card">
@@ -47,17 +53,19 @@
         </div>
         <div class="progress-ring" id="progressRing"><span id="progressNumber">0</span><small>%</small></div>
       </section>
+
       <p class="disclaimer">Outil pédagogique. Ne remplace pas les recommandations officielles, la supervision clinique ni le jugement d’un professionnel de santé.</p>
     </main>
 
     <nav class="bottom-nav" aria-label="Navigation principale">
       <button class="nav-item active" data-page="home"><span>⌂</span><small>Accueil</small></button>
       <button class="nav-item" data-page="atlas"><span>▤</span><small>Atlas</small></button>
-      <button class="nav-item" data-page="quiz"><span>☑</span><small>QCM</small></button>
-      <button class="nav-item" data-page="saved"><span>☆</span><small>Favoris</small></button>
-      <button class="nav-item" data-page="profile"><span>◉</span><small>Profil</small></button>
+      <button class="nav-item" data-page="calculators"><span>∑</span><small>Calculs</small></button>
+      <button class="nav-item" data-page="news"><span>▣</span><small>Actualités</small></button>
+      <button class="nav-item" data-page="more"><span>☰</span><small>Plus</small></button>
     </nav>
   </div>
+
   <dialog id="moduleDialog" class="module-dialog">
     <div class="dialog-top">
       <span class="dialog-tag" id="dialogTag">MODULE</span>
@@ -65,7 +73,11 @@
     </div>
     <div id="dialogContent"></div>
   </dialog>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="./calculators.js" defer></script>
+  <script src="./news.js" defer></script>
   <script src="./app.js" defer></script>
 </body>
 </html>
