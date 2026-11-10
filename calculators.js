@@ -132,9 +132,10 @@
       },
       note: "La formule de Bazett peut surestimer ou sous-estimer le QTc selon la fréquence cardiaque. Vérifier le tracé ECG et les recommandations."
     },
-        {
-      id: "terme",
-  category: "Gynécologie-obstétrique",
+
+    {
+      id: "termeprevu",
+      category: "Gynécologie-obstétrique",
   title: "Âge gestationnel",
   description: "Estimation à partir des dernières règles",
   fields: [
