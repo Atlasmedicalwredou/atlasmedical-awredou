@@ -1,4 +1,9 @@
 
+/* ==========================================
+   ATLAS MÉDICAL BY @WREDOU
+   Navigation et fonctionnement principal
+========================================== */
+
 const modules = [
   {
     id: "anatomie",
@@ -121,9 +126,15 @@ const modules = [
   }
 ];
 
-const $ = s => document.querySelector(s);
+const $ = selector => document.querySelector(selector);
 
 let saved = new Set();
+let currentPage = "home";
+let deferredPrompt = null;
+
+/* ==========================================
+   FAVORIS
+========================================== */
 
 try {
   const favorites = JSON.parse(
@@ -134,7 +145,7 @@ try {
     saved = new Set(
       favorites.filter(id =>
         typeof id === "string" &&
-        modules.some(m => m.id === id)
+        modules.some(module => module.id === id)
       )
     );
   }
@@ -142,34 +153,44 @@ try {
   saved = new Set();
 }
 
-let currentPage = "home";
-let deferredPrompt = null;
-
-function toast(msg) {
-  const t = $("#toast");
-  t.textContent = msg;
-  t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2100);
-}
-
-// Enregistrement sécurisé des favoris
 function saveFavorites(nextSaved) {
   try {
     localStorage.setItem(
       "atlas-favorites",
       JSON.stringify([...nextSaved])
     );
-
     return true;
   } catch (error) {
-    toast("Impossible d'enregistrer les favoris sur cet appareil.");
+    toast("Impossible d'enregistrer les favoris.");
     return false;
   }
 }
 
-// Affichage des modules
+/* ==========================================
+   NOTIFICATIONS
+========================================== */
+
+function toast(message) {
+  const element = $("#toast");
+
+  if (!element) return;
+
+  element.textContent = message;
+  element.classList.add("show");
+
+  setTimeout(() => {
+    element.classList.remove("show");
+  }, 2100);
+}
+
+/* ==========================================
+   AFFICHAGE DES MODULES
+========================================== */
+
 function renderModules(list = modules) {
   const grid = $("#moduleGrid");
+  if (!grid) return;
+
   grid.replaceChildren();
 
   $("#moduleCount").textContent =
@@ -180,52 +201,56 @@ function renderModules(list = modules) {
     empty.className = "empty";
     empty.textContent =
       "Aucun module trouvé. Essaie un autre mot-clé.";
+
     grid.appendChild(empty);
     return;
   }
 
-  list.forEach(m => {
+  list.forEach(module => {
     const button = document.createElement("button");
     button.className = "module-card";
 
     const icon = document.createElement("span");
     icon.className = "module-icon";
-    icon.style.backgroundColor = m.tone;
-    icon.textContent = m.icon;
+    icon.style.backgroundColor = module.tone;
+    icon.textContent = module.icon;
 
     const title = document.createElement("strong");
-    title.textContent = m.title;
+    title.textContent = module.title;
 
     const description = document.createElement("small");
-    description.textContent = m.desc;
+    description.textContent = module.desc;
 
     button.append(icon, title, description);
 
     button.addEventListener("click", () => {
-      openModule(m);
+      openModule(module);
     });
 
     grid.appendChild(button);
   });
 }
 
-// Ouverture d'un module
-function openModule(m) {
+/* ==========================================
+   OUVERTURE D'UN MODULE
+========================================== */
+
+function openModule(module) {
   $("#dialogTag").textContent = "ATLAS CARDIOVASCULAIRE";
 
   const content = $("#dialogContent");
   content.replaceChildren();
 
   const title = document.createElement("h2");
-  title.textContent = m.title;
+  title.textContent = module.title;
 
   const description = document.createElement("p");
-  description.textContent = m.detail;
+  description.textContent = module.detail;
 
   const list = document.createElement("ul");
   list.className = "content-list";
 
-  m.topics.forEach(topic => {
+  module.topics.forEach(topic => {
     const item = document.createElement("li");
     item.textContent = topic;
     list.appendChild(item);
@@ -234,32 +259,30 @@ function openModule(m) {
   const favoriteButton = document.createElement("button");
   favoriteButton.className = "primary-btn";
 
-  favoriteButton.textContent = saved.has(m.id)
-    ? "★ Retirer des favoris"
-    : "☆ Ajouter aux favoris";
+  function updateFavoriteButton() {
+    favoriteButton.textContent = saved.has(module.id)
+      ? "★ Retirer des favoris"
+      : "☆ Ajouter aux favoris";
+  }
 
-  // Gestion sécurisée du bouton favori
+  updateFavoriteButton();
+
   favoriteButton.addEventListener("click", () => {
     const nextSaved = new Set(saved);
 
-    if (nextSaved.has(m.id)) {
-      nextSaved.delete(m.id);
+    if (nextSaved.has(module.id)) {
+      nextSaved.delete(module.id);
     } else {
-      nextSaved.add(m.id);
+      nextSaved.add(module.id);
     }
 
-    if (!saveFavorites(nextSaved)) {
-      return;
-    }
+    if (!saveFavorites(nextSaved)) return;
 
     saved = nextSaved;
-
-    favoriteButton.textContent = saved.has(m.id)
-      ? "★ Retirer des favoris"
-      : "☆ Ajouter aux favoris";
+    updateFavoriteButton();
 
     toast(
-      saved.has(m.id)
+      saved.has(module.id)
         ? "Ajouté aux favoris"
         : "Retiré des favoris"
     );
@@ -268,7 +291,7 @@ function openModule(m) {
   const note = document.createElement("p");
   note.className = "small-note";
   note.textContent =
-    "Version prototype : ces rubriques sont une structure de départ. Les fiches médicales détaillées devront être rédigées, sourcées et validées avant diffusion.";
+    "Version prototype : les fiches détaillées devront être rédigées, sourcées et validées avant diffusion.";
 
   content.append(
     title,
@@ -281,79 +304,150 @@ function openModule(m) {
   $("#moduleDialog").showModal();
 }
 
-// Navigation
-function setPage(page) {
-  currentPage = page;
+/* ==========================================
+   GESTION DE L'AFFICHAGE
+========================================== */
 
-  document.querySelectorAll(".nav-item").forEach(b => {
-    b.classList.toggle("active", b.dataset.page === page);
-  });
-
-  if (page === "home" || page === "atlas") {
-    renderModules();
-
-    $("#searchInput").placeholder =
-      page === "atlas"
-        ? "Rechercher dans l’atlas…"
-        : "Rechercher un cours, un syndrome, un ECG…";
-
-    $("#moduleGrid").style.display = "grid";
-
-    $(".study-card").style.display =
-      page === "home" ? "flex" : "none";
-
-    $(".hero").style.display =
-      page === "home" ? "block" : "none";
-
-    $(".section-head h2").textContent =
-      page === "atlas" ? "Atlas cardiovasculaire" : "Les modules";
-
-    $(".section-head .eyebrow").textContent =
-      page === "atlas"
-        ? "PARCOURS CARDIOVASCULAIRE"
-        : "COMMENCER À EXPLORER";
-
-    $(".search-box").style.display = "flex";
-    $("#searchInput").value = "";
-  }
-
-  else if (page === "saved") {
-    const list = modules.filter(m => saved.has(m.id));
-
-    renderModules(list);
-
-    $(".hero").style.display = "none";
-    $(".study-card").style.display = "none";
-
-    $(".section-head h2").textContent = "Mes favoris";
-    $(".section-head .eyebrow").textContent = "CONTENUS ENREGISTRÉS";
-
-    $(".search-box").style.display = "none";
-    $("#moduleGrid").style.display = "grid";
-  }
-
-  else if (page === "quiz") {
-    renderQuiz();
-    return;
-  }
-
-  else {
-    renderProfile();
-    return;
-  }
-}
-
-// QCM
-function renderQuiz() {
+function preparePage(title, subtitle, count) {
   $(".hero").style.display = "none";
   $(".study-card").style.display = "none";
   $(".search-box").style.display = "none";
 
-  $(".section-head h2").textContent = "Entraînement";
-  $(".section-head .eyebrow").textContent =
-    "TESTE TES CONNAISSANCES";
+  $(".section-head h2").textContent = title;
+  $(".section-head .eyebrow").textContent = subtitle;
 
-  $("#moduleCount").textContent = "QCM";
+  $("#moduleCount").textContent = count;
+  $("#moduleGrid").style.display = "grid";
+}
+
+function showPlaceholder(title, description) {
+  const grid = $("#moduleGrid");
+  grid.replaceChildren();
+
+  const card = document.createElement("div");
+  card.style.cssText =
+    "grid-column:1/-1;background:white;border:1px solid var(--line);border-radius:16px;padding:20px;";
+
+  const heading = document.createElement("h3");
+  heading.textContent = title;
+
+  const paragraph = document.createElement("p");
+  paragraph.style.cssText =
+    "font-size:13px;color:var(--muted);line-height:1.7;";
+  paragraph.textContent = description;
+
+  card.append(heading, paragraph);
+  grid.appendChild(card);
+}
+
+/* ==========================================
+   PAGE PLUS
+========================================== */
+
+function renderMore() {
+  preparePage("Plus", "OUTILS ET ESPACE PERSONNEL", "3 rubriques");
+
+  const grid = $("#moduleGrid");
+  grid.replaceChildren();
+
+  const items = [
+    {
+      icon: "☑",
+      title: "QCM et cas cliniques",
+      description: "Teste tes connaissances",
+      page: "quiz"
+    },
+    {
+      icon: "★",
+      title: "Mes favoris",
+      description: "Retrouve tes contenus enregistrés",
+      page: "saved"
+    },
+    {
+      icon: "◉",
+      title: "Mon profil",
+      description: "Paramètres et informations de l'application",
+      page: "profile"
+    }
+  ];
+
+  items.forEach(item => {
+    const button = document.createElement("button");
+    button.className = "module-card";
+
+    const icon = document.createElement("span");
+    icon.className = "module-icon";
+    icon.style.backgroundColor = "#e0f5f1";
+    icon.textContent = item.icon;
+
+    const title = document.createElement("strong");
+    title.textContent = item.title;
+
+    const description = document.createElement("small");
+    description.textContent = item.description;
+
+    button.append(icon, title, description);
+
+    button.addEventListener("click", () => {
+      setPage(item.page);
+    });
+
+    grid.appendChild(button);
+  });
+}
+
+/* ==========================================
+   CALCULATRICES ET ACTUALITÉS
+========================================== */
+
+function renderExternalSection(type) {
+  const isCalculator = type === "calculators";
+
+  preparePage(
+    isCalculator ? "Calculatrices médicales" : "Actualités médicales",
+    isCalculator ? "OUTILS DE CALCUL CLINIQUE" : "ACTUALITÉS AU SÉNÉGAL",
+    isCalculator ? "Calculs" : "Actualités"
+  );
+
+  const grid = $("#moduleGrid");
+  grid.replaceChildren();
+
+  const externalModule = isCalculator
+    ? window.ATLAS_CALCULATORS
+    : window.ATLAS_NEWS;
+
+  if (
+    externalModule &&
+    typeof externalModule.render === "function"
+  ) {
+    try {
+      externalModule.render(grid, { toast });
+      return;
+    } catch (error) {
+      console.error("Erreur de chargement du module :", error);
+    }
+  }
+
+  showPlaceholder(
+    isCalculator
+      ? "Calculatrices en préparation"
+      : "Actualités médicales en préparation",
+    isCalculator
+      ? "Les calculatrices seront progressivement intégrées. Les calculs seront effectués localement sur ton appareil."
+      : "Cette rubrique accueillera les actualités médicales du Sénégal provenant de sources institutionnelles et scientifiques fiables. Une connexion internet sera nécessaire pour actualiser les informations."
+  );
+}
+
+/* ==========================================
+   QCM
+========================================== */
+
+function renderQuiz() {
+  preparePage(
+    "Entraînement",
+    "TESTE TES CONNAISSANCES",
+    "QCM"
+  );
 
   $("#moduleGrid").innerHTML = `
     <div class="quiz-card"
@@ -368,48 +462,45 @@ function renderQuiz() {
     </div>
   `;
 
-  $("#moduleGrid").style.display = "grid";
-
-  const opts = [
+  const options = [
     "Le nœud sinusal",
     "Le nœud auriculo-ventriculaire",
     "Le faisceau de His",
     "Le réseau de Purkinje"
   ];
 
-  opts.forEach((o, i) => {
-    const b = document.createElement("button");
-    b.className = "quiz-option";
-    b.textContent = o;
+  options.forEach((option, index) => {
+    const button = document.createElement("button");
+    button.className = "quiz-option";
+    button.textContent = option;
 
-    b.onclick = () => {
-      document.querySelectorAll(".quiz-option").forEach(x => {
-        x.disabled = true;
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".quiz-option").forEach(element => {
+        element.disabled = true;
       });
 
-      b.classList.add(i === 0 ? "correct" : "wrong");
+      button.classList.add(index === 0 ? "correct" : "wrong");
 
       $("#quizFeedback").textContent =
-        i === 0
+        index === 0
           ? "Bonne réponse. Le nœud sinusal est le pacemaker physiologique dominant."
           : "Pas tout à fait. La bonne réponse est le nœud sinusal.";
-    };
+    });
 
-    $("#quizOptions").appendChild(b);
+    $("#quizOptions").appendChild(button);
   });
 }
 
-// Profil local
+/* ==========================================
+   PROFIL LOCAL
+========================================== */
+
 function renderProfile() {
-  $(".hero").style.display = "none";
-  $(".study-card").style.display = "none";
-  $(".search-box").style.display = "none";
-
-  $(".section-head h2").textContent = "Mon espace";
-  $(".section-head .eyebrow").textContent =
-    "ATLAS MÉDICAL BY @WREDOU";
-
-  $("#moduleCount").textContent = "Profil local";
+  preparePage(
+    "Mon espace",
+    "ATLAS MÉDICAL BY @WREDOU",
+    "Profil local"
+  );
 
   $("#moduleGrid").innerHTML = `
     <div style="grid-column:1/-1;background:#f0f8f7;border:1px solid #dcefeb;border-radius:16px;padding:20px">
@@ -424,9 +515,7 @@ function renderProfile() {
     </div>
   `;
 
-  $("#moduleGrid").style.display = "grid";
-
-  $("#clearData").onclick = () => {
+  $("#clearData").addEventListener("click", () => {
     if (confirm("Effacer tous les favoris enregistrés sur cet appareil ?")) {
       try {
         localStorage.removeItem("atlas-favorites");
@@ -436,46 +525,136 @@ function renderProfile() {
         toast("Impossible d'effacer les favoris.");
       }
     }
-  };
+  });
 }
 
-// Recherche
-$("#searchInput").addEventListener("input", e => {
-  const q = e.target.value.toLocaleLowerCase("fr");
+/* ==========================================
+   NAVIGATION PRINCIPALE
+========================================== */
+
+function setPage(page) {
+  currentPage = page;
+
+  const activeTab =
+    ["quiz", "saved", "profile"].includes(page)
+      ? "more"
+      : page;
+
+  document.querySelectorAll(".nav-item").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.page === activeTab
+    );
+  });
+
+  if (page === "home" || page === "atlas") {
+    $(".hero").style.display =
+      page === "home" ? "block" : "none";
+
+    $(".study-card").style.display =
+      page === "home" ? "flex" : "none";
+
+    $(".search-box").style.display = "flex";
+
+    $(".section-head h2").textContent =
+      page === "atlas" ? "Atlas cardiovasculaire" : "Les modules";
+
+    $(".section-head .eyebrow").textContent =
+      page === "atlas"
+        ? "PARCOURS CARDIOVASCULAIRE"
+        : "COMMENCER À EXPLORER";
+
+    $("#searchInput").placeholder =
+      page === "atlas"
+        ? "Rechercher dans l’atlas…"
+        : "Rechercher un cours, un syndrome, un ECG…";
+
+    $("#searchInput").value = "";
+    renderModules();
+  }
+
+  else if (page === "calculators" || page === "news") {
+    renderExternalSection(page);
+  }
+
+  else if (page === "more") {
+    renderMore();
+  }
+
+  else if (page === "saved") {
+    preparePage(
+      "Mes favoris",
+      "CONTENUS ENREGISTRÉS",
+      "Favoris"
+    );
+
+    renderModules(
+      modules.filter(module => saved.has(module.id))
+    );
+  }
+
+  else if (page === "quiz") {
+    renderQuiz();
+  }
+
+  else if (page === "profile") {
+    renderProfile();
+  }
+}
+
+/* ==========================================
+   RECHERCHE
+========================================== */
+
+$("#searchInput").addEventListener("input", event => {
+  if (currentPage !== "home" && currentPage !== "atlas") {
+    return;
+  }
+
+  const query = event.target.value.toLocaleLowerCase("fr");
 
   renderModules(
-    modules.filter(m =>
+    modules.filter(module =>
       (
-        m.title + " " +
-        m.desc + " " +
-        m.topics.join(" ")
-      ).toLocaleLowerCase("fr").includes(q)
+        module.title + " " +
+        module.desc + " " +
+        module.topics.join(" ")
+      ).toLocaleLowerCase("fr").includes(query)
     )
   );
 });
 
-// Navigation principale
-document.querySelectorAll(".nav-item").forEach(b => {
-  b.addEventListener("click", () => {
-    setPage(b.dataset.page);
+/* ==========================================
+   ÉVÉNEMENTS DE NAVIGATION
+========================================== */
+
+document.querySelectorAll(".nav-item").forEach(button => {
+  button.addEventListener("click", () => {
+    setPage(button.dataset.page);
   });
 });
 
-// Fermeture du module
+/* ==========================================
+   FERMETURE DU MODULE
+========================================== */
+
 $("#closeDialog").addEventListener("click", () => {
   $("#moduleDialog").close();
 });
 
-$("#moduleDialog").addEventListener("click", e => {
-  if (e.target === $("#moduleDialog")) {
+$("#moduleDialog").addEventListener("click", event => {
+  if (event.target === $("#moduleDialog")) {
     $("#moduleDialog").close();
   }
 });
 
-// Installation de l'application
-window.addEventListener("beforeinstallprompt", e => {
-  e.preventDefault();
-  deferredPrompt = e;
+/* ==========================================
+   INSTALLATION DE L'APPLICATION
+========================================== */
+
+window.addEventListener("beforeinstallprompt", event => {
+  event.preventDefault();
+  deferredPrompt = event;
   $("#installBtn").hidden = false;
 });
 
@@ -492,7 +671,10 @@ $("#installBtn").addEventListener("click", async () => {
   $("#installBtn").hidden = true;
 });
 
-// Service worker
+/* ==========================================
+   SERVICE WORKER
+========================================== */
+
 if (
   "serviceWorker" in navigator &&
   location.protocol.startsWith("http")
@@ -506,6 +688,8 @@ if (
   });
 }
 
-// Initialisation
-renderModules();
+/* ==========================================
+   INITIALISATION
+========================================== */
 
+setPage("home");
