@@ -30,26 +30,7 @@ function renderModules(list = modules) {
   }
 
   list.forEach(m => {
-    const button = document.createElement("button");
-    button.className = "module-card";
-
-    const icon = document.createElement("span");
-    icon.className = "module-icon";
-    icon.style.backgroundColor = m.tone;
-    icon.textContent = m.icon;
-
-    const title = document.createElement("strong");
-    title.textContent = m.title;
-
-    const description = document.createElement("small");
-    description.textContent = m.desc;
-
-    button.append(icon, title, description);
-
-    button.addEventListener("click", () => {
-      openModule(m);
-    });
-
+  
     grid.appendChild(button);
   });
 }
