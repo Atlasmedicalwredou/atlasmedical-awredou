@@ -133,10 +133,10 @@
       note: "La formule de Bazett peut surestimer ou sous-estimer le QTc selon la fréquence cardiaque. Vérifier le tracé ECG et les recommandations."
     },
     {
-      id: "terme",
-      category: "Gynécologie-obstétrique",
       
 {
+  id: "terme",
+  category: "Gynécologie-obstétrique",
   title: "Âge gestationnel",
   description: "Estimation à partir des dernières règles",
   fields: [
@@ -160,17 +160,16 @@
       (today - start) / 86400000
     );
 
-    if (days < 0) {
-      throw new Error("La date de calcul doit être postérieure à la DDR.");
+    if (!Number.isFinite(days) || days < 0) {
+      throw new Error("Vérifiez les dates saisies.");
     }
 
     const weeks = Math.floor(days / 7);
 
     return {
-      result: weeks + " + " + (days % 7),
-      unit: "SA",
-      interpretation:
-        "Âge gestationnel estimé à partir de la DDR."
+      result: weeks + " SA + " + (days % 7) + " jours",
+      unit: "",
+      interpretation: "Âge gestationnel estimé à partir de la DDR."
     };
   },
   note: "La datation échographique précoce peut être plus fiable. Vérifier la date et la régularité des cycles."
