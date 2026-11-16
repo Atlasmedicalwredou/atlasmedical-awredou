@@ -15,42 +15,97 @@ window.ATLAS_CARDIO_DATA = {
   modules: [
 
     {
-      id: "anatomie",
-      title: "Anatomie cardiovasculaire",
+            title: "Anatomie cardiovasculaire",
       description: "Comprendre la structure du cœur et des vaisseaux.",
       icon: "❤️",
       chapters: [
         {
           id: "coeur",
-          title: "Anatomie générale du cœur",
-          sections: [
-            {
-              heading: "Présentation générale",
-              content: "Le cœur est un organe musculaire creux situé dans le médiastin moyen. Il assure la circulation du sang dans les circulations pulmonaire et systémique."
-            },
-            {
-              heading: "Situation anatomique",
-              content: "Il est situé dans le thorax, entre les deux poumons, en arrière du sternum et au-dessus du diaphragme. Son axe est oblique, avec une orientation générale vers la gauche."
-            },
-            {
-              heading: "Les quatre cavités",
-              content: "Le cœur comprend deux oreillettes et deux ventricules. L'oreillette droite reçoit le sang veineux systémique. Le ventricule droit l'envoie vers les poumons. L'oreillette gauche reçoit le sang oxygéné provenant des poumons. Le ventricule gauche l'éjecte dans l'aorte."
-            },
-            {
-              heading: "Les valves cardiaques",
-              content: "La valve tricuspide sépare l'oreillette droite du ventricule droit. La valve pulmonaire se situe entre le ventricule droit et le tronc pulmonaire. La valve mitrale sépare l'oreillette gauche du ventricule gauche. La valve aortique se situe entre le ventricule gauche et l'aorte."
-            },
-            {
-              heading: "Les enveloppes du cœur",
-              content: "Le cœur est entouré par le péricarde. Sa paroi comprend trois couches : l'endocarde, le myocarde et l'épicarde."
-            },
-            {
-              heading: "À retenir",
-              content: "Le cœur droit assure la circulation pulmonaire. Le cœur gauche assure la circulation systémique. Les valves orientent le flux sanguin et empêchent normalement son reflux."
-            }
-          ]
-        },
-        {
+     id: "anatomie",
+
+{
+  id: "coeur",
+  title: "Anatomie générale du cœur",
+  sections: [
+    {
+      heading: "1. Présentation générale",
+      content: "Le cœur est un organe musculaire creux, situé dans le médiastin moyen. Il fonctionne comme une double pompe : le cœur droit propulse le sang vers les poumons, tandis que le cœur gauche assure la circulation systémique. Son activité repose sur une alternance coordonnée de contraction (systole) et de relaxation (diastole)."
+    },
+    {
+      heading: "2. Situation et orientation anatomiques",
+      content: "Le cœur se trouve dans le thorax, entre les deux poumons, derrière le sternum et au-dessus du diaphragme. Il est contenu dans le médiastin moyen. Son grand axe est oblique, dirigé globalement de haut en bas, de droite à gauche et d'arrière en avant. Environ deux tiers de sa masse se projettent à gauche du plan médian."
+    },
+    {
+      heading: "3. Forme et morphologie externe",
+      content: "Le cœur présente une base, orientée principalement en arrière et en haut, et un apex dirigé en bas, en avant et à gauche. L'apex est principalement constitué par le ventricule gauche. Les faces classiquement décrites sont sternocostale, diaphragmatique et pulmonaire gauche. Les sillons coronaires et interventriculaires marquent la séparation externe des cavités."
+    },
+    {
+      heading: "4. Les quatre cavités cardiaques",
+      content: "Le cœur comprend deux oreillettes et deux ventricules. L'oreillette droite reçoit le sang veineux provenant des veines caves supérieure et inférieure ainsi que du sinus coronaire. Le ventricule droit reçoit ce sang à travers la valve tricuspide et l'éjecte dans le tronc pulmonaire. L'oreillette gauche reçoit le sang oxygéné des quatre veines pulmonaires. Le ventricule gauche reçoit ce sang par la valve mitrale et l'éjecte dans l'aorte."
+    },
+    {
+      heading: "5. Anatomie de l'oreillette droite",
+      content: "L'oreillette droite possède une partie postérieure relativement lisse, le sinus des veines caves, et une partie antérieure comprenant les muscles pectinés. La crête terminale sépare ces régions. Le septum interatrial présente la fosse ovale, vestige de la communication interatriale fœtale. L'orifice atrioventriculaire droit est muni de la valve tricuspide."
+    },
+    {
+      heading: "6. Anatomie du ventricule droit",
+      content: "Le ventricule droit présente une cavité à paroi relativement mince comparativement au ventricule gauche. Il comprend des trabéculations charnues, un muscle papillaire antérieur, postérieur et septal, ainsi que des cordages tendineux reliés aux feuillets de la valve tricuspide. La bandelette modératrice est une structure musculaire caractéristique. La chambre de chasse conduit vers la valve pulmonaire."
+    },
+    {
+      heading: "7. Anatomie de l'oreillette gauche",
+      content: "L'oreillette gauche reçoit habituellement quatre veines pulmonaires. Sa paroi est majoritairement lisse. Les muscles pectinés sont principalement présents dans l'auricule gauche. Elle communique avec le ventricule gauche par l'orifice mitral."
+    },
+    {
+      heading: "8. Anatomie du ventricule gauche",
+      content: "Le ventricule gauche possède une paroi myocardique plus épaisse que celle du ventricule droit, car il doit générer une pression élevée pour propulser le sang dans la circulation systémique. Il comporte des trabéculations charnues, deux muscles papillaires principaux et des cordages tendineux attachés aux deux feuillets de la valve mitrale. Sa chambre de chasse se prolonge vers la valve aortique."
+    },
+    {
+      heading: "9. Les quatre valves cardiaques",
+      content: "La valve tricuspide sépare l'oreillette droite du ventricule droit. La valve pulmonaire se situe entre le ventricule droit et le tronc pulmonaire. La valve mitrale sépare l'oreillette gauche du ventricule gauche. La valve aortique se situe entre le ventricule gauche et l'aorte. Les valves atrioventriculaires sont reliées aux muscles papillaires par les cordages tendineux. Les valves pulmonaire et aortique sont des valves sigmoïdes."
+    },
+    {
+      heading: "10. Les septums cardiaques",
+      content: "Le septum interatrial sépare les deux oreillettes. Le septum interventriculaire sépare les deux ventricules et comprend une partie musculaire et une petite partie membraneuse. Ces structures empêchent normalement le mélange du sang entre les cavités droites et gauches."
+    },
+    {
+      heading: "11. Les couches de la paroi cardiaque",
+      content: "La paroi cardiaque comprend trois couches. L'endocarde tapisse les cavités et les valves. Le myocarde constitue la couche musculaire responsable de la contraction. L'épicarde correspond à la couche externe de la paroi cardiaque et au feuillet viscéral du péricarde séreux."
+    },
+    {
+      heading: "12. Le péricarde",
+      content: "Le cœur est entouré par le péricarde. Celui-ci comprend un péricarde fibreux externe et un péricarde séreux. Le péricarde séreux comporte un feuillet pariétal et un feuillet viscéral, séparés par une cavité péricardique contenant une faible quantité de liquide. Ce dispositif facilite le glissement du cœur pendant les mouvements cardiaques."
+    },
+    {
+      heading: "13. Le squelette fibreux du cœur",
+      content: "Le squelette fibreux est constitué notamment d'anneaux fibreux entourant les orifices valvulaires et de structures conjonctives associées. Il assure le soutien des valves, contribue à maintenir la géométrie des orifices et participe à l'isolation électrique entre les oreillettes et les ventricules. La conduction électrique normale traverse principalement le faisceau atrioventriculaire."
+    },
+    {
+      heading: "14. Vascularisation coronaire",
+      content: "Le myocarde reçoit son apport sanguin par les artères coronaires droite et gauche, qui naissent des sinus aortiques. Le tronc coronaire gauche se divise habituellement en artère interventriculaire antérieure et artère circonflexe. La coronaire droite donne notamment des branches destinées au ventricule droit et, selon la dominance coronaire, à la région inférieure du cœur. Le drainage veineux s'effectue principalement par le sinus coronaire vers l'oreillette droite."
+    },
+    {
+      heading: "15. Système de conduction cardiaque",
+      content: "Le système de conduction comprend le nœud sinusal, situé dans la région supérieure de l'oreillette droite, le nœud atrioventriculaire, le faisceau de His, ses branches droite et gauche, puis le réseau de Purkinje. Il permet la naissance et la propagation coordonnée de l'influx électrique responsable de l'activation myocardique."
+    },
+    {
+      heading: "16. Rapports anatomiques importants",
+      content: "En avant, le cœur est en rapport avec le sternum et les cartilages costaux. Latéralement, il est voisin des poumons et des plèvres médiastinales. En bas, il repose sur le diaphragme. En arrière, il est en rapport notamment avec l'œsophage et les structures médiastinales postérieures."
+    },
+    {
+      heading: "17. Applications cliniques",
+      content: "Une atteinte de la valve aortique peut provoquer une sténose ou une insuffisance aortique. Une atteinte mitrale peut entraîner une sténose ou une régurgitation mitrale. Une obstruction coronaire peut provoquer une ischémie ou un infarctus du myocarde. Une accumulation excessive de liquide dans la cavité péricardique peut entraîner une tamponnade cardiaque. Un défaut de fermeture des septums peut provoquer une communication anormale entre les cavités."
+    },
+    {
+      heading: "18. Points essentiels à mémoriser",
+      content: "Le cœur possède quatre cavités et quatre valves principales. Le cœur droit assure la circulation pulmonaire. Le cœur gauche assure la circulation systémique. Le ventricule gauche possède une paroi plus épaisse que le ventricule droit. Le myocarde est vascularisé par les artères coronaires. Le système de conduction coordonne l'activité électrique du cœur."
+    },
+    {
+      heading: "Références bibliographiques",
+      content: "1. Standring S. Gray's Anatomy: The Anatomical Basis of Clinical Practice. Elsevier. 2. Moore KL, Dalley AF, Agur AMR. Clinically Oriented Anatomy. Wolters Kluwer. 3. OpenStax. Anatomy and Physiology, chapitre sur le système cardiovasculaire. Ces références constituent des bases anatomiques et pédagogiques ; les éditions utilisées devront être précisées dans la bibliographie générale de l'Atlas."
+    }
+  ]
+}
+     
           id: "circulation",
           title: "Circulation sanguine",
           sections: [
