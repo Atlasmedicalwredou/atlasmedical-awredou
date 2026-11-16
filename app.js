@@ -1,156 +1,102 @@
 
-/* ==========================================
+/* =====================================================
    ATLAS MÉDICAL BY @WREDOU
-   Navigation et fonctionnement principal
-========================================== */
+   Fonctionnement principal de l'application
+   Version 2.0
+===================================================== */
 
-const modules = [
-  {
-    id: "anatomie",
-    title: "Anatomie cardiovasculaire",
-    desc: "Cœur, vaisseaux et circulation",
-    icon: "♥",
-    tone: "#e0f5f1",
-    topics: [
-      "Organisation générale du système cardiovasculaire",
-      "Anatomie externe du cœur",
-      "Cavités et valves cardiaques",
-      "Vascularisation coronaire",
-      "Circulation systémique et pulmonaire"
-    ],
-    detail: "Découvre l’organisation du cœur et des vaisseaux, les rapports anatomiques et les bases de la circulation."
-  },
-  {
-    id: "syndromes",
-    title: "Syndromes et triades",
-    desc: "Tableaux cliniques et associations",
-    icon: "✚",
-    tone: "#e9eef9",
-    topics: [
-      "Syndrome coronarien aigu",
-      "Insuffisance cardiaque",
-      "Syndrome d’insuffisance artérielle périphérique",
-      "Péricardite aiguë",
-      "Thrombose veineuse profonde"
-    ],
-    detail: "Des fiches structurées pour reconnaître les tableaux cliniques, leurs signes et leurs diagnostics différentiels."
-  },
-  {
-    id: "semiologie",
-    title: "Sémiologie cardiovasculaire",
-    desc: "Signes, examens et manœuvres",
-    icon: "⌁",
-    tone: "#fff1df",
-    topics: [
-      "Interrogatoire cardiovasculaire",
-      "Inspection et palpation",
-      "Auscultation cardiaque",
-      "Mesure de la pression artérielle",
-      "Recherche des signes d’insuffisance cardiaque"
-    ],
-    detail: "Révise la démarche d’examen clinique et la signification des principaux signes cardiovasculaires."
-  },
-  {
-    id: "bilans",
-    title: "Bilans cardiovasculaires",
-    desc: "Biologie et explorations",
-    icon: "▤",
-    tone: "#f0eafa",
-    topics: [
-      "NFS et bilan biologique initial",
-      "Troponines : indications et limites",
-      "BNP et NT-proBNP",
-      "Ionogramme, fonction rénale",
-      "Échocardiographie : indications"
-    ],
-    detail: "Comprends les examens complémentaires, leurs indications et les précautions d’interprétation."
-  },
-  {
-    id: "ecg",
-    title: "Interprétation ECG",
-    desc: "Méthode de lecture des tracés",
-    icon: "⌁",
-    tone: "#fce9ec",
-    topics: [
-      "Vérifier calibration et qualité du tracé",
-      "Fréquence et rythme",
-      "Axe électrique",
-      "Intervalles PR, QRS et QT",
-      "Analyse du segment ST et de l’onde T"
-    ],
-    detail: "Une méthode systématique de lecture ECG, avec des exemples commentés à ajouter et valider."
-  },
-  {
-    id: "urgences",
-    title: "Urgences cardiovasculaires",
-    desc: "Repères et conduite initiale",
-    icon: "⚡",
-    tone: "#fff4d9",
-    topics: [
-      "Évaluation initiale ABCDE",
-      "Douleur thoracique aiguë",
-      "Arrêt cardiaque : principes de réanimation",
-      "Œdème aigu pulmonaire",
-      "Choc : reconnaissance initiale"
-    ],
-    detail: "Des repères pédagogiques à confronter systématiquement aux protocoles locaux et recommandations en vigueur."
-  },
-  {
-    id: "classifications",
-    title: "Classifications et mémos",
-    desc: "Scores et points essentiels",
-    icon: "◎",
-    tone: "#e8f1fa",
-    topics: [
-      "NYHA : classe fonctionnelle",
-      "Classification de Killip",
-      "Stades de l’insuffisance cardiaque",
-      "Facteurs de risque cardiovasculaire",
-      "Mémos de révision"
-    ],
-    detail: "Retrouve les classifications, scores et moyens mnémotechniques utiles aux révisions."
-  },
-  {
-    id: "entrainement",
-    title: "QCM et cas cliniques",
-    desc: "S’entraîner et s’autoévaluer",
-    icon: "☑",
-    tone: "#e9f5e8",
-    topics: [
-      "QCM de connaissances fondamentales",
-      "Cas cliniques progressifs",
-      "Correction expliquée",
-      "Révision des erreurs"
-    ],
-    detail: "Entraîne-toi avec des questions et des cas cliniques. Les contenus finaux seront relus et référencés."
-  }
-];
+/* -----------------------------------------------------
+   1. CONNEXION À LA BIBLIOTHÈQUE CARDIOVASCULAIRE
+----------------------------------------------------- */
 
 const $ = selector => document.querySelector(selector);
 
+const cardioData = window.ATLAS_CARDIO_DATA;
+
+if (!cardioData || !Array.isArray(cardioData.modules)) {
+  console.error("La bibliothèque cardiovasculaire est introuvable.");
+}
+
+const modulePresentation = {
+  anatomie: {
+    desc: "Cœur, vaisseaux et circulation",
+    tone: "#e0f5f1"
+  },
+  syndromes: {
+    desc: "Tableaux cliniques et associations",
+    tone: "#e9eef9"
+  },
+  semiologie: {
+    desc: "Signes, examens et manœuvres",
+    tone: "#fff1df"
+  },
+  bilans: {
+    desc: "Biologie et explorations",
+    tone: "#f0eafa"
+  },
+  ecg: {
+    desc: "Méthode de lecture des tracés",
+    tone: "#fce9ec"
+  },
+  urgences: {
+    desc: "Repères et conduite initiale",
+    tone: "#fff4d9"
+  },
+  classifications: {
+    desc: "Scores et points essentiels",
+    tone: "#e8f1fa"
+  },
+  entrainement: {
+    desc: "S'entraîner et s'autoévaluer",
+    tone: "#e9f5e8"
+  }
+};
+
+const modules = (cardioData?.modules || []).map(module => ({
+  ...module,
+  desc: module.description || modulePresentation[module.id]?.desc || "",
+  tone: modulePresentation[module.id]?.tone || "#e0f5f1",
+  detail: module.description || "",
+  topics: (module.chapters || []).map(chapter => chapter.title)
+}));
+
 let saved = new Set();
+let viewedChapters = new Set();
 let currentPage = "home";
 let deferredPrompt = null;
+let currentModule = null;
 
-/* ==========================================
-   FAVORIS
-========================================== */
+/* -----------------------------------------------------
+   2. STOCKAGE LOCAL
+----------------------------------------------------- */
 
-try {
-  const favorites = JSON.parse(
-    localStorage.getItem("atlas-favorites") || "[]"
-  );
-
-  if (Array.isArray(favorites)) {
-    saved = new Set(
-      favorites.filter(id =>
-        typeof id === "string" &&
-        modules.some(module => module.id === id)
-      )
+function loadLocalData() {
+  try {
+    const favorites = JSON.parse(
+      localStorage.getItem("atlas-favorites") || "[]"
     );
+
+    if (Array.isArray(favorites)) {
+      saved = new Set(
+        favorites.filter(id =>
+          modules.some(module => module.id === id)
+        )
+      );
+    }
+
+    const viewed = JSON.parse(
+      localStorage.getItem("atlas-viewed-chapters") || "[]"
+    );
+
+    if (Array.isArray(viewed)) {
+      viewedChapters = new Set(
+        viewed.filter(id => typeof id === "string")
+      );
+    }
+  } catch (error) {
+    saved = new Set();
+    viewedChapters = new Set();
   }
-} catch (error) {
-  saved = new Set();
 }
 
 function saveFavorites(nextSaved) {
@@ -166,9 +112,22 @@ function saveFavorites(nextSaved) {
   }
 }
 
-/* ==========================================
-   NOTIFICATIONS
-========================================== */
+function saveViewedChapters() {
+  try {
+    localStorage.setItem(
+      "atlas-viewed-chapters",
+      JSON.stringify([...viewedChapters])
+    );
+  } catch (error) {
+    toast("Impossible d'enregistrer la progression.");
+  }
+}
+
+loadLocalData();
+
+/* -----------------------------------------------------
+   3. NOTIFICATIONS
+----------------------------------------------------- */
 
 function toast(message) {
   const element = $("#toast");
@@ -183,9 +142,46 @@ function toast(message) {
   }, 2100);
 }
 
-/* ==========================================
-   AFFICHAGE DES MODULES
-========================================== */
+/* -----------------------------------------------------
+   4. PROGRESSION
+----------------------------------------------------- */
+
+function getTotalChapters() {
+  return modules.reduce(
+    (total, module) => total + (module.chapters || []).length,
+    0
+  );
+}
+
+function updateProgress() {
+  const total = getTotalChapters();
+  const completed = viewedChapters.size;
+
+  const percentage = total
+    ? Math.min(100, Math.round((completed / total) * 100))
+    : 0;
+
+  const number = $("#progressNumber");
+  const ring = $("#progressRing");
+  const text = $("#progressText");
+
+  if (number) number.textContent = percentage;
+
+  if (ring) {
+    ring.style.background =
+      `conic-gradient(#16a995 ${percentage}%, #e8eef2 ${percentage}%)`;
+  }
+
+  if (text) {
+    text.textContent =
+      `${completed} chapitre(s) consulté(s) sur ${total}. ` +
+      "Ta progression est conservée sur cet appareil.";
+  }
+}
+
+/* -----------------------------------------------------
+   5. AFFICHAGE DES MODULES
+----------------------------------------------------- */
 
 function renderModules(list = modules) {
   const grid = $("#moduleGrid");
@@ -193,8 +189,11 @@ function renderModules(list = modules) {
 
   grid.replaceChildren();
 
-  $("#moduleCount").textContent =
-    String(list.length).padStart(2, "0") + " modules";
+  const count = $("#moduleCount");
+  if (count) {
+    count.textContent =
+      String(list.length).padStart(2, "0") + " modules";
+  }
 
   if (!list.length) {
     const empty = document.createElement("div");
@@ -213,7 +212,7 @@ function renderModules(list = modules) {
     const icon = document.createElement("span");
     icon.className = "module-icon";
     icon.style.backgroundColor = module.tone;
-    icon.textContent = module.icon;
+    icon.textContent = module.icon || "✚";
 
     const title = document.createElement("strong");
     title.textContent = module.title;
@@ -221,7 +220,11 @@ function renderModules(list = modules) {
     const description = document.createElement("small");
     description.textContent = module.desc;
 
-    button.append(icon, title, description);
+    const chapterCount = document.createElement("small");
+    chapterCount.textContent =
+      `${(module.chapters || []).length} chapitre(s)`;
+
+    button.append(icon, title, description, chapterCount);
 
     button.addEventListener("click", () => {
       openModule(module);
@@ -231,43 +234,23 @@ function renderModules(list = modules) {
   });
 }
 
-/* ==========================================
-   OUVERTURE D'UN MODULE
-========================================== */
+/* -----------------------------------------------------
+   6. GESTION DES FAVORIS
+----------------------------------------------------- */
 
-function openModule(module) {
-  $("#dialogTag").textContent = "ATLAS CARDIOVASCULAIRE";
+function createFavoriteButton(module) {
+  const button = document.createElement("button");
+  button.className = "primary-btn";
 
-  const content = $("#dialogContent");
-  content.replaceChildren();
-
-  const title = document.createElement("h2");
-  title.textContent = module.title;
-
-  const description = document.createElement("p");
-  description.textContent = module.detail;
-
-  const list = document.createElement("ul");
-  list.className = "content-list";
-
-  module.topics.forEach(topic => {
-    const item = document.createElement("li");
-    item.textContent = topic;
-    list.appendChild(item);
-  });
-
-  const favoriteButton = document.createElement("button");
-  favoriteButton.className = "primary-btn";
-
-  function updateFavoriteButton() {
-    favoriteButton.textContent = saved.has(module.id)
+  function updateLabel() {
+    button.textContent = saved.has(module.id)
       ? "★ Retirer des favoris"
       : "☆ Ajouter aux favoris";
   }
 
-  updateFavoriteButton();
+  updateLabel();
 
-  favoriteButton.addEventListener("click", () => {
+  button.addEventListener("click", () => {
     const nextSaved = new Set(saved);
 
     if (nextSaved.has(module.id)) {
@@ -279,7 +262,7 @@ function openModule(module) {
     if (!saveFavorites(nextSaved)) return;
 
     saved = nextSaved;
-    updateFavoriteButton();
+    updateLabel();
 
     toast(
       saved.has(module.id)
@@ -288,14 +271,64 @@ function openModule(module) {
     );
   });
 
+  return button;
+}
+
+/* -----------------------------------------------------
+   7. OUVERTURE D'UN MODULE
+----------------------------------------------------- */
+
+function openModule(module) {
+  currentModule = module;
+
+  $("#dialogTag").textContent = "ATLAS CARDIOVASCULAIRE";
+
+  const content = $("#dialogContent");
+  content.replaceChildren();
+
+  const title = document.createElement("h2");
+  title.textContent = module.title;
+
+  const description = document.createElement("p");
+  description.textContent = module.detail;
+
+  const chapterHeading = document.createElement("h3");
+  chapterHeading.textContent = "Chapitres disponibles";
+
+  const list = document.createElement("div");
+  list.className = "content-list";
+
+  (module.chapters || []).forEach((chapter, index) => {
+    const button = document.createElement("button");
+    button.className = "secondary-btn";
+    button.style.cssText =
+      "display:block;width:100%;text-align:left;margin:8px 0;";
+
+    const isViewed = viewedChapters.has(
+      `${module.id}:${chapter.id}`
+    );
+
+    button.textContent =
+      `${isViewed ? "✓ " : ""}${index + 1}. ${chapter.title}`;
+
+    button.addEventListener("click", () => {
+      openChapter(module, chapter);
+    });
+
+    list.appendChild(button);
+  });
+
+  const favoriteButton = createFavoriteButton(module);
+
   const note = document.createElement("p");
   note.className = "small-note";
   note.textContent =
-    "Version prototype : les fiches détaillées devront être rédigées, sourcées et validées avant diffusion.";
+    "Contenu pédagogique à compléter et à valider à partir des recommandations et références scientifiques.";
 
   content.append(
     title,
     description,
+    chapterHeading,
     list,
     favoriteButton,
     note
@@ -304,9 +337,67 @@ function openModule(module) {
   $("#moduleDialog").showModal();
 }
 
-/* ==========================================
-   GESTION DE L'AFFICHAGE
-========================================== */
+/* -----------------------------------------------------
+   8. OUVERTURE D'UN CHAPITRE
+----------------------------------------------------- */
+
+function openChapter(module, chapter) {
+  const content = $("#dialogContent");
+  content.replaceChildren();
+
+  currentModule = module;
+
+  const backButton = document.createElement("button");
+  backButton.className = "secondary-btn";
+  backButton.textContent = "← Retour aux chapitres";
+
+  backButton.addEventListener("click", () => {
+    openModule(module);
+  });
+
+  const title = document.createElement("h2");
+  title.textContent = chapter.title;
+
+  content.append(backButton, title);
+
+  if (Array.isArray(chapter.sections)) {
+    chapter.sections.forEach(section => {
+      const sectionBox = document.createElement("section");
+      sectionBox.style.cssText =
+        "margin:18px 0;padding-bottom:12px;border-bottom:1px solid var(--line);";
+
+      const heading = document.createElement("h3");
+      heading.textContent = section.heading;
+
+      const paragraph = document.createElement("p");
+      paragraph.style.cssText =
+        "font-size:14px;line-height:1.8;color:var(--muted);";
+      paragraph.textContent = section.content;
+
+      sectionBox.append(heading, paragraph);
+      content.appendChild(sectionBox);
+    });
+  }
+
+  const chapterKey = `${module.id}:${chapter.id}`;
+
+  if (!viewedChapters.has(chapterKey)) {
+    viewedChapters.add(chapterKey);
+    saveViewedChapters();
+    updateProgress();
+  }
+
+  const completed = document.createElement("p");
+  completed.className = "small-note";
+  completed.textContent =
+    "✓ Chapitre consulté. Ta progression a été enregistrée sur cet appareil.";
+
+  content.appendChild(completed);
+}
+
+/* -----------------------------------------------------
+   9. PRÉPARATION DES PAGES
+----------------------------------------------------- */
 
 function preparePage(title, subtitle, count) {
   $(".hero").style.display = "none";
@@ -340,9 +431,9 @@ function showPlaceholder(title, description) {
   grid.appendChild(card);
 }
 
-/* ==========================================
-   PAGE PLUS
-========================================== */
+/* -----------------------------------------------------
+   10. PAGE PLUS
+----------------------------------------------------- */
 
 function renderMore() {
   preparePage("Plus", "OUTILS ET ESPACE PERSONNEL", "4 rubriques");
@@ -402,9 +493,9 @@ function renderMore() {
   });
 }
 
-/* ==========================================
-   CALCULATRICES ET ACTUALITÉS
-========================================== */
+/* -----------------------------------------------------
+   11. CALCULATRICES ET ACTUALITÉS
+----------------------------------------------------- */
 
 function renderExternalSection(type) {
   const isCalculator = type === "calculators";
@@ -444,9 +535,9 @@ function renderExternalSection(type) {
   );
 }
 
-/* ==========================================
-   SCORES MÉDICAUX
-========================================== */
+/* -----------------------------------------------------
+   12. SCORES MÉDICAUX
+----------------------------------------------------- */
 
 function renderScores() {
   preparePage(
@@ -476,9 +567,9 @@ function renderScores() {
   );
 }
 
-/* ==========================================
-   QCM
-========================================== */
+/* -----------------------------------------------------
+   13. QCM
+----------------------------------------------------- */
 
 function renderQuiz() {
   preparePage(
@@ -529,9 +620,9 @@ function renderQuiz() {
   });
 }
 
-/* ==========================================
-   PROFIL LOCAL
-========================================== */
+/* -----------------------------------------------------
+   14. PROFIL LOCAL
+----------------------------------------------------- */
 
 function renderProfile() {
   preparePage(
@@ -545,30 +636,35 @@ function renderProfile() {
       <div style="font-size:26px">◉</div>
       <h3 style="font:800 18px Manrope">Bienvenue dans ton atlas</h3>
       <p style="font-size:12px;color:#718293;line-height:1.6">
-        Tu peux commencer sans créer de compte. Tes favoris sont conservés sur cet appareil. La synchronisation entre appareils et l’espace Premium seront ajoutés dans une prochaine version.
+        Tu peux commencer sans créer de compte. Tes favoris et ta progression sont conservés sur cet appareil.
       </p>
       <button class="secondary-btn" id="clearData">
-        Réinitialiser mes favoris
+        Réinitialiser mes favoris et ma progression
       </button>
     </div>
   `;
 
   $("#clearData").addEventListener("click", () => {
-    if (confirm("Effacer tous les favoris enregistrés sur cet appareil ?")) {
+    if (confirm("Effacer les favoris et la progression enregistrés sur cet appareil ?")) {
       try {
         localStorage.removeItem("atlas-favorites");
+        localStorage.removeItem("atlas-viewed-chapters");
+
         saved.clear();
-        toast("Favoris effacés");
+        viewedChapters.clear();
+
+        updateProgress();
+        toast("Données locales réinitialisées");
       } catch (error) {
-        toast("Impossible d'effacer les favoris.");
+        toast("Impossible de réinitialiser les données.");
       }
     }
   });
 }
 
-/* ==========================================
-   NAVIGATION PRINCIPALE
-========================================== */
+/* -----------------------------------------------------
+   15. NAVIGATION PRINCIPALE
+----------------------------------------------------- */
 
 function setPage(page) {
   currentPage = page;
@@ -608,6 +704,7 @@ function setPage(page) {
         : "Rechercher un cours, un syndrome, un ECG…";
 
     $("#searchInput").value = "";
+
     renderModules();
   }
 
@@ -644,9 +741,9 @@ function setPage(page) {
   }
 }
 
-/* ==========================================
-   RECHERCHE
-========================================== */
+/* -----------------------------------------------------
+   16. RECHERCHE DANS LES MODULES ET CHAPITRES
+----------------------------------------------------- */
 
 $("#searchInput").addEventListener("input", event => {
   if (currentPage !== "home" && currentPage !== "atlas") {
@@ -655,20 +752,35 @@ $("#searchInput").addEventListener("input", event => {
 
   const query = event.target.value.toLocaleLowerCase("fr");
 
-  renderModules(
-    modules.filter(module =>
-      (
-        module.title + " " +
-        module.desc + " " +
-        module.topics.join(" ")
-      ).toLocaleLowerCase("fr").includes(query)
-    )
-  );
+  const filtered = modules.filter(module => {
+    const chapterText = (module.chapters || [])
+      .map(chapter => {
+        const sections = (chapter.sections || [])
+          .map(section =>
+            `${section.heading} ${section.content}`
+          )
+          .join(" ");
+
+        return `${chapter.title} ${sections}`;
+      })
+      .join(" ");
+
+    const searchableText = [
+      module.title,
+      module.desc,
+      module.detail,
+      chapterText
+    ].join(" ").toLocaleLowerCase("fr");
+
+    return searchableText.includes(query);
+  });
+
+  renderModules(filtered);
 });
 
-/* ==========================================
-   ÉVÉNEMENTS DE NAVIGATION
-========================================== */
+/* -----------------------------------------------------
+   17. ÉVÉNEMENTS DE NAVIGATION
+----------------------------------------------------- */
 
 document.querySelectorAll(".nav-item").forEach(button => {
   button.addEventListener("click", () => {
@@ -676,9 +788,9 @@ document.querySelectorAll(".nav-item").forEach(button => {
   });
 });
 
-/* ==========================================
-   FERMETURE DU MODULE
-========================================== */
+/* -----------------------------------------------------
+   18. FERMETURE DES FENÊTRES
+----------------------------------------------------- */
 
 $("#closeDialog").addEventListener("click", () => {
   $("#moduleDialog").close();
@@ -690,9 +802,9 @@ $("#moduleDialog").addEventListener("click", event => {
   }
 });
 
-/* ==========================================
-   INSTALLATION DE L'APPLICATION
-========================================== */
+/* -----------------------------------------------------
+   19. INSTALLATION DE L'APPLICATION
+----------------------------------------------------- */
 
 window.addEventListener("beforeinstallprompt", event => {
   event.preventDefault();
@@ -713,9 +825,9 @@ $("#installBtn").addEventListener("click", async () => {
   $("#installBtn").hidden = true;
 });
 
-/* ==========================================
-   SERVICE WORKER
-========================================== */
+/* -----------------------------------------------------
+   20. SERVICE WORKER
+----------------------------------------------------- */
 
 if (
   "serviceWorker" in navigator &&
@@ -730,8 +842,12 @@ if (
   });
 }
 
-/* ==========================================
-   INITIALISATION
-========================================== */
+/* -----------------------------------------------------
+   21. INITIALISATION
+----------------------------------------------------- */
 
+updateProgress();
 setPage("home");
+
+console.log("Atlas Médical : application initialisée.");
+console.log("Modules cardiovasculaires :", modules.length);
