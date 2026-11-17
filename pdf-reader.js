@@ -1,7 +1,7 @@
 
 /* =========================================
    ATLAS MÉDICAL — LECTEUR PDF INTÉGRÉ
-   Moteur PDF.js — version 1.2
+   Moteur PDF.js — version 1.3
 ========================================= */
 
 (function () {
@@ -118,6 +118,7 @@
       }
 
       /* BARRE DE PROGRESSION */
+
       #atlas-pdf-app .pdf-progress {
         padding: 8px 14px;
         background: #183c5b;
@@ -144,58 +145,65 @@
         text-align: right;
         color: #e0f5f1;
       }
+
       /* PANNEAU DES MINIATURES */
-#atlas-pdf-app .pdf-thumbnails[hidden] {
-  display: none !important;
-}
 
-#atlas-pdf-app .pdf-thumbnails {
-  max-height: 45vh;
-  overflow-y: auto;
-  padding: 12px;
-  background: #183c5b;
-  border-bottom: 2px solid #2dd4bf;
-}
+      #atlas-pdf-app .pdf-thumbnails[hidden] {
+        display: none !important;
+      }
 
-#atlas-pdf-app .pdf-thumbnails-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  color: white;
-}
+      #atlas-pdf-app .pdf-thumbnails {
+        max-height: 45vh;
+        min-height: 0;
+        flex-shrink: 0;
+        overflow-y: auto;
+        padding: 12px;
+        background: #183c5b;
+        border-bottom: 2px solid #2dd4bf;
+      }
 
-#atlas-pdf-app .pdf-thumbnails-list {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-}
+      #atlas-pdf-app .pdf-thumbnails-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        color: white;
+      }
 
-#atlas-pdf-app .pdf-thumbnail {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 7px;
-  background: #ffffff;
-  border: 2px solid transparent;
-  border-radius: 8px;
-  color: #102b46;
-}
+      #atlas-pdf-app .pdf-thumbnails-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
 
-#atlas-pdf-app .pdf-thumbnail.active {
-  border-color: #2dd4bf;
-}
+      #atlas-pdf-app .pdf-thumbnail {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        padding: 7px;
+        background: #ffffff;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        color: #102b46;
+        min-width: 0;
+      }
 
-#atlas-pdf-app .pdf-thumbnail canvas {
-  width: 100%;
-  height: auto;
-  box-shadow: none;
-}
+      #atlas-pdf-app .pdf-thumbnail.active {
+        border-color: #2dd4bf;
+      }
 
-#atlas-pdf-app .pdf-thumbnail span {
-  font-size: 12px;
-}
+      #atlas-pdf-app .pdf-thumbnail canvas {
+        width: 100%;
+        height: auto;
+        box-shadow: none;
+      }
+
+      #atlas-pdf-app .pdf-thumbnail span {
+        font-size: 12px;
+      }
+
+      /* DOCUMENT PDF */
 
       #atlas-pdf-app .pdf-content {
         flex: 1;
@@ -232,9 +240,6 @@
         <button type="button" id="atlas-pdf-close">
           ← Back to Library
         </button>
-        <button type="button" id="atlas-pdf-thumbnails">
-  📑 Pages
-</button>
 
         <div class="pdf-title" id="atlas-pdf-title">
           Atlas Médical — Document
@@ -243,37 +248,61 @@
 
       <div class="pdf-toolbar">
         <button type="button" id="atlas-pdf-prev">◀</button>
+
         <span class="pdf-page-info" id="atlas-pdf-info">
           Page 1 / 1
         </span>
+
         <button type="button" id="atlas-pdf-next">▶</button>
         <button type="button" id="atlas-pdf-minus">−</button>
         <button type="button" id="atlas-pdf-plus">+</button>
+
+        <button type="button" id="atlas-pdf-thumbnails">
+          📑 Pages
+        </button>
       </div>
 
       <div class="pdf-progress">
         <div class="pdf-progress-track">
-          <div class="pdf-progress-fill" id="atlas-pdf-progress-fill"></div>
+          <div
+            class="pdf-progress-fill"
+            id="atlas-pdf-progress-fill">
+          </div>
         </div>
-        <div class="pdf-progress-label" id="atlas-pdf-progress-label">
+
+        <div
+          class="pdf-progress-label"
+          id="atlas-pdf-progress-label">
           Lecture : 0 %
         </div>
       </div>
-<div class="pdf-thumbnails" id="atlas-pdf-thumbnails-panel" hidden>
-  <div class="pdf-thumbnails-header">
-    <strong>Pages du document</strong>
-    <button type="button" id="atlas-pdf-thumbnails-close">
-      ✕
-    </button>
-  </div>
 
-  <div class="pdf-thumbnails-list" id="atlas-pdf-thumbnails-list">
-  </div>
-</div>
+      <div
+        class="pdf-thumbnails"
+        id="atlas-pdf-thumbnails-panel"
+        hidden>
+
+        <div class="pdf-thumbnails-header">
+          <strong>Pages du document</strong>
+
+          <button
+            type="button"
+            id="atlas-pdf-thumbnails-close">
+            ✕
+          </button>
+        </div>
+
+        <div
+          class="pdf-thumbnails-list"
+          id="atlas-pdf-thumbnails-list">
+        </div>
+      </div>
+
       <div class="pdf-content" id="atlas-pdf-content">
         <p class="pdf-message" id="atlas-pdf-message">
           Chargement du document...
         </p>
+
         <canvas id="atlas-pdf-canvas" hidden></canvas>
       </div>
     `;
@@ -294,108 +323,127 @@
     viewer.querySelector("#atlas-pdf-minus")
       .addEventListener("click", () => changeZoom(-0.2));
 
-viewer.querySelector("#atlas-pdf-plus")
-  .addEventListener("click", () => changeZoom(0.2));
+    viewer.querySelector("#atlas-pdf-plus")
+      .addEventListener("click", () => changeZoom(0.2));
 
-viewer.querySelector("#atlas-pdf-thumbnails")
-  .addEventListener("click", toggleThumbnails);
+    viewer.querySelector("#atlas-pdf-thumbnails")
+      .addEventListener("click", toggleThumbnails);
 
-viewer.querySelector("#atlas-pdf-thumbnails-close")
-  .addEventListener("click", toggleThumbnails);
+    viewer.querySelector("#atlas-pdf-thumbnails-close")
+      .addEventListener("click", toggleThumbnails);
 
-document.addEventListener("keydown", keyboardNavigation); }
-function toggleThumbnails() {
-  if (!viewer) return;
-
-  const panel = viewer.querySelector(
-    "#atlas-pdf-thumbnails-panel"
-  );
-
-  panel.hidden = !panel.hidden;
-
-  if (!panel.hidden) {
-    generateThumbnails();
+    document.addEventListener("keydown", keyboardNavigation);
   }
-}
-   async function generateThumbnails() {
-  if (!pdfDocument || !viewer) return;
 
-  const list = viewer.querySelector(
-    "#atlas-pdf-thumbnails-list"
-  );
+  /* OUVRIR ET FERMER LES MINIATURES */
 
-  if (list.dataset.generated === "true") return;
+  function toggleThumbnails() {
+    if (!viewer) return;
 
-  list.innerHTML = "Chargement des miniatures...";
+    const panel = viewer.querySelector(
+      "#atlas-pdf-thumbnails-panel"
+    );
 
-  try {
-    list.innerHTML = "";
+    panel.hidden = !panel.hidden;
 
-    for (let number = 1; number <= pdfDocument.numPages; number++) {
-      if (!viewer || !pdfDocument) return;
+    if (!panel.hidden) {
+      generateThumbnails();
+    }
+  }
 
-      const page = await pdfDocument.getPage(number);
+  /* GÉNÉRER LES MINIATURES */
 
-      const thumbnail = document.createElement("button");
-      thumbnail.type = "button";
-      thumbnail.className = "pdf-thumbnail";
+  async function generateThumbnails() {
+    if (!pdfDocument || !viewer) return;
 
-      if (number === currentPage) {
-        thumbnail.classList.add("active");
+    const list = viewer.querySelector(
+      "#atlas-pdf-thumbnails-list"
+    );
+
+    if (list.dataset.generated === "true") return;
+
+    list.innerHTML = "Chargement des miniatures...";
+
+    try {
+      list.innerHTML = "";
+
+      for (
+        let number = 1;
+        number <= pdfDocument.numPages;
+        number++
+      ) {
+        if (!viewer || !pdfDocument) return;
+
+        const page = await pdfDocument.getPage(number);
+
+        const thumbnail = document.createElement("button");
+        thumbnail.type = "button";
+        thumbnail.className = "pdf-thumbnail";
+
+        if (number === currentPage) {
+          thumbnail.classList.add("active");
+        }
+
+        const preview = document.createElement("canvas");
+        const viewport = page.getViewport({ scale: 0.22 });
+
+        preview.width = Math.floor(viewport.width);
+        preview.height = Math.floor(viewport.height);
+
+        thumbnail.appendChild(preview);
+
+        const label = document.createElement("span");
+        label.textContent = `Page ${number}`;
+
+        thumbnail.appendChild(label);
+
+        /* CLIC SUR UNE MINIATURE */
+
+        thumbnail.addEventListener("click", () => {
+          list.querySelectorAll(".pdf-thumbnail").forEach(item => {
+            item.classList.remove("active");
+          });
+
+          thumbnail.classList.add("active");
+
+          viewer.querySelector(
+            "#atlas-pdf-thumbnails-panel"
+          ).hidden = true;
+
+          goToPage(number);
+        });
+
+        list.appendChild(thumbnail);
+
+        await page.render({
+          canvasContext: preview.getContext("2d"),
+          viewport: viewport
+        }).promise;
       }
 
-      const preview = document.createElement("canvas");
-      const viewport = page.getViewport({ scale: 0.22 });
+      list.dataset.generated = "true";
 
-      preview.width = Math.floor(viewport.width);
-      preview.height = Math.floor(viewport.height);
-
-      thumbnail.appendChild(preview);
-
-      const label = document.createElement("span");
-      label.textContent = `Page ${number}`;
-      thumbnail.appendChild(label);
-
-      thumbnail.addEventListener("click", () => {
-  list.querySelectorAll(".pdf-thumbnail").forEach(item => {
-    item.classList.remove("active");
-  });
-
-  thumbnail.classList.add("active");
-
-  viewer.querySelector("#atlas-pdf-thumbnails-panel").hidden = true;
-
-  goToPage(number);
-});
-
-        thumbnail.classList.add("active");
-        goToPage(number);
-      });
-
-      list.appendChild(thumbnail);
-
-      await page.render({
-        canvasContext: preview.getContext("2d"),
-        viewport: viewport
-      }).promise;
+    } catch (error) {
+      console.error("Atlas miniatures :", error);
+      list.textContent =
+        "Impossible de charger les miniatures.";
     }
-
-    list.dataset.generated = "true";
-
-  } catch (error) {
-    console.error("Atlas miniatures :", error);
-    list.textContent = "Impossible de charger les miniatures.";
   }
-}
+
+  /* MESSAGE DU LECTEUR */
+
   function showMessage(message) {
     const element = viewer.querySelector("#atlas-pdf-message");
+
     element.textContent = message;
     element.hidden = false;
     canvas.hidden = true;
   }
 
+  /* AFFICHER UNE PAGE */
+
   async function renderPage() {
-    if (!pdfDocument) return;
+    if (!pdfDocument || !viewer) return;
 
     if (renderTask) {
       renderTask.cancel();
@@ -403,20 +451,29 @@ function toggleThumbnails() {
     }
 
     const page = await pdfDocument.getPage(currentPage);
+
     const content = viewer.querySelector("#atlas-pdf-content");
 
     const originalViewport = page.getViewport({ scale: 1 });
-    const availableWidth = Math.max(200, content.clientWidth - 28);
+
+    const availableWidth = Math.max(
+      200,
+      content.clientWidth - 28
+    );
+
     const fitScale = availableWidth / originalViewport.width;
     const scale = Math.min(fitScale, 1.5) * zoom;
+
     const viewport = page.getViewport({ scale });
 
     const context = canvas.getContext("2d");
 
     canvas.width = Math.floor(viewport.width);
     canvas.height = Math.floor(viewport.height);
+
     canvas.style.width = `${Math.floor(viewport.width)}px`;
     canvas.style.height = `${Math.floor(viewport.height)}px`;
+
     canvas.hidden = false;
 
     viewer.querySelector("#atlas-pdf-message").hidden = true;
@@ -424,70 +481,113 @@ function toggleThumbnails() {
     viewer.querySelector("#atlas-pdf-info").textContent =
       `Page ${currentPage} / ${pdfDocument.numPages}`;
 
+    /* PROGRESSION */
+
     const progress = Math.round(
       (currentPage / pdfDocument.numPages) * 100
     );
 
-    viewer.querySelector("#atlas-pdf-progress-fill").style.width =
-      `${progress}%`;
+    viewer.querySelector(
+      "#atlas-pdf-progress-fill"
+    ).style.width = `${progress}%`;
 
-    viewer.querySelector("#atlas-pdf-progress-label").textContent =
-      `Lecture : ${progress}%`;
-const thumbnails = viewer.querySelectorAll(".pdf-thumbnail");
+    viewer.querySelector(
+      "#atlas-pdf-progress-label"
+    ).textContent = `Lecture : ${progress}%`;
 
-thumbnails.forEach((thumbnail, index) => {
-  thumbnail.classList.toggle(
-    "active",
-    index + 1 === currentPage
-  );
-});
+    /* SYNCHRONISATION DES MINIATURES */
+
+    const thumbnails = viewer.querySelectorAll(".pdf-thumbnail");
+
+    thumbnails.forEach((thumbnail, index) => {
+      thumbnail.classList.toggle(
+        "active",
+        index + 1 === currentPage
+      );
+    });
+
     viewer.querySelector("#atlas-pdf-prev").disabled =
       currentPage <= 1;
 
     viewer.querySelector("#atlas-pdf-next").disabled =
       currentPage >= pdfDocument.numPages;
 
-    renderTask = page.render({
+    const task = page.render({
       canvasContext: context,
       viewport: viewport
     });
 
+    renderTask = task;
+
     try {
-      await renderTask.promise;
+      await task.promise;
     } catch (error) {
       if (error.name !== "RenderingCancelledException") {
-        showMessage("Erreur pendant l'affichage de cette page.");
+        showMessage(
+          "Erreur pendant l'affichage de cette page."
+        );
+      }
+    } finally {
+      if (renderTask === task) {
+        renderTask = null;
       }
     }
-
-    renderTask = null;
   }
+
+  /* NAVIGATION ENTRE LES PAGES */
 
   async function goToPage(number) {
     if (!pdfDocument) return;
 
-    currentPage = Math.max(1, Math.min(number, pdfDocument.numPages));
+    currentPage = Math.max(
+      1,
+      Math.min(number, pdfDocument.numPages)
+    );
 
     try {
       await renderPage();
-      viewer.querySelector("#atlas-pdf-content").scrollTop = 0;
+
+      if (viewer) {
+        viewer.querySelector(
+          "#atlas-pdf-content"
+        ).scrollTop = 0;
+      }
+
     } catch (error) {
-      showMessage("Impossible d'afficher cette page.");
+      if (viewer) {
+        showMessage("Impossible d'afficher cette page.");
+      }
     }
   }
 
+  /* ZOOM */
+
   function changeZoom(amount) {
-    zoom = Math.max(0.6, Math.min(2.5, zoom + amount));
+    zoom = Math.max(
+      0.6,
+      Math.min(2.5, zoom + amount)
+    );
+
     renderPage();
   }
+
+  /* CLAVIER */
 
   function keyboardNavigation(event) {
     if (!viewer) return;
 
     if (event.key === "Escape") close();
-    if (event.key === "ArrowRight") goToPage(currentPage + 1);
-    if (event.key === "ArrowLeft") goToPage(currentPage - 1);
+
+    if (event.key === "ArrowRight") {
+      goToPage(currentPage + 1);
+    }
+
+    if (event.key === "ArrowLeft") {
+      goToPage(currentPage - 1);
+    }
   }
+
+  /* FERMER LE LECTEUR */
 
   function close() {
     if (renderTask) {
@@ -506,9 +606,15 @@ thumbnails.forEach((thumbnail, index) => {
       canvas = null;
     }
 
-    document.removeEventListener("keydown", keyboardNavigation);
+    document.removeEventListener(
+      "keydown",
+      keyboardNavigation
+    );
+
     document.body.style.overflow = "";
   }
+
+  /* OUVRIR UN DOCUMENT */
 
   async function open(url, title) {
     createViewer();
@@ -520,6 +626,20 @@ thumbnails.forEach((thumbnail, index) => {
 
     currentPage = 1;
     zoom = 1;
+
+    /* RÉINITIALISER LES MINIATURES */
+
+    const list = viewer.querySelector(
+      "#atlas-pdf-thumbnails-list"
+    );
+
+    list.innerHTML = "";
+    delete list.dataset.generated;
+
+    viewer.querySelector(
+      "#atlas-pdf-thumbnails-panel"
+    ).hidden = true;
+
     showMessage("Chargement du document...");
 
     if (pdfDocument) {
@@ -529,7 +649,11 @@ thumbnails.forEach((thumbnail, index) => {
 
     try {
       const pdfjs = await loadPDFJS();
-      const absoluteURL = new URL(url, document.baseURI).href;
+
+      const absoluteURL = new URL(
+        url,
+        document.baseURI
+      ).href;
 
       pdfDocument = await pdfjs.getDocument({
         url: absoluteURL
@@ -539,12 +663,16 @@ thumbnails.forEach((thumbnail, index) => {
 
     } catch (error) {
       console.error("Atlas PDF:", error);
+
       showMessage(
         "Impossible d'ouvrir ce document. Vérifie ta connexion Internet."
       );
     }
   }
 
-  window.AtlasPDFReader = { open, close };
+  window.AtlasPDFReader = {
+    open,
+    close
+  };
 
 })();
