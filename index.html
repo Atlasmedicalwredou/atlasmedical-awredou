@@ -177,8 +177,12 @@
 
   <!-- OUVERTURE DES DOCUMENTS PDF -->
   <script>
-    function ouvrirPDF(fichier) {
-      const lecteur = document.getElementById("atlas-pdf-viewer");
+    
+function ouvrirPDF(fichier) {
+  const url = new URL(fichier, window.location.href).href;
+  window.open(url, "_blank");
+}
+
 
       lecteur.src = fichier;
       lecteur.style.display = "block";
