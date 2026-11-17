@@ -1,7 +1,7 @@
 
 /* =========================================
    ATLAS MÉDICAL — LECTEUR PDF INTÉGRÉ
-   Moteur PDF.js — version 1.1
+   Moteur PDF.js — version 1.2
 ========================================= */
 
 (function () {
@@ -57,6 +57,7 @@
     if (viewer) return;
 
     const style = document.createElement("style");
+
     style.textContent = `
       #atlas-pdf-app {
         position: fixed;
@@ -116,6 +117,34 @@
         text-align: center;
       }
 
+      /* BARRE DE PROGRESSION */
+      #atlas-pdf-app .pdf-progress {
+        padding: 8px 14px;
+        background: #183c5b;
+      }
+
+      #atlas-pdf-app .pdf-progress-track {
+        height: 7px;
+        background: #ffffff33;
+        border-radius: 999px;
+        overflow: hidden;
+      }
+
+      #atlas-pdf-app .pdf-progress-fill {
+        width: 0%;
+        height: 100%;
+        background: #2dd4bf;
+        border-radius: 999px;
+        transition: width .2s ease;
+      }
+
+      #atlas-pdf-app .pdf-progress-label {
+        margin-top: 5px;
+        font-size: 12px;
+        text-align: right;
+        color: #e0f5f1;
+      }
+
       #atlas-pdf-app .pdf-content {
         flex: 1;
         min-height: 0;
@@ -165,6 +194,15 @@
         <button type="button" id="atlas-pdf-next">▶</button>
         <button type="button" id="atlas-pdf-minus">−</button>
         <button type="button" id="atlas-pdf-plus">+</button>
+      </div>
+
+      <div class="pdf-progress">
+        <div class="pdf-progress-track">
+          <div class="pdf-progress-fill" id="atlas-pdf-progress-fill"></div>
+        </div>
+        <div class="pdf-progress-label" id="atlas-pdf-progress-label">
+          Lecture : 0 %
+        </div>
       </div>
 
       <div class="pdf-content" id="atlas-pdf-content">
@@ -234,7 +272,19 @@
     viewer.querySelector("#atlas-pdf-info").textContent =
       `Page ${currentPage} / ${pdfDocument.numPages}`;
 
-    viewer.querySelector("#atlas-pdf-prev").disabled = currentPage <= 1;
+    const progress = Math.round(
+      (currentPage / pdfDocument.numPages) * 100
+    );
+
+    viewer.querySelector("#atlas-pdf-progress-fill").style.width =
+      `${progress}%`;
+
+    viewer.querySelector("#atlas-pdf-progress-label").textContent =
+      `Lecture : ${progress}%`;
+
+    viewer.querySelector("#atlas-pdf-prev").disabled =
+      currentPage <= 1;
+
     viewer.querySelector("#atlas-pdf-next").disabled =
       currentPage >= pdfDocument.numPages;
 
