@@ -1,7 +1,7 @@
 
 /* =========================================
    ATLAS MÉDICAL — LECTEUR PDF INTÉGRÉ
-   Moteur PDF.js — version 1.0
+   Moteur PDF.js — version 1.1
 ========================================= */
 
 (function () {
@@ -34,7 +34,7 @@
 
       script.onload = () => {
         if (!window.pdfjsLib) {
-          reject(new Error("Le moteur PDF.js n'a pas été chargé."));
+          reject(new Error("PDF.js non chargé."));
           return;
         }
 
@@ -44,7 +44,7 @@
 
       script.onerror = () => {
         loadingPromise = null;
-        reject(new Error("Impossible de charger le moteur PDF.js."));
+        reject(new Error("Impossible de charger PDF.js."));
       };
 
       document.head.appendChild(script);
@@ -147,19 +147,14 @@
     viewer.id = "atlas-pdf-app";
 
     viewer.innerHTML = `
-     
-<div class="pdf-header">
-  <button type="button" id="atlas-pdf-close">
-    ← Retour à la bibliothèque
-  </button>
-  <div class="pdf-title" id="atlas-pdf-title">
-    Atlas Médical — Document
-  </div>
-</div>
-
+      <div class="pdf-header">
         <button type="button" id="atlas-pdf-close">
-          ✕ Fermer
+          ← Back to Library
         </button>
+
+        <div class="pdf-title" id="atlas-pdf-title">
+          Atlas Médical — Document
+        </div>
       </div>
 
       <div class="pdf-toolbar">
@@ -224,7 +219,6 @@
     const availableWidth = Math.max(200, content.clientWidth - 28);
     const fitScale = availableWidth / originalViewport.width;
     const scale = Math.min(fitScale, 1.5) * zoom;
-
     const viewport = page.getViewport({ scale });
 
     const context = canvas.getContext("2d");
@@ -240,9 +234,7 @@
     viewer.querySelector("#atlas-pdf-info").textContent =
       `Page ${currentPage} / ${pdfDocument.numPages}`;
 
-    viewer.querySelector("#atlas-pdf-prev").disabled =
-      currentPage <= 1;
-
+    viewer.querySelector("#atlas-pdf-prev").disabled = currentPage <= 1;
     viewer.querySelector("#atlas-pdf-next").disabled =
       currentPage >= pdfDocument.numPages;
 
@@ -265,10 +257,7 @@
   async function goToPage(number) {
     if (!pdfDocument) return;
 
-    currentPage = Math.max(
-      1,
-      Math.min(number, pdfDocument.numPages)
-    );
+    currentPage = Math.max(1, Math.min(number, pdfDocument.numPages));
 
     try {
       await renderPage();
@@ -316,6 +305,7 @@
     createViewer();
 
     document.body.style.overflow = "hidden";
+
     viewer.querySelector("#atlas-pdf-title").textContent =
       title || "Atlas Médical — Document";
 
@@ -349,4 +339,3 @@
   window.AtlasPDFReader = { open, close };
 
 })();
-
