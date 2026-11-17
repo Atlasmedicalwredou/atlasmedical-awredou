@@ -45,6 +45,41 @@
 
       <section id="moduleGrid" class="module-grid" aria-live="polite"></section>
 
+     <!-- BIBLIOTHEQUE ATLAS MEDICAL -->
+<section id="bibliotheque-pdf" class="atlas-pdf-library">
+
+  <p class="eyebrow">RESSOURCES PÉDAGOGIQUES</p>
+  <h2>📚 Ma bibliothèque médicale</h2>
+  <p>Consulte les trois tomes de l'Atlas cardiovasculaire et les fiches patients.</p>
+
+  <div class="atlas-pdf-buttons">
+
+    <button onclick="ouvrirPDF('documents/Atlas_Cardiovasculaire_Tome1_v1.1(1).pdf')">
+      📘 Tome 1
+    </button>
+
+    <button onclick="ouvrirPDF('documents/Atlas_Cardiovas_Tome2_v1F.pdf')">
+      📗 Tome 2
+    </button>
+
+    <button onclick="ouvrirPDF('documents/Atlas_Cardiovasculaire_Tome3.pdf')">
+      📙 Tome 3
+    </button>
+
+    <button onclick="ouvrirPDF('documents/Proteger_mon_coeur_fiches_patient.pdf')">
+      ❤️ Fiches patients
+    </button>
+
+  </div>
+
+  <iframe
+    id="atlas-pdf-viewer"
+    title="Lecteur PDF Atlas Médical"
+    style="display:none;"
+    loading="lazy">
+  </iframe>
+
+</section>
       <section class="study-card">
         <div>
           <p class="eyebrow">TON ESPACE</p>
@@ -80,5 +115,18 @@
 <script src="./news.js" defer></script>
 <script src="./scores.js" defer></script>
 <script src="./app.js" defer></script>
+<script>
+function ouvrirPDF(fichier) {
+  const lecteur = document.getElementById("atlas-pdf-viewer");
+
+  lecteur.src = fichier;
+  lecteur.style.display = "block";
+
+  lecteur.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+</script>
 </body>
 </html>
