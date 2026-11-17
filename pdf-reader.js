@@ -357,9 +357,16 @@ function toggleThumbnails() {
       thumbnail.appendChild(label);
 
       thumbnail.addEventListener("click", () => {
-        list.querySelectorAll(".pdf-thumbnail").forEach(item => {
-          item.classList.remove("active");
-        });
+  list.querySelectorAll(".pdf-thumbnail").forEach(item => {
+    item.classList.remove("active");
+  });
+
+  thumbnail.classList.add("active");
+
+  viewer.querySelector("#atlas-pdf-thumbnails-panel").hidden = true;
+
+  goToPage(number);
+});
 
         thumbnail.classList.add("active");
         goToPage(number);
