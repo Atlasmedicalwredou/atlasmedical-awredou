@@ -6,11 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#102b46">
   <meta name="description" content="Atlas Médical by @wredou — apprendre, comprendre, mémoriser et pratiquer.">
-
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" sizes="180x180" href="./9669E3DB-0FBB-4664-848B-4874AA643D4F.png">
   <link rel="stylesheet" href="./styles.css">
-
   <title>Atlas Médical by @wredou</title>
 </head>
 
@@ -25,7 +23,6 @@
           <small>by @wredou</small>
         </span>
       </a>
-
       <button class="icon-btn" id="installBtn" hidden aria-label="Installer l’application">⇩</button>
     </header>
 
@@ -60,11 +57,10 @@
 
       <section id="moduleGrid" class="module-grid" aria-live="polite"></section>
 
-      <!-- BIBLIOTHEQUE ATLAS MEDICAL -->
+      <!-- BIBLIOTHEQUE MEDICALE -->
       <section id="bibliotheque-pdf" class="atlas-pdf-library">
 
         <p class="eyebrow">RESSOURCES PÉDAGOGIQUES</p>
-
         <h2>📚 Ma bibliothèque médicale</h2>
 
         <p>
@@ -74,41 +70,32 @@
 
         <div class="atlas-pdf-buttons">
 
-          <button onclick="ouvrirPDF('documents/Atlas_CardiovasTome1_v1F.pdf')">
+          <button type="button"
+            onclick="window.location.href='./documents/Atlas_CardiovasTome1_v1F.pdf'">
             📘 Tome 1
           </button>
 
-          <button onclick="ouvrirPDF('documents/Atlas_Cardiovas_Tome2_v1F.pdf')">
+          <button type="button"
+            onclick="window.location.href='./documents/Atlas_Cardiovas_Tome2_v1F.pdf'">
             📗 Tome 2
           </button>
 
-          <button onclick="ouvrirPDF('documents/Atlas_Cardiovas Tome 3.1.VF.pdf')">
+          <button type="button"
+            onclick="window.location.href='./documents/Atlas_Cardiovas%20Tome%203.1.VF.pdf'">
             📙 Tome 3
           </button>
 
-          <button onclick="ouvrirPDF('documents/Proteger_mon_coeur_fiches_patient.pdf')">
+          <button type="button"
+            onclick="window.location.href='./documents/Proteger_mon_coeur_fiches_patient.pdf'">
             ❤️ Fiches patients
           </button>
 
         </div>
 
-       
-<iframe
-  id="atlas-pdf-viewer"
-  title="Lecteur PDF Atlas Médical"
-  style="
-    display: none;
-    width: 100%;
-    height: 80vh;
-    min-height: 600px;
-    border: none;
-    border-radius: 12px;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-  "
-  loading="lazy">
-</iframe>
-
+        <p class="disclaimer">
+          Les documents s'ouvrent dans le lecteur PDF de Safari.
+          Utilise les commandes du lecteur pour zoomer et parcourir les pages.
+        </p>
 
       </section>
       <!-- FIN BIBLIOTHEQUE -->
@@ -136,6 +123,7 @@
     </main>
 
     <nav class="bottom-nav" aria-label="Navigation principale">
+
       <button class="nav-item active" data-page="home">
         <span>⌂</span><small>Accueil</small>
       </button>
@@ -155,6 +143,7 @@
       <button class="nav-item" data-page="more">
         <span>☰</span><small>Plus</small>
       </button>
+
     </nav>
 
   </div>
@@ -174,32 +163,6 @@
   <script src="./news.js" defer></script>
   <script src="./scores.js" defer></script>
   <script src="./app.js" defer></script>
-
-  <!-- OUVERTURE DES DOCUMENTS PDF -->
-  <script>
-    
-
-function ouvrirPDF(fichier) {
-  const lecteur = document.getElementById("atlas-pdf-viewer");
-  lecteur.src = fichier;
-  lecteur.style.display = "block";
-  lecteur.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-}
-
-
-
-      lecteur.src = fichier;
-      lecteur.style.display = "block";
-
-      lecteur.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    }
-  </script>
 
 </body>
 </html>
