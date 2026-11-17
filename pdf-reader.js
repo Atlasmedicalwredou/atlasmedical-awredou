@@ -147,10 +147,16 @@
     viewer.id = "atlas-pdf-app";
 
     viewer.innerHTML = `
-      <div class="pdf-header">
-        <div class="pdf-title" id="atlas-pdf-title">
-          Atlas Médical — Document
-        </div>
+     
+<div class="pdf-header">
+  <button type="button" id="atlas-pdf-close">
+    ← Retour à la bibliothèque
+  </button>
+  <div class="pdf-title" id="atlas-pdf-title">
+    Atlas Médical — Document
+  </div>
+</div>
+
         <button type="button" id="atlas-pdf-close">
           ✕ Fermer
         </button>
