@@ -144,6 +144,58 @@
         text-align: right;
         color: #e0f5f1;
       }
+      /* PANNEAU DES MINIATURES */
+#atlas-pdf-app .pdf-thumbnails[hidden] {
+  display: none !important;
+}
+
+#atlas-pdf-app .pdf-thumbnails {
+  max-height: 45vh;
+  overflow-y: auto;
+  padding: 12px;
+  background: #183c5b;
+  border-bottom: 2px solid #2dd4bf;
+}
+
+#atlas-pdf-app .pdf-thumbnails-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  color: white;
+}
+
+#atlas-pdf-app .pdf-thumbnails-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+#atlas-pdf-app .pdf-thumbnail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 7px;
+  background: #ffffff;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  color: #102b46;
+}
+
+#atlas-pdf-app .pdf-thumbnail.active {
+  border-color: #2dd4bf;
+}
+
+#atlas-pdf-app .pdf-thumbnail canvas {
+  width: 100%;
+  height: auto;
+  box-shadow: none;
+}
+
+#atlas-pdf-app .pdf-thumbnail span {
+  font-size: 12px;
+}
 
       #atlas-pdf-app .pdf-content {
         flex: 1;
@@ -180,6 +232,9 @@
         <button type="button" id="atlas-pdf-close">
           ← Back to Library
         </button>
+        <button type="button" id="atlas-pdf-thumbnails">
+  📑 Pages
+</button>
 
         <div class="pdf-title" id="atlas-pdf-title">
           Atlas Médical — Document
@@ -204,7 +259,17 @@
           Lecture : 0 %
         </div>
       </div>
+<div class="pdf-thumbnails" id="atlas-pdf-thumbnails-panel" hidden>
+  <div class="pdf-thumbnails-header">
+    <strong>Pages du document</strong>
+    <button type="button" id="atlas-pdf-thumbnails-close">
+      ✕
+    </button>
+  </div>
 
+  <div class="pdf-thumbnails-list" id="atlas-pdf-thumbnails-list">
+  </div>
+</div>
       <div class="pdf-content" id="atlas-pdf-content">
         <p class="pdf-message" id="atlas-pdf-message">
           Chargement du document...
@@ -229,12 +294,92 @@
     viewer.querySelector("#atlas-pdf-minus")
       .addEventListener("click", () => changeZoom(-0.2));
 
-    viewer.querySelector("#atlas-pdf-plus")
-      .addEventListener("click", () => changeZoom(0.2));
+viewer.querySelector("#atlas-pdf-plus")
+  .addEventListener("click", () => changeZoom(0.2));
 
-    document.addEventListener("keydown", keyboardNavigation);
+viewer.querySelector("#atlas-pdf-thumbnails")
+  .addEventListener("click", toggleThumbnails);
+
+viewer.querySelector("#atlas-pdf-thumbnails-close")
+  .addEventListener("click", toggleThumbnails);
+
+document.addEventListener("keydown", keyboardNavigation); }
+function toggleThumbnails() {
+  if (!viewer) return;
+
+  const panel = viewer.querySelector(
+    "#atlas-pdf-thumbnails-panel"
+  );
+
+  panel.hidden = !panel.hidden;
+
+  if (!panel.hidden) {
+    generateThumbnails();
   }
+}
+   async function generateThumbnails() {
+  if (!pdfDocument || !viewer) return;
 
+  const list = viewer.querySelector(
+    "#atlas-pdf-thumbnails-list"
+  );
+
+  if (list.dataset.generated === "true") return;
+
+  list.innerHTML = "Chargement des miniatures...";
+
+  try {
+    list.innerHTML = "";
+
+    for (let number = 1; number <= pdfDocument.numPages; number++) {
+      if (!viewer || !pdfDocument) return;
+
+      const page = await pdfDocument.getPage(number);
+
+      const thumbnail = document.createElement("button");
+      thumbnail.type = "button";
+      thumbnail.className = "pdf-thumbnail";
+
+      if (number === currentPage) {
+        thumbnail.classList.add("active");
+      }
+
+      const preview = document.createElement("canvas");
+      const viewport = page.getViewport({ scale: 0.22 });
+
+      preview.width = Math.floor(viewport.width);
+      preview.height = Math.floor(viewport.height);
+
+      thumbnail.appendChild(preview);
+
+      const label = document.createElement("span");
+      label.textContent = `Page ${number}`;
+      thumbnail.appendChild(label);
+
+      thumbnail.addEventListener("click", () => {
+        list.querySelectorAll(".pdf-thumbnail").forEach(item => {
+          item.classList.remove("active");
+        });
+
+        thumbnail.classList.add("active");
+        goToPage(number);
+      });
+
+      list.appendChild(thumbnail);
+
+      await page.render({
+        canvasContext: preview.getContext("2d"),
+        viewport: viewport
+      }).promise;
+    }
+
+    list.dataset.generated = "true";
+
+  } catch (error) {
+    console.error("Atlas miniatures :", error);
+    list.textContent = "Impossible de charger les miniatures.";
+  }
+}
   function showMessage(message) {
     const element = viewer.querySelector("#atlas-pdf-message");
     element.textContent = message;
@@ -281,7 +426,14 @@
 
     viewer.querySelector("#atlas-pdf-progress-label").textContent =
       `Lecture : ${progress}%`;
+const thumbnails = viewer.querySelectorAll(".pdf-thumbnail");
 
+thumbnails.forEach((thumbnail, index) => {
+  thumbnail.classList.toggle(
+    "active",
+    index + 1 === currentPage
+  );
+});
     viewer.querySelector("#atlas-pdf-prev").disabled =
       currentPage <= 1;
 
