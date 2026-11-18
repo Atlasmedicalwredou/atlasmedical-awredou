@@ -641,11 +641,31 @@ function setPage(page) {
   }
 
   else if (page === "profile") {
-    renderProfile();
-  }
+  renderProfile();
 }
 
-/* ==========================================
+else if (page === "student") {
+  preparePage(
+    "Mon espace étudiant",
+    "ESPACE PERSONNEL LOCAL",
+    "Mes outils"
+  );
+
+  const grid = $("#moduleGrid");
+
+  if (
+    window.AtlasStudentSpace &&
+    typeof window.AtlasStudentSpace.render === "function"
+  ) {
+    window.AtlasStudentSpace.render(grid, { toast });
+  } else {
+    showPlaceholder(
+      "Espace étudiant indisponible",
+      "Vérifie que student-space.js est bien chargé dans index.html."
+    );
+  }
+}
+}/* ==========================================
    RECHERCHE
 ========================================== */
 
