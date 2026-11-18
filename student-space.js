@@ -164,32 +164,38 @@
     testButton.type = "button";
     testButton.textContent = "Tester mon stockage local";
 
-    testButton.addEventListener("click", async () => {
-      testButton.disabled = true;
-      testButton.textContent = "Vérification...";
+    
+testButton.addEventListener("click", async () => {
+  testButton.disabled = true;
+  testButton.textContent = "Vérification...";
 
-      try {
-        if (!window.AtlasStudentDB) {
-          throw new Error("Le module de stockage n'est pas chargé.");
-        }
+  try {
+    if (!window.AtlasStudentDB) {
+      throw new Error(
+        "Le module de stockage n'est pas chargé."
+      );
+    }
 
-        await window.AtlasStudentDB.open();
+    await window.AtlasStudentDB.open();
 
-        testButton.textContent = "✓ Stockage disponible";
-        notify("La base locale Atlas 
-} catch (error) {
-  console.error("Atlas Student Space :", error);
+    testButton.textContent = "✓ Stockage disponible";
+    notify("La base locale Atlas fonctionne !");
 
-  testButton.textContent = "Réessayer le test";
+  } catch (error) {
+    console.error("Atlas Student Space :", error);
 
-  const detail = error
-    ? `${error.name}: ${error.message}`
-    : "Erreur inconnue";
+    testButton.textContent = "Réessayer le test";
 
-  notify("Erreur stockage : " + detail);
-}
+    const detail = error
+      ? `${error.name}: ${error.message}`
+      : "Erreur inconnue";
 
-    });
+    notify("Erreur stockage : " + detail);
+
+  } finally {
+    testButton.disabled = false;
+  }
+});
 
     storageBox.append(
       storageTitle,
