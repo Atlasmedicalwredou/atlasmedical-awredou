@@ -370,10 +370,10 @@ function renderMore() {
       page: "saved"
     },
     {
-      icon: "◉",
-      title: "Mon profil",
-      description: "Paramètres et informations de l'application",
-      page: "profile"
+      icon: "▣",
+      title: "Mon espace étudiant",
+      description: "Tes cours, documents, notes et enregistrements",
+      page: "student"
     }
   ];
 
@@ -401,6 +401,7 @@ function renderMore() {
     grid.appendChild(button);
   });
 }
+
 
 /* ==========================================
    CALCULATRICES ET ACTUALITÉS
