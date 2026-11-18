@@ -43,6 +43,28 @@ let currentDocumentTitle = "";
       JSON.stringify(bookmarks)
     );
   }
+     /* =================================
+     CARNET DE NOTES PERSONNELLES
+  ================================= */
+
+  let pageNotes = [];
+
+  function loadPageNotes() {
+    try {
+      pageNotes = JSON.parse(
+        localStorage.getItem("atlas-pdf-page-notes") || "[]"
+      );
+    } catch (error) {
+      pageNotes = [];
+    }
+  }
+
+  function savePageNotes() {
+    localStorage.setItem(
+      "atlas-pdf-page-notes",
+      JSON.stringify(pageNotes)
+    );
+  }
   function loadPDFJS() {
     if (window.pdfjsLib) {
       return Promise.resolve(window.pdfjsLib);
@@ -76,7 +98,8 @@ let currentDocumentTitle = "";
   }
 
   function createViewer() {
-         loadBookmarks();
+         loadBookmarks();   
+     loadPageNotes();
     if (viewer) return;
 
     const style = document.createElement("style");
@@ -289,6 +312,9 @@ let currentDocumentTitle = "";
 <button type="button" id="atlas-pdf-favorites">
   ⭐ Mes favoris
 </button>
+<button type="button" id="atlas-pdf-notes">
+  📝 Mes notes
+</button>
       </div>
 
       <div class="pdf-progress">
@@ -364,6 +390,8 @@ let currentDocumentTitle = "";
   .addEventListener("click", toggleBookmark);
 viewer.querySelector("#atlas-pdf-favorites")
   .addEventListener("click", showBookmarks);
+     viewer.querySelector("#atlas-pdf-notes")
+  .addEventListener("click", showNotes);
     document.addEventListener("keydown", keyboardNavigation);
   }
 
@@ -521,6 +549,146 @@ viewer.querySelector("#atlas-pdf-favorites")
 
     viewer.appendChild(panel);
   }
+   
+  /* =================================
+     AFFICHER LE CARNET DE NOTES
+  ================================= */
+
+  function showNotes() {
+    if (!viewer || !pdfDocument) return;
+
+    const oldPanel = viewer.querySelector(
+      "#atlas-pdf-notes-panel"
+    );
+
+    if (oldPanel) oldPanel.remove();
+
+    const panel = document.createElement("div");
+    panel.id = "atlas-pdf-notes-panel";
+
+    panel.style.cssText = `
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      background: #102b46;
+      padding: 20px;
+      overflow-y: auto;
+      color: white;
+    `;
+
+    const header = document.createElement("div");
+
+    header.style.cssText = `
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    `;
+
+    const title = document.createElement("strong");
+    title.textContent = "📝 Mes notes personnelles";
+
+    const closeButton = document.createElement("button");
+    closeButton.textContent = "✕";
+
+    closeButton.addEventListener("click", () => {
+      panel.remove();
+    });
+
+    header.append(title, closeButton);
+    panel.appendChild(header);
+
+    const pageInfo = document.createElement("p");
+    pageInfo.textContent =
+      `${currentDocumentTitle} — Page ${currentPage}`;
+
+    panel.appendChild(pageInfo);
+
+    const textarea = document.createElement("textarea");
+
+    textarea.placeholder =
+      "Écris ici tes remarques, explications et éléments à mémoriser...";
+
+    textarea.style.cssText = `
+      width: 100%;
+      min-height: 180px;
+      box-sizing: border-box;
+      padding: 14px;
+      border-radius: 10px;
+      border: 2px solid #2dd4bf;
+      background: white;
+      color: #102b46;
+      font-size: 16px;
+      resize: vertical;
+    `;
+
+    const existingNote = pageNotes.find(item =>
+      item.url === currentDocumentURL &&
+      item.page === currentPage
+    );
+
+    textarea.value = existingNote
+      ? existingNote.content
+      : "";
+
+    panel.appendChild(textarea);
+
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "💾 Enregistrer ma note";
+
+    saveButton.style.cssText = `
+      display: block;
+      width: 100%;
+      margin-top: 14px;
+      padding: 14px;
+      background: #2dd4bf;
+      color: #102b46;
+    `;
+
+    saveButton.addEventListener("click", () => {
+      const content = textarea.value.trim();
+
+      const index = pageNotes.findIndex(item =>
+        item.url === currentDocumentURL &&
+        item.page === currentPage
+      );
+
+      if (!content) {
+        if (index !== -1) {
+          pageNotes.splice(index, 1);
+        }
+      } else {
+        const note = {
+          url: currentDocumentURL,
+          title: currentDocumentTitle,
+          page: currentPage,
+          content: content,
+          date: new Date().toISOString()
+        };
+
+        if (index !== -1) {
+          pageNotes[index] = note;
+        } else {
+          pageNotes.push(note);
+        }
+      }
+
+      savePageNotes();
+
+      saveButton.textContent = "✓ Note enregistrée !";
+
+      setTimeout(() => {
+        if (saveButton.isConnected) {
+          saveButton.textContent = "💾 Enregistrer ma note";
+        }
+      }, 2000);
+    });
+
+    panel.appendChild(saveButton);
+
+    viewer.appendChild(panel);
+  }
+
   function toggleThumbnails() {
     if (!viewer) return;
 
