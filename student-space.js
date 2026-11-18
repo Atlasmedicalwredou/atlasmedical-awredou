@@ -1,7 +1,7 @@
 
 /* ==========================================
    ATLAS MÉDICAL — ESPACE ÉTUDIANT
-   Version 1.3 — Scanner et PDF local
+   Version 1.4 — Scanner iOS et PDF local
 ========================================== */
 
 (function () {
@@ -14,7 +14,6 @@
 
   function createCard(icon, title, description, status) {
     const card = document.createElement("article");
-
     card.style.cssText = `
       background:white;
       border:1px solid var(--line);
@@ -161,7 +160,7 @@
         "À construire")
     );
 
-    /* ZONE SCANNER */
+    /* SCANNER */
 
     const scannerBox = document.createElement("div");
     scannerBox.style.cssText = `
@@ -177,21 +176,26 @@
 
     const scannerDescription = document.createElement("p");
     scannerDescription.textContent =
-      "Photographie les pages de ton cours une par une. Tu pourras vérifier les images avant de créer ton PDF.";
+      "Ajoute les pages de ton cours avec l'appareil photo ou en choisissant des images dans ta photothèque. Tu pourras vérifier leur ordre avant de créer le PDF.";
     scannerDescription.style.cssText =
       "font-size:12px;line-height:1.6;color:var(--muted);";
 
+    /*
+      iOS : aucun attribut capture n'est imposé.
+      Safari peut proposer ses choix natifs :
+      appareil photo, photothèque ou fichiers.
+    */
     const cameraInput = document.createElement("input");
     cameraInput.type = "file";
     cameraInput.accept = "image/*";
-    cameraInput.capture = "environment";
     cameraInput.multiple = true;
     cameraInput.hidden = true;
 
     const addPageButton = document.createElement("button");
     addPageButton.type = "button";
     addPageButton.className = "primary-btn";
-    addPageButton.textContent = "＋ Photographier / ajouter des pages";
+    addPageButton.textContent =
+      "＋ Prendre une photo ou choisir des images";
 
     const pageCount = document.createElement("p");
     pageCount.textContent = "Aucune page ajoutée.";
@@ -340,7 +344,6 @@
 
     clearPagesButton.addEventListener("click", () => {
       if (busy) return;
-
       pages.forEach(page => URL.revokeObjectURL(page.url));
       pages = [];
       updateScanner();
@@ -378,7 +381,6 @@
         }
 
         await window.AtlasStudentDB.open();
-
         const jsPDF = await loadPDFLibrary();
 
         const pdf = new jsPDF({
@@ -442,9 +444,7 @@
         }
 
         const blob = pdf.output("blob");
-        const now = new Date();
-        const dateName =
-          now.toISOString().slice(0, 10);
+        const dateName = new Date().toISOString().slice(0, 10);
 
         await window.AtlasStudentDB.documents.add({
           name: "Cours_scannes_" + dateName + ".pdf",
