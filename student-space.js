@@ -1,7 +1,7 @@
 
 /* ==========================================
    ATLAS MÉDICAL — ESPACE ÉTUDIANT
-   Version 1.1 — Importation PDF locale
+   Version 1.2 — Importation PDF locale
 ========================================== */
 
 (function () {
@@ -37,6 +37,7 @@
       "display:block;margin-top:12px;color:var(--muted);";
 
     card.append(symbol, heading, text, label);
+
     return card;
   }
 
@@ -50,6 +51,10 @@
     const wrapper = document.createElement("section");
     wrapper.style.cssText =
       "grid-column:1/-1;display:grid;gap:14px;";
+
+    /* =====================================
+       INTRODUCTION
+    ===================================== */
 
     const introduction = document.createElement("div");
     introduction.style.cssText = `
@@ -71,6 +76,10 @@
 
     introduction.append(title, description);
 
+    /* =====================================
+       CONFIDENTIALITÉ
+    ===================================== */
+
     const privacy = document.createElement("div");
     privacy.style.cssText = `
       background:#eaf7f3;
@@ -91,6 +100,10 @@
 
     privacy.append(privacyTitle, privacyText);
 
+    /* =====================================
+       OUTILS ÉTUDIANTS
+    ===================================== */
+
     const sectionTitle = document.createElement("h3");
     sectionTitle.textContent = "Mes outils";
     sectionTitle.style.margin = "5px 0 0";
@@ -103,18 +116,42 @@
     `;
 
     grid.append(
-      createCard("📁", "Mes documents",
-        "Importer et retrouver tes cours PDF.", "Disponible"),
-      createCard("📷", "Scanner mes cours",
-        "Photographier des pages et les convertir en PDF.", "À construire"),
-      createCard("📝", "Mes notes",
-        "Écrire et conserver tes notes personnelles.", "À construire"),
-      createCard("🎙️", "Mon dictaphone",
-        "Enregistrer et retrouver tes cours audio.", "À construire"),
-      createCard("📚", "Mes transcriptions",
-        "Retrouver le texte issu de tes enregistrements.", "À construire"),
-      createCard("🛡️", "Mes données",
-        "Gérer le stockage, l'exportation et la suppression.", "À construire")
+      createCard(
+        "📁",
+        "Mes documents",
+        "Importer et retrouver tes cours PDF.",
+        "Disponible"
+      ),
+      createCard(
+        "📷",
+        "Scanner mes cours",
+        "Photographier des pages et les convertir en PDF.",
+        "À construire"
+      ),
+      createCard(
+        "📝",
+        "Mes notes",
+        "Écrire et conserver tes notes personnelles.",
+        "À construire"
+      ),
+      createCard(
+        "🎙️",
+        "Mon dictaphone",
+        "Enregistrer et retrouver tes cours audio.",
+        "À construire"
+      ),
+      createCard(
+        "📚",
+        "Mes transcriptions",
+        "Retrouver le texte issu de tes enregistrements.",
+        "À construire"
+      ),
+      createCard(
+        "🛡️",
+        "Mes données",
+        "Gérer le stockage, l'exportation et la suppression.",
+        "À construire"
+      )
     );
 
     /* =====================================
@@ -154,158 +191,89 @@
       "display:grid;gap:10px;margin-top:16px;";
 
     const emptyMessage = document.createElement("p");
-    emptyMessage.textContent = "Aucun document enregistré pour le moment.";
+    emptyMessage.textContent =
+      "Aucun document enregistré pour le moment.";
     emptyMessage.style.cssText =
       "font-size:12px;color:var(--muted);";
 
-    
+    /* =====================================
+       ACTUALISATION DES DOCUMENTS
+    ===================================== */
 
-async function refreshDocuments() {
-  documentsList.replaceChildren();
+    async function refreshDocuments() {
+      documentsList.replaceChildren();
 
-  try {
-    const documents =
-      await window.AtlasStudentDB.documents.getAll();
+      try {
+        const documents =
+          await window.AtlasStudentDB.documents.getAll();
 
-    if (!documents.length) {
-      documentsList.appendChild(emptyMessage);
-      return;
-    }
-
-    documents.sort((a, b) =>
-      (b.createdAt || 0) - (a.createdAt || 0)
-    );
-
-    documents.forEach(record => {
-      const item = document.createElement("div");
-
-      item.style.cssText = `
-        display:flex;
-        align-items:center;
-        justify-content:space-between;
-        gap:10px;
-        padding:12px;
-        border:1px solid var(--line);
-        border-radius:12px;
-      `;
-
-      const information = document.createElement("div");
-      information.style.cssText = "min-width:0;";
-
-      const name = document.createElement("strong");
-      name.textContent = "📄 " + record.name;
-      name.style.cssText =
-        "display:block;font-size:13px;overflow-wrap:anywhere;";
-
-      const date = document.createElement("small");
-      date.textContent = record.createdAt
-        ? new Date(record.createdAt).toLocaleDateString("fr-FR")
-        : "Date inconnue";
-      date.style.color = "var(--muted)";
-
-      information.append(name, date);
-
-      const deleteButton = document.createElement("button");
-      deleteButton.type = "button";
-      deleteButton.textContent = "Supprimer";
-      deleteButton.style.cssText = `
-        border:1px solid #e5bcbc;
-        background:#fff5f5;
-        color:#a32d2d;
-        border-radius:8px;
-        padding:8px;
-        font-size:11px;
-        flex-shrink:0;
-      `;
-
-      deleteButton.addEventListener("click", async () => {
-        if (!window.confirm(
-          "Supprimer définitivement ce document de cet appareil ?"
-        )) return;
-
-        try {
-          await window.AtlasStudentDB.documents.delete(record.id);
-          notify("Document supprimé.");
-          await refreshDocuments();
-        } catch (error) {
-          console.error(error);
-          notify("Impossible de supprimer ce document.");
+        if (!documents.length) {
+          documentsList.appendChild(emptyMessage);
+          return;
         }
-      });
-
-      item.append(information, deleteButton);
-      documentsList.appendChild(item);
-    });
-
-  } catch (error) {
-    console.error("Lecture des documents :", error);
-    notify("Impossible de charger les documents.");
-  }
-}
 
         documents.sort((a, b) =>
           (b.createdAt || 0) - (a.createdAt || 0)
         );
-documents.forEach(record => {
-  const item = document.createElement("div");
 
-  item.style.cssText = `
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    padding:12px;
-    border:1px solid var(--line);
-    border-radius:12px;
-  `;
+        documents.forEach(record => {
+          const item = document.createElement("div");
 
-  const information = document.createElement("div");
-  information.style.cssText = "min-width:0;";
+          item.style.cssText = `
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:10px;
+            padding:12px;
+            border:1px solid var(--line);
+            border-radius:12px;
+          `;
 
-  const name = document.createElement("strong");
-  name.textContent = "📄 " + record.name;
-  name.style.cssText =
-    "display:block;font-size:13px;overflow-wrap:anywhere;";
+          const information = document.createElement("div");
+          information.style.cssText = "min-width:0;";
 
-  const date = document.createElement("small");
-  date.textContent = record.createdAt
-    ? new Date(record.createdAt).toLocaleDateString("fr-FR")
-    : "Date inconnue";
-  date.style.color = "var(--muted)";
+          const name = document.createElement("strong");
+          name.textContent = "📄 " + record.name;
+          name.style.cssText =
+            "display:block;font-size:13px;overflow-wrap:anywhere;";
 
-  information.append(name, date);
+          const date = document.createElement("small");
+          date.textContent = record.createdAt
+            ? new Date(record.createdAt).toLocaleDateString("fr-FR")
+            : "Date inconnue";
+          date.style.color = "var(--muted)";
 
-  const deleteButton = document.createElement("button");
-  deleteButton.type = "button";
-  deleteButton.textContent = "Supprimer";
-  deleteButton.style.cssText = `
-    border:1px solid #e5bcbc;
-    background:#fff5f5;
-    color:#a32d2d;
-    border-radius:8px;
-    padding:8px;
-    font-size:11px;
-    flex-shrink:0;
-  `;
+          information.append(name, date);
 
-  deleteButton.addEventListener("click", async () => {
-    if (!window.confirm(
-      "Supprimer définitivement ce document de cet appareil ?"
-    )) return;
+          const deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.textContent = "Supprimer";
 
-    try {
-      await window.AtlasStudentDB.documents.delete(record.id);
-      notify("Document supprimé.");
-      await refreshDocuments();
-    } catch (error) {
-      console.error(error);
-      notify("Impossible de supprimer ce document.");
-    }
-  });
+          deleteButton.style.cssText = `
+            border:1px solid #e5bcbc;
+            background:#fff5f5;
+            color:#a32d2d;
+            border-radius:8px;
+            padding:8px;
+            font-size:11px;
+            flex-shrink:0;
+          `;
 
-  item.append(information, deleteButton);
-  documentsList.appendChild(item);
-});
+          deleteButton.addEventListener("click", async () => {
+            if (!window.confirm(
+              "Supprimer définitivement ce document de cet appareil ?"
+            )) return;
+
+            try {
+              await window.AtlasStudentDB.documents.delete(record.id);
+              notify("Document supprimé.");
+              await refreshDocuments();
+            } catch (error) {
+              console.error(error);
+              notify("Impossible de supprimer ce document.");
+            }
+          });
+
           item.append(information, deleteButton);
           documentsList.appendChild(item);
         });
@@ -315,6 +283,10 @@ documents.forEach(record => {
         notify("Impossible de charger les documents.");
       }
     }
+
+    /* =====================================
+       BOUTON D'IMPORTATION
+    ===================================== */
 
     importButton.addEventListener("click", () => {
       fileInput.click();
@@ -353,6 +325,7 @@ documents.forEach(record => {
 
       } catch (error) {
         console.error("Importation PDF :", error);
+
         notify(
           "Erreur d'enregistrement : " +
           (error.message || "stockage indisponible")
@@ -427,7 +400,15 @@ documents.forEach(record => {
       }
     });
 
-    storageBox.append(storageTitle, storageText, testButton);
+    storageBox.append(
+      storageTitle,
+      storageText,
+      testButton
+    );
+
+    /* =====================================
+       ASSEMBLAGE DE L'ESPACE
+    ===================================== */
 
     wrapper.append(
       introduction,
@@ -445,8 +426,12 @@ documents.forEach(record => {
     }
   }
 
+  /* =====================================
+     EXPORTATION DU MODULE
+  ===================================== */
+
   window.AtlasStudentSpace = {
-    render
+    render: render
   };
 
 })();
