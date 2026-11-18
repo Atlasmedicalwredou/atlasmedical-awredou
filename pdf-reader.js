@@ -395,6 +395,8 @@ viewer.querySelector("#atlas-pdf-favorites")
   .addEventListener("click", showBookmarks);
      viewer.querySelector("#atlas-pdf-notes")
   .addEventListener("click", showNotes);
+     viewer.querySelector("#atlas-pdf-all-notes")
+  .addEventListener("click", showAllNotes);
     document.addEventListener("keydown", keyboardNavigation);
   }
 
