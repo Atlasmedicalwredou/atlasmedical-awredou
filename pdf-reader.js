@@ -315,6 +315,9 @@ let currentDocumentTitle = "";
 <button type="button" id="atlas-pdf-notes">
   📝 Mes notes
 </button>
+<button type="button" id="atlas-pdf-all-notes">
+  📚 Toutes mes notes
+</button>
       </div>
 
       <div class="pdf-progress">
