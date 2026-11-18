@@ -694,6 +694,131 @@ viewer.querySelector("#atlas-pdf-favorites")
     viewer.appendChild(panel);
   }
 
+  /* =================================
+     BIBLIOTHÈQUE DE TOUTES LES NOTES
+  ================================= */
+
+  function showAllNotes() {
+    if (!viewer) return;
+
+    const oldPanel = viewer.querySelector(
+      "#atlas-pdf-all-notes-panel"
+    );
+
+    if (oldPanel) oldPanel.remove();
+
+    const panel = document.createElement("div");
+    panel.id = "atlas-pdf-all-notes-panel";
+
+    panel.style.cssText = `
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      background: #102b46;
+      padding: 20px;
+      overflow-y: auto;
+      color: white;
+    `;
+
+    const header = document.createElement("div");
+
+    header.style.cssText = `
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    `;
+
+    const title = document.createElement("strong");
+    title.textContent = "📚 Toutes mes notes";
+
+    const closeButton = document.createElement("button");
+    closeButton.textContent = "✕";
+
+    closeButton.addEventListener("click", () => {
+      panel.remove();
+    });
+
+    header.append(title, closeButton);
+    panel.appendChild(header);
+
+    if (pageNotes.length === 0) {
+      const empty = document.createElement("p");
+      empty.textContent =
+        "Aucune note enregistrée pour le moment.";
+      panel.appendChild(empty);
+    }
+
+    const sortedNotes = [...pageNotes].sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+
+    sortedNotes.forEach(note => {
+      const entry = document.createElement("div");
+
+      entry.style.cssText = `
+        padding: 14px;
+        margin-bottom: 12px;
+        background: #183c5b;
+        border-radius: 10px;
+      `;
+
+      const documentTitle = document.createElement("strong");
+      documentTitle.textContent = note.title;
+
+      const page = document.createElement("p");
+      page.textContent = `📖 Page ${note.page}`;
+
+      const content = document.createElement("p");
+      content.textContent = note.content;
+      content.style.cssText = `
+        white-space: pre-wrap;
+        overflow-wrap: anywhere;
+        color: #e0f5f1;
+      `;
+
+      const openButton = document.createElement("button");
+      openButton.textContent = "📖 Ouvrir cette page";
+
+      openButton.addEventListener("click", async () => {
+        panel.remove();
+        await open(note.url, note.title);
+        await goToPage(note.page);
+      });
+
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "🗑️ Supprimer";
+      deleteButton.style.marginLeft = "8px";
+
+      deleteButton.addEventListener("click", () => {
+        const index = pageNotes.findIndex(item =>
+          item.url === note.url &&
+          item.page === note.page
+        );
+
+        if (index !== -1) {
+          pageNotes.splice(index, 1);
+          savePageNotes();
+        }
+
+        panel.remove();
+        showAllNotes();
+      });
+
+      entry.append(
+        documentTitle,
+        page,
+        content,
+        openButton,
+        deleteButton
+      );
+
+      panel.appendChild(entry);
+    });
+
+    viewer.appendChild(panel);
+  }
+
   function toggleThumbnails() {
     if (!viewer) return;
 
