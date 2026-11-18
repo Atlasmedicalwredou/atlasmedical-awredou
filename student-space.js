@@ -176,15 +176,19 @@
         await window.AtlasStudentDB.open();
 
         testButton.textContent = "✓ Stockage disponible";
-        notify("La base locale Atlas fonctionne !");
-      } catch (error) {
-        console.error("Atlas Student Space :", error);
+        notify("La base locale Atlas 
+} catch (error) {
+  console.error("Atlas Student Space :", error);
 
-        testButton.textContent = "Réessayer le test";
-        notify("Impossible d'ouvrir la base locale.");
-      } finally {
-        testButton.disabled = false;
-      }
+  testButton.textContent = "Réessayer le test";
+
+  const detail = error
+    ? `${error.name}: ${error.message}`
+    : "Erreur inconnue";
+
+  notify("Erreur stockage : " + detail);
+}
+
     });
 
     storageBox.append(
