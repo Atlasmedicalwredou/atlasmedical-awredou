@@ -660,9 +660,10 @@ else if (page === "student") {
     window.AtlasStudentSpace.render(grid, { toast });
   } else {
     showPlaceholder(
-      "Espace étudiant indisponible",
-      "Vérifie que student-space.js est bien chargé dans index.html."
-    );
+  "Diagnostic de l'espace étudiant",
+  "AtlasStudentSpace : " + typeof window.AtlasStudentSpace +
+  " | AtlasStudentDB : " + typeof window.AtlasStudentDB
+);
   }
 }
 }/* ==========================================
