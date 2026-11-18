@@ -173,8 +173,7 @@
         documents.sort((a, b) =>
           (b.createdAt || 0) - (a.createdAt || 0)
         );
-
-        documents.forEach(record => {
+documents.forEach(record => {
   const item = document.createElement("div");
 
   item.style.cssText = `
@@ -234,50 +233,6 @@
   item.append(information, deleteButton);
   documentsList.appendChild(item);
 });
-          const information = document.createElement("div");
-          information.style.cssText = "min-width:0;";
-
-          const name = document.createElement("strong");
-          name.textContent = "📄 " + document.name;
-          name.style.cssText =
-            "display:block;font-size:13px;overflow-wrap:anywhere;";
-
-          const date = document.createElement("small");
-          date.textContent = document.createdAt
-            ? new Date(document.createdAt).toLocaleDateString("fr-FR")
-            : "Date inconnue";
-          date.style.color = "var(--muted)";
-
-          information.append(name, date);
-
-          const deleteButton = document.createElement("button");
-          deleteButton.type = "button";
-          deleteButton.textContent = "Supprimer";
-          deleteButton.style.cssText = `
-            border:1px solid #e5bcbc;
-            background:#fff5f5;
-            color:#a32d2d;
-            border-radius:8px;
-            padding:8px;
-            font-size:11px;
-            flex-shrink:0;
-          `;
-
-          deleteButton.addEventListener("click", async () => {
-            if (!window.confirm(
-              "Supprimer définitivement ce document de cet appareil ?"
-            )) return;
-
-            try {
-              await window.AtlasStudentDB.documents.delete(document.id);
-              notify("Document supprimé.");
-              await refreshDocuments();
-            } catch (error) {
-              console.error(error);
-              notify("Impossible de supprimer ce document.");
-            }
-          });
-
           item.append(information, deleteButton);
           documentsList.appendChild(item);
         });
