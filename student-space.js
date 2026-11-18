@@ -158,17 +158,90 @@
     emptyMessage.style.cssText =
       "font-size:12px;color:var(--muted);";
 
-    async function refreshDocuments() {
-      documentsList.replaceChildren();
+    
 
-      try {
-        const documents =
-          await window.AtlasStudentDB.documents.getAll();
+async function refreshDocuments() {
+  documentsList.replaceChildren();
 
-        if (!documents.length) {
-          documentsList.appendChild(emptyMessage);
-          return;
+  try {
+    const documents =
+      await window.AtlasStudentDB.documents.getAll();
+
+    if (!documents.length) {
+      documentsList.appendChild(emptyMessage);
+      return;
+    }
+
+    documents.sort((a, b) =>
+      (b.createdAt || 0) - (a.createdAt || 0)
+    );
+
+    documents.forEach(record => {
+      const item = document.createElement("div");
+
+      item.style.cssText = `
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:10px;
+        padding:12px;
+        border:1px solid var(--line);
+        border-radius:12px;
+      `;
+
+      const information = document.createElement("div");
+      information.style.cssText = "min-width:0;";
+
+      const name = document.createElement("strong");
+      name.textContent = "📄 " + record.name;
+      name.style.cssText =
+        "display:block;font-size:13px;overflow-wrap:anywhere;";
+
+      const date = document.createElement("small");
+      date.textContent = record.createdAt
+        ? new Date(record.createdAt).toLocaleDateString("fr-FR")
+        : "Date inconnue";
+      date.style.color = "var(--muted)";
+
+      information.append(name, date);
+
+      const deleteButton = document.createElement("button");
+      deleteButton.type = "button";
+      deleteButton.textContent = "Supprimer";
+      deleteButton.style.cssText = `
+        border:1px solid #e5bcbc;
+        background:#fff5f5;
+        color:#a32d2d;
+        border-radius:8px;
+        padding:8px;
+        font-size:11px;
+        flex-shrink:0;
+      `;
+
+      deleteButton.addEventListener("click", async () => {
+        if (!window.confirm(
+          "Supprimer définitivement ce document de cet appareil ?"
+        )) return;
+
+        try {
+          await window.AtlasStudentDB.documents.delete(record.id);
+          notify("Document supprimé.");
+          await refreshDocuments();
+        } catch (error) {
+          console.error(error);
+          notify("Impossible de supprimer ce document.");
         }
+      });
+
+      item.append(information, deleteButton);
+      documentsList.appendChild(item);
+    });
+
+  } catch (error) {
+    console.error("Lecture des documents :", error);
+    notify("Impossible de charger les documents.");
+  }
+}
 
         documents.sort((a, b) =>
           (b.createdAt || 0) - (a.createdAt || 0)
