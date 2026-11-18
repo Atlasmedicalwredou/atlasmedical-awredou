@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "atlas-medical-v10";
+const CACHE_NAME = "atlas-medical-v11";
 const APP_FILES = [
   "./",
   "./index.html",
@@ -9,6 +9,7 @@ const APP_FILES = [
   "./news.js",
   "./scores.js",
   "./student-db.js",
+  "./student-space.js",
   "./pdf-reader.js",
   "./manifest.webmanifest",
   "./9669E3DB-0FBB-4664-848B-4874AA643D4F.png"
