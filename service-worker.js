@@ -8,6 +8,7 @@ const APP_FILES = [
   "./calculators.js",
   "./news.js",
   "./scores.js",
+  "./student-db.js",
   "./pdf-reader.js",
   "./manifest.webmanifest",
   "./9669E3DB-0FBB-4664-848B-4874AA643D4F.png"
