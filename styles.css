@@ -1,51 +1,60 @@
 
-/* ==========================================
-   ATLAS MÉDICAL — AQUA GLASS
-   Design médical nouvelle génération
-   Interface mobile — iPhone
-========================================== */
+/* ==========================================================
+   ATLAS MÉDICAL BY @WREDOU
+   AQUA GLASS — VERSION 5
+   Design aquatique 3D — iPhone et tablette
+========================================================== */
 
 :root {
-  --navy: #123653;
-  --navy-deep: #0c2942;
-  --blue: #2878a9;
-  --turquoise: #16b9b0;
-  --cyan: #67e5dc;
-  --background: #edf7fb;
-  --text: #243b50;
-  --muted: #8194a5;
+  --navy: #103d65;
+  --navy-deep: #092e50;
+  --blue: #1688bd;
+  --blue-light: #58c9ef;
+  --turquoise: #12b9b5;
+  --cyan: #a5efff;
+  --background: #e3f7ff;
+  --text: #193e60;
+  --muted: #718da4;
   --white: #ffffff;
 
-  --glass: rgba(255,255,255,.67);
-  --glass-strong: rgba(255,255,255,.88);
+  --glass: rgba(255,255,255,.48);
+  --glass-strong: rgba(255,255,255,.72);
   --glass-border: rgba(255,255,255,.92);
 
-  --shadow: 0 12px 30px rgba(30,76,110,.10);
-  --shadow-soft: 0 5px 18px rgba(30,76,110,.07);
+  --shadow:
+    0 12px 30px rgba(24,92,137,.13),
+    inset 0 2px 5px rgba(255,255,255,.85);
+
+  --shadow-soft: 0 6px 18px rgba(30,76,110,.09);
+
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
-  scroll-behavior: smooth;
   min-height: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+    "Segoe UI", Roboto, sans-serif;
   color: var(--text);
-  line-height: 1.55;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 
   background:
-    radial-gradient(circle at 8% 5%, #d4f5f1 0, transparent 32%),
-    radial-gradient(circle at 95% 28%, #dceafb 0, transparent 35%),
-    linear-gradient(145deg, #f6fbfd, #eaf4fa);
+    radial-gradient(ellipse at 8% 5%, rgba(255,255,255,.98), transparent 35%),
+    radial-gradient(ellipse at 92% 24%, rgba(91,204,246,.35), transparent 38%),
+    radial-gradient(ellipse at 15% 75%, rgba(255,255,255,.7), transparent 35%),
+    linear-gradient(145deg, #effbff, #ccefff 55%, #e6f8ff);
 }
 
 button,
@@ -60,18 +69,77 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(22,145,197,.45);
+  outline-offset: 3px;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ==========================================================
+   FOND AQUATIQUE ET BULLES
+========================================================== */
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+
+  background:
+    radial-gradient(circle at 12% 19%, rgba(255,255,255,.85) 0 2px, transparent 5px),
+    radial-gradient(circle at 88% 31%, rgba(255,255,255,.75) 0 3px, transparent 7px),
+    radial-gradient(circle at 74% 78%, rgba(255,255,255,.8) 0 2px, transparent 5px),
+    radial-gradient(circle at 27% 88%, rgba(255,255,255,.7) 0 3px, transparent 7px);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  width: 600px;
+  height: 600px;
+  top: -370px;
+  right: -330px;
+  z-index: -1;
+  pointer-events: none;
+  border: 1px solid rgba(255,255,255,.5);
+  border-radius: 50%;
+  box-shadow:
+    0 0 35px rgba(255,255,255,.5),
+    inset 0 0 35px rgba(255,255,255,.35);
+}
+
+/* ==========================================================
+   STRUCTURE PRINCIPALE
+========================================================== */
+
 .app-shell {
   position: relative;
   width: 100%;
   max-width: 760px;
   min-height: 100vh;
-  margin: auto;
-  padding-bottom: calc(105px + env(safe-area-inset-bottom));
+  margin: 0 auto;
+  padding-bottom: calc(105px + var(--safe-bottom));
 }
 
-/* ==========================================
+#mainContent {
+  width: 100%;
+}
+
+.home-page,
+.dynamic-page,
+.atlas-pdf-library {
+  width: 100%;
+}
+
+/* ==========================================================
    EN-TÊTE
-========================================== */
+========================================================== */
 
 .topbar {
   position: relative;
@@ -79,9 +147,12 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   padding: 15px 19px;
-  background: rgba(247,252,255,.76);
+
+  background: rgba(242,251,255,.65);
   border-bottom: 1px solid rgba(255,255,255,.9);
+
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
 }
@@ -90,150 +161,256 @@ button {
   display: flex;
   align-items: center;
   gap: 11px;
+  min-width: 0;
   color: var(--navy);
-  text-decoration: none;
 }
 
 .brand-mark {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 43px;
-  height: 43px;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  overflow: hidden;
   color: white;
-  font-size: 24px;
-  border-radius: 15px 15px 15px 7px;
-  background: linear-gradient(145deg, #53ded3, #079c9b);
-  border: 1px solid rgba(255,255,255,.9);
+  font-size: 26px;
+
+  border: 1px solid rgba(255,255,255,.95);
+  border-radius: 50% 50% 45% 45%;
+
+  background:
+    radial-gradient(circle at 30% 20%, #ffffff, transparent 38%),
+    linear-gradient(145deg, #68d8fa, #0789c0 70%, #075c9b);
+
   box-shadow:
-    inset 2px 3px 7px rgba(255,255,255,.55),
-    0 5px 13px rgba(16,120,135,.2);
+    inset 2px 3px 8px rgba(255,255,255,.65),
+    inset -3px -5px 9px rgba(0,65,120,.18),
+    0 6px 15px rgba(15,112,166,.2);
 }
 
-.brand strong,
-.brand small {
-  display: block;
+.brand-heart {
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 5px rgba(0,55,100,.25);
 }
 
-.brand strong {
-  font-size: 14px;
-  letter-spacing: 1px;
-  font-weight: 850;
+.brand-ecg {
+  position: absolute;
+  z-index: 2;
+  color: white;
+  font-size: 29px;
+  font-weight: 900;
+  transform: rotate(-8deg);
+  text-shadow: 0 1px 3px rgba(0,55,100,.4);
 }
 
-.brand small {
+.brand-text h1 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: .2px;
+}
+
+.brand-text p {
+  margin: 1px 0 0;
   color: var(--muted);
-  font-size: 10px;
-  letter-spacing: .3px;
+  font-size: 9px;
+  letter-spacing: .25px;
 }
 
-.icon-btn {
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.profile-button {
+  position: relative;
   display: grid;
   place-items: center;
+  flex: 0 0 43px;
   width: 43px;
   height: 43px;
   padding: 0;
-  color: var(--navy);
-  background: rgba(255,255,255,.8);
+  color: #1687b7;
+  font-size: 23px;
+
   border: 1px solid white;
-  border-radius: 16px;
-  box-shadow: var(--shadow-soft);
-  font-size: 21px;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(circle at 30% 20%, white, transparent 48%),
+    linear-gradient(145deg, #ffffff, #d8f2ff);
+
+  box-shadow:
+    inset 2px 3px 6px rgba(255,255,255,.95),
+    inset -2px -3px 6px rgba(66,146,185,.12),
+    0 5px 13px rgba(30,91,125,.12);
 }
 
-/* ==========================================
-   ACCUEIL — CARTE PRINCIPALE
-========================================== */
+.profile-button:active {
+  transform: scale(.94);
+}
+
+.profile-icon {
+  line-height: 1;
+}
+
+.install-button {
+  padding: 8px 12px;
+  color: white;
+  font-size: 10px;
+  font-weight: 800;
+  border: 1px solid white;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #42c9ed, #087eae);
+}
+
+/* ==========================================================
+   CARTE DE BIENVENUE
+========================================================== */
 
 .hero {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
-  min-height: 220px;
-  margin: 16px 15px 20px;
-  padding: 25px 21px;
+  gap: 8px;
+
+  min-height: 225px;
+  margin: 17px 15px 21px;
+  padding: 25px 19px;
   overflow: hidden;
   isolation: isolate;
 
   color: white;
-  border: 1px solid rgba(255,255,255,.4);
-  border-radius: 30px;
+  border: 1px solid rgba(255,255,255,.9);
+  border-radius: 35px 27px 34px 24px;
+
   background:
-    radial-gradient(circle at 85% 15%, rgba(91,233,218,.35), transparent 36%),
-    linear-gradient(135deg, #123957, #17627d);
+    radial-gradient(ellipse at 78% 18%, rgba(139,237,255,.55), transparent 39%),
+    radial-gradient(ellipse at 14% 90%, rgba(22,178,216,.3), transparent 40%),
+    linear-gradient(135deg, #0d4775, #087eb2 62%, #25a9c7);
 
   box-shadow:
-    inset 0 1px 2px rgba(255,255,255,.2),
-    0 13px 28px rgba(16,60,90,.17);
+    inset 0 2px 5px rgba(255,255,255,.3),
+    inset 0 -7px 20px rgba(0,51,91,.16),
+    0 14px 30px rgba(14,91,137,.2);
 }
 
 .hero::before {
   content: "";
   position: absolute;
   z-index: -1;
-  width: 210px;
-  height: 210px;
-  right: -90px;
-  bottom: -125px;
-  border: 1px solid rgba(255,255,255,.17);
+  width: 240px;
+  height: 240px;
+  right: -115px;
+  bottom: -150px;
+  border: 1px solid rgba(255,255,255,.3);
   border-radius: 50%;
   box-shadow:
-    0 0 0 18px rgba(255,255,255,.035),
-    0 0 0 40px rgba(255,255,255,.025);
+    0 0 0 15px rgba(255,255,255,.06),
+    0 0 0 35px rgba(255,255,255,.04),
+    0 0 0 55px rgba(255,255,255,.025);
 }
 
 .hero::after {
   content: "";
   position: absolute;
   z-index: -1;
-  top: -60px;
-  left: 40%;
-  width: 120px;
-  height: 120px;
+  top: -65px;
+  left: 35%;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
-  background: rgba(255,255,255,.035);
+  background: rgba(255,255,255,.07);
+  filter: blur(3px);
 }
 
 .hero-content {
   position: relative;
-  z-index: 2;
-  flex: 1;
+  z-index: 3;
+  flex: 1 1 60%;
   min-width: 0;
 }
 
-.hero .eyebrow {
-  color: #8df0e5;
-}
-
-.hero h1 {
-  margin: 7px 0 10px;
+.hero h2 {
+  margin: 0 0 10px;
+  max-width: 310px;
   color: white;
-  font-size: clamp(29px, 7vw, 40px);
-  line-height: 1.12;
-  letter-spacing: -1.3px;
+  font-size: clamp(22px, 6vw, 31px);
+  line-height: 1.15;
+  letter-spacing: -.9px;
+  font-weight: 850;
 }
 
-.hero h1 span {
-  color: #6ce9df;
+.hero h2 span {
+  display: block;
+  margin-top: 4px;
+  color: #a7f3ff;
+  font-size: .8em;
 }
 
-.hero p:not(.eyebrow) {
-  max-width: 270px;
-  color: #d8eaf0;
-  font-size: 12px;
+.hero p {
+  max-width: 235px;
+  margin: 0 0 17px;
+  color: #e0f6ff;
+  font-size: 11px;
   line-height: 1.6;
 }
 
-.hero .primary-btn {
-  width: auto;
-  min-width: 145px;
-  padding: 11px 17px;
-  font-size: 12px;
+.hero-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 43px;
+  max-width: 100%;
+  padding: 10px 13px;
+  color: #0875a8;
+  font-size: 10px;
+  font-weight: 850;
+  white-space: nowrap;
+
+  border: 1px solid rgba(255,255,255,.98);
+  border-radius: 20px 20px 20px 8px;
+
+  background:
+    radial-gradient(ellipse at 30% 10%, white, transparent 55%),
+    linear-gradient(145deg, #ffffff, #d5f5ff);
+
+  box-shadow:
+    inset 0 2px 4px white,
+    inset 0 -3px 7px rgba(41,151,190,.1),
+    0 7px 15px rgba(0,43,79,.2);
 }
+
+.hero-button:active {
+  transform: scale(.97);
+}
+
+.hero-play {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  color: white;
+  font-size: 9px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #35c8e7, #087eae);
+}
+
+.hero-arrow {
+  font-size: 16px;
+}
+
+/* Illustration du cœur */
 
 .hero-art {
   position: relative;
+  z-index: 2;
   flex: 0 0 112px;
   width: 112px;
   height: 150px;
@@ -245,44 +422,59 @@ button {
   position: absolute;
   width: 115px;
   height: 115px;
-  border: 1px solid rgba(135,245,235,.55);
+  border: 1px solid rgba(177,249,255,.75);
   border-radius: 50%;
   box-shadow:
-    0 0 0 10px rgba(255,255,255,.035),
-    inset 0 0 20px rgba(255,255,255,.08);
+    0 0 0 9px rgba(255,255,255,.06),
+    0 0 20px rgba(151,246,255,.35),
+    inset 0 0 20px rgba(255,255,255,.2);
 }
 
 .hero-heart {
   position: relative;
-  z-index: 2;
-  width: 76px;
-  height: 76px;
+  z-index: 3;
+  width: 90px;
+  height: 105px;
   display: grid;
   place-items: center;
-  font-size: 65px;
-  filter: drop-shadow(0 9px 10px rgba(0,0,0,.23));
+
+  background-image: url("./images/heart-anatomical.png");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  filter: drop-shadow(0 10px 12px rgba(0,28,65,.35));
   animation: heartFloat 4s ease-in-out infinite;
 }
 
 .hero-bubble {
   position: absolute;
-  width: 13px;
-  height: 13px;
+  display: block;
+  width: 12px;
+  height: 12px;
+  border: 1px solid rgba(255,255,255,.85);
   border-radius: 50%;
-  background: linear-gradient(145deg, white, #75e8df);
-  box-shadow: 0 2px 9px rgba(255,255,255,.5);
+  background: radial-gradient(circle at 30% 25%, white, #8de7fa 65%, #3baacb);
+  box-shadow: 0 2px 10px rgba(255,255,255,.5);
 }
 
-.hero-bubble:nth-of-type(1) {
-  top: 12px;
-  right: 10px;
+.hero-bubble.bubble-one {
+  top: 10px;
+  right: 7px;
 }
 
-.hero-bubble:nth-of-type(2) {
-  bottom: 19px;
-  left: 3px;
+.hero-bubble.bubble-two {
+  bottom: 17px;
+  left: 1px;
   width: 8px;
   height: 8px;
+}
+
+.hero-bubble.bubble-three {
+  top: 40px;
+  left: -4px;
+  width: 6px;
+  height: 6px;
 }
 
 @keyframes heartFloat {
@@ -290,49 +482,54 @@ button {
   50% { transform: translateY(-6px); }
 }
 
-/* ==========================================
-   PETITS TITRES
-========================================== */
-
-.eyebrow {
-  margin: 0 0 7px;
-  color: var(--turquoise);
-  font-size: 9px;
-  font-weight: 850;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
+/* ==========================================================
+   TITRES ET SECTIONS
+========================================================== */
 
 .section-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 20px 19px 12px;
+  padding: 17px 19px 13px;
 }
 
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.section-title h2,
 .section-head h2,
 .study-card h2 {
   margin: 0;
   color: var(--navy);
-  font-size: 19px;
+  font-size: 18px;
+  font-weight: 850;
   letter-spacing: -.4px;
 }
 
-.count {
-  flex-shrink: 0;
-  padding: 5px 10px;
-  color: #528095;
-  font-size: 10px;
-  font-weight: 750;
-  background: rgba(255,255,255,.65);
-  border: 1px solid white;
-  border-radius: 20px;
+.section-drop {
+  font-size: 19px;
 }
 
-/* ==========================================
-   ACCÈS RAPIDES — GOUTTES D'EAU
-========================================== */
+.see-all-button,
+.details-button {
+  flex-shrink: 0;
+  padding: 6px 9px;
+  color: #1488b1;
+  font-size: 10px;
+  font-weight: 800;
+  border: 1px solid rgba(255,255,255,.95);
+  border-radius: 13px;
+  background: rgba(255,255,255,.62);
+}
+
+/* ==========================================================
+   ACCÈS RAPIDES — VÉRITABLE EFFET GOUTTE
+========================================================== */
 
 .quick-section {
   padding: 0 17px;
@@ -345,8 +542,8 @@ button {
 .quick-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0,1fr));
-  gap: 18px 10px;
-  padding: 4px 0 12px;
+  gap: 20px 9px;
+  padding: 5px 0 13px;
 }
 
 .quick-item {
@@ -357,134 +554,261 @@ button {
   gap: 8px;
   min-width: 0;
   padding: 0;
-  border: 0;
-  background: transparent;
   color: var(--text);
   text-align: center;
+  border: 0;
+  background: transparent;
 }
 
 .drop-icon {
   position: relative;
+  isolation: isolate;
   display: grid;
   place-items: center;
-  width: 59px;
-  height: 59px;
-  color: #168f9b;
-  font-size: 25px;
+  width: 61px;
+  height: 68px;
+  margin-top: 3px;
+  color: #087eae;
+
+  /*
+    Silhouette de goutte :
+    pointe supérieure et base arrondie.
+  */
 
   border: 1px solid rgba(255,255,255,.98);
-  border-radius: 48% 52% 48% 52%;
+  border-radius: 52% 48% 52% 48% / 67% 67% 33% 33%;
 
   background:
-    radial-gradient(circle at 30% 20%, white 0, rgba(255,255,255,.65) 22%, transparent 48%),
-    linear-gradient(145deg, #ffffff, #d9f4f5 65%, #c9e9f1);
+    radial-gradient(ellipse at 30% 17%, rgba(255,255,255,1) 0%, rgba(255,255,255,.75) 9%, transparent 29%),
+    radial-gradient(ellipse at 70% 75%, rgba(74,193,225,.3), transparent 48%),
+    linear-gradient(145deg, #ffffff 0%, #e6faff 35%, #bfeaf7 72%, #eafaff 100%);
 
   box-shadow:
-    inset 3px 4px 8px rgba(255,255,255,.95),
-    inset -3px -4px 9px rgba(71,151,174,.12),
-    0 7px 15px rgba(30,94,126,.12);
+    inset 3px 5px 9px rgba(255,255,255,.98),
+    inset -4px -7px 12px rgba(51,143,185,.18),
+    inset 0 -2px 4px rgba(255,255,255,.85),
+    0 9px 16px rgba(30,105,145,.17),
+    0 2px 4px rgba(255,255,255,.95);
 
-  transition: transform .2s, box-shadow .2s;
+  transform: rotate(-2deg);
+  transition: transform .22s ease, box-shadow .22s ease;
 }
+
+/* Contour brillant */
+
+.drop-icon::before {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  z-index: -1;
+  border: 1px solid rgba(255,255,255,.75);
+  border-radius: inherit;
+  box-shadow: inset 0 0 7px rgba(255,255,255,.7);
+}
+
+/* Reflet supérieur */
 
 .drop-icon::after {
   content: "";
   position: absolute;
-  top: 9px;
-  left: 12px;
-  width: 13px;
-  height: 7px;
+  top: 12px;
+  left: 15px;
+  width: 16px;
+  height: 8px;
   border-radius: 50%;
-  background: rgba(255,255,255,.85);
-  transform: rotate(-35deg);
+  background: rgba(255,255,255,.95);
+  filter: blur(.4px);
+  transform: rotate(-42deg);
+  box-shadow: 0 0 8px rgba(255,255,255,.9);
 }
 
-.quick-item:active .drop-icon {
-  transform: scale(.91);
-  box-shadow: inset 0 4px 10px rgba(36,113,139,.15);
+.quick-symbol {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  color: #117eaa;
+  font-size: 25px;
+  font-weight: 800;
+  text-shadow: 0 1px 1px white;
+  transform: rotate(2deg);
 }
 
 .quick-label {
-  max-width: 78px;
-  color: #536d80;
+  display: block;
+  max-width: 88px;
+  color: #47677f;
   font-size: 10px;
+  font-weight: 750;
   line-height: 1.3;
-  font-weight: 700;
+  text-align: center;
 }
 
-/* ==========================================
-   PROGRESSION
-========================================== */
+.quick-item:active .drop-icon {
+  transform: translateY(3px) scale(.94);
+  box-shadow:
+    inset 3px 5px 12px rgba(41,121,159,.17),
+    0 3px 7px rgba(30,105,145,.12);
+}
+
+.quick-item:active .quick-label {
+  color: #087eae;
+}
+
+/* ==========================================================
+   CARTE DE PROGRESSION
+========================================================== */
 
 .study-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 13px;
+  position: relative;
+  display: block;
   margin: 24px 16px;
-  padding: 19px;
+  padding: 18px;
+  overflow: hidden;
+
   border: 1px solid rgba(255,255,255,.95);
-  border-radius: 25px;
-  background: var(--glass-strong);
+  border-radius: 26px;
+
+  background:
+    radial-gradient(ellipse at 95% 10%, rgba(151,228,255,.25), transparent 42%),
+    linear-gradient(145deg, rgba(255,255,255,.82), rgba(236,250,255,.68));
+
   box-shadow:
-    inset 0 2px 5px rgba(255,255,255,.95),
-    var(--shadow-soft);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+    inset 0 2px 5px rgba(255,255,255,.98),
+    0 9px 22px rgba(31,94,132,.1);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
 .study-heading {
-  flex: 1;
-  min-width: 0;
-}
-
-.study-card h2 {
-  font-size: 17px;
-}
-
-.study-card p:not(.eyebrow) {
-  margin: 6px 0 0;
-  color: var(--muted);
-  font-size: 11px;
-}
-
-.study-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  margin-bottom: 17px;
+}
+
+.study-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.study-title h2 {
+  font-size: 16px;
+}
+
+.progress-symbol {
+  color: #1598bd;
+  font-size: 20px;
+}
+
+.study-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-height: 85px;
+}
+
+.progress-circle {
+  --progress: 0%;
+  position: relative;
+  flex: 0 0 77px;
+  width: 77px;
+  height: 77px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(circle, #f9feff 57%, transparent 59%),
+    conic-gradient(
+      #12b9b5 var(--progress),
+      #d9f1f5 var(--progress)
+    );
+
+  box-shadow:
+    inset 0 1px 4px white,
+    0 4px 12px rgba(30,104,137,.1);
+}
+
+.progress-circle-inner {
+  display: grid;
+  place-items: center;
+  width: 61px;
+  height: 61px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.92);
+}
+
+.progress-circle strong {
+  color: var(--navy);
+  font-size: 18px;
+  font-weight: 900;
 }
 
 .progress-description {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
   flex: 1;
-  color: var(--muted);
-  font-size: 11px;
 }
 
-.progress-ring {
+.progress-description p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.progress-description strong {
+  color: var(--navy);
+  font-size: 14px;
+}
+
+.progress-description span {
+  color: #7892a5;
+  font-size: 10px;
+}
+
+.progress-decoration {
   position: relative;
-  flex-shrink: 0;
+  flex: 0 0 45px;
+  width: 45px;
+  height: 55px;
   display: grid;
   place-items: center;
-  width: 72px;
-  height: 72px;
+}
+
+.progress-drop {
+  width: 29px;
+  height: 36px;
+  border: 1px solid white;
+  border-radius: 50% 50% 55% 55% / 65% 65% 35% 35%;
+  background: linear-gradient(145deg, white, #8cdef3);
+  box-shadow:
+    inset 2px 3px 5px white,
+    0 4px 9px rgba(35,127,166,.15);
+}
+
+.progress-bubble {
+  position: absolute;
+  top: 0;
+  right: 1px;
+  width: 8px;
+  height: 8px;
+  border: 1px solid white;
   border-radius: 50%;
-  color: var(--navy);
-  font-size: 18px;
-  font-weight: 850;
-  background:
-    radial-gradient(circle, white 57%, transparent 59%),
-    conic-gradient(var(--turquoise) 0deg, #d9f1ef 0deg);
-  box-shadow: 0 4px 12px rgba(26,100,120,.1);
+  background: #a5eaff;
 }
 
-/* ==========================================
-   MODULES MÉDICAUX
-========================================== */
-
-.modules-section {
-  padding-bottom: 10px;
-}
+/* ==========================================================
+   RECHERCHE
+========================================================== */
 
 .search-box {
   display: flex;
@@ -494,10 +818,13 @@ button {
   padding: 0 14px;
   color: var(--turquoise);
   font-size: 20px;
+
   border: 1px solid white;
   border-radius: 18px;
+
   background: rgba(255,255,255,.8);
   box-shadow: var(--shadow-soft);
+
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
@@ -505,7 +832,6 @@ button {
 .search-box input {
   width: 100%;
   min-width: 0;
-  margin: 0;
   padding: 13px 0;
   color: var(--text);
   font-size: 12px;
@@ -518,11 +844,21 @@ button {
   color: #98aab7;
 }
 
+/* ==========================================================
+   MODULES MÉDICAUX
+========================================================== */
+
+.module-count {
+  padding: 0 18px 12px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
 .module-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0,1fr));
   gap: 12px;
-  padding: 0 16px;
+  padding: 0 16px 18px;
 }
 
 .module-card {
@@ -536,14 +872,18 @@ button {
   overflow: hidden;
   text-align: left;
   color: var(--text);
+
   background: rgba(255,255,255,.74);
   border: 1px solid rgba(255,255,255,.98);
   border-radius: 22px;
+
   box-shadow:
     inset 0 2px 4px rgba(255,255,255,.95),
     0 7px 17px rgba(31,80,110,.065);
+
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
+
   transition: transform .2s, box-shadow .2s;
 }
 
@@ -555,15 +895,11 @@ button {
   width: 70px;
   height: 70px;
   border-radius: 50%;
-  background: rgba(218,246,246,.5);
+  background: rgba(218,246,255,.6);
 }
 
 .module-card:active {
   transform: scale(.97);
-}
-
-.module-card:hover {
-  box-shadow: var(--shadow);
 }
 
 .module-icon {
@@ -575,7 +911,7 @@ button {
   height: 43px;
   font-size: 21px;
   border-radius: 15px 15px 15px 6px;
-  background: linear-gradient(145deg, white, #dff7f5);
+  background: linear-gradient(145deg, white, #dff7ff);
   border: 1px solid white;
   box-shadow: 0 4px 11px rgba(34,110,130,.09);
 }
@@ -591,17 +927,19 @@ button {
   line-height: 1.45;
 }
 
-/* ==========================================
+/* ==========================================================
    BIBLIOTHÈQUE PDF
-========================================== */
+========================================================== */
 
 .atlas-pdf-library {
   margin: 22px 16px;
   padding: 19px;
   border: 1px solid white;
   border-radius: 24px;
-  background: var(--glass-strong);
+
+  background: rgba(255,255,255,.76);
   box-shadow: var(--shadow-soft);
+
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -612,7 +950,7 @@ button {
   font-size: 18px;
 }
 
-.atlas-pdf-library > p:not(.eyebrow) {
+.library-description {
   color: var(--muted);
   font-size: 11px;
 }
@@ -631,17 +969,13 @@ button {
   font-weight: 750;
   border: 1px solid white;
   border-radius: 17px;
-  background: linear-gradient(145deg, white, #e0f6f5);
+  background: linear-gradient(145deg, white, #e0f6ff);
   box-shadow: var(--shadow-soft);
 }
 
-.atlas-pdf-buttons button:active {
-  transform: scale(.96);
-}
-
-/* ==========================================
-   BOUTONS
-========================================== */
+/* ==========================================================
+   BOUTONS GÉNÉRAUX
+========================================================== */
 
 .primary-btn,
 .secondary-btn {
@@ -650,19 +984,23 @@ button {
   width: 100%;
   margin-top: 11px;
   padding: 13px 16px;
-  border: 1px solid rgba(255,255,255,.65);
+
+  border: 1px solid rgba(255,255,255,.75);
   border-radius: 18px 18px 18px 7px;
+
   font-size: 12px;
   font-weight: 800;
+
   box-shadow:
-    inset 0 2px 5px rgba(255,255,255,.4),
+    inset 0 2px 5px rgba(255,255,255,.45),
     0 6px 15px rgba(16,70,95,.13);
+
   transition: transform .2s;
 }
 
 .primary-btn {
   color: white;
-  background: linear-gradient(145deg, #42d8ca, #0b9f9c);
+  background: linear-gradient(145deg, #42d8e7, #087fae);
 }
 
 .secondary-btn {
@@ -675,9 +1013,9 @@ button {
   transform: scale(.97);
 }
 
-/* ==========================================
-   NAVIGATION FLOTTANTE
-========================================== */
+/* ==========================================================
+   NAVIGATION INFÉRIEURE
+========================================================== */
 
 .bottom-nav {
   position: fixed;
@@ -685,16 +1023,21 @@ button {
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
+
   display: flex;
   align-items: center;
   justify-content: space-around;
+
   width: min(100%,760px);
-  padding: 9px 8px calc(9px + env(safe-area-inset-bottom));
-  background: rgba(248,253,255,.83);
-  border: 1px solid rgba(255,255,255,.95);
+  padding: 9px 8px calc(9px + var(--safe-bottom));
+
+  background: rgba(248,253,255,.84);
+  border: 1px solid rgba(255,255,255,.97);
   border-bottom: 0;
   border-radius: 23px 23px 0 0;
-  box-shadow: 0 -8px 28px rgba(28,72,100,.09);
+
+  box-shadow: 0 -8px 28px rgba(28,72,100,.1);
+
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 }
@@ -705,57 +1048,90 @@ button {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
+  gap: 5px;
+
   min-width: 0;
-  min-height: 49px;
+  min-height: 52px;
   padding: 5px 3px;
-  color: #8c9eac;
+
+  color: #8199aa;
   background: transparent;
   border: 1px solid transparent;
   border-radius: 17px;
+
   transition: all .2s;
 }
 
-.nav-item span {
+.nav-item span:first-child {
   font-size: 21px;
   line-height: 1;
 }
 
-.nav-item small {
+.nav-item span:last-child {
   font-size: 9px;
-  font-weight: 700;
+  font-weight: 750;
 }
 
 .nav-item.active {
-  color: #078f8b;
-  background: linear-gradient(145deg, white, #ddf7f4);
+  color: #087fa8;
+  background: linear-gradient(145deg, white, #def5ff);
   border-color: white;
+
   box-shadow:
     inset 0 2px 5px rgba(255,255,255,.95),
-    0 3px 10px rgba(23,103,119,.09);
+    0 3px 10px rgba(23,103,119,.1);
 }
 
-/* ==========================================
-   FENÊTRE DES MODULES
-========================================== */
+.nav-item:active {
+  transform: scale(.95);
+}
+
+/* ==========================================================
+   FENÊTRES ET DIALOGUES
+========================================================== */
 
 .module-dialog {
+  position: fixed;
+  z-index: 40;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+
   width: min(91%,500px);
   max-height: 83vh;
   overflow-y: auto;
+
   padding: 22px;
   color: var(--text);
+
   background: rgba(248,253,255,.97);
   border: 1px solid white;
   border-radius: 26px;
   box-shadow: 0 20px 60px rgba(0,0,0,.2);
+
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
 
-.module-dialog::backdrop {
-  background: rgba(8,34,54,.62);
-  backdrop-filter: blur(6px);
+.module-dialog[aria-hidden="false"] {
+  display: block;
+}
+
+.module-dialog-content {
+  position: relative;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 38px;
+  height: 38px;
+  color: var(--navy);
+  font-size: 23px;
+  background: #eaf5ff;
+  border: 1px solid white;
+  border-radius: 13px;
 }
 
 .dialog-top {
@@ -805,9 +1181,9 @@ button {
   font-size: 10px !important;
 }
 
-/* ==========================================
+/* ==========================================================
    QUIZ
-========================================== */
+========================================================== */
 
 .quiz-option {
   display: block;
@@ -816,6 +1192,7 @@ button {
   padding: 13px;
   color: var(--text);
   text-align: left;
+
   background: rgba(255,255,255,.85);
   border: 1px solid white;
   border-radius: 16px;
@@ -834,9 +1211,9 @@ button {
   border-color: #e27b72;
 }
 
-/* ==========================================
-   CONTENUS ET ÉTATS VIDES
-========================================== */
+/* ==========================================================
+   ÉTATS VIDES ET NOTIFICATIONS
+========================================================== */
 
 .empty {
   grid-column: 1 / -1;
@@ -860,17 +1237,21 @@ button {
   position: fixed;
   z-index: 50;
   left: 50%;
-  bottom: 95px;
+  bottom: calc(95px + var(--safe-bottom));
   transform: translateX(-50%);
+
   max-width: 90%;
   padding: 11px 17px;
+
   color: white;
   font-size: 12px;
   text-align: center;
+
   background: rgba(15,47,70,.95);
   border: 1px solid rgba(255,255,255,.25);
   border-radius: 17px;
   box-shadow: var(--shadow);
+
   opacity: 0;
   pointer-events: none;
   transition: opacity .2s;
@@ -880,12 +1261,17 @@ button {
   opacity: 1;
 }
 
-/* ==========================================
-   LECTEUR PDF
-========================================== */
+/* ==========================================================
+   LECTEUR PDF — COMPATIBILITÉ
+========================================================== */
+
+#atlas-pdf-viewer,
+#pdfReaderContainer {
+  width: 100%;
+  max-width: 100%;
+}
 
 #atlas-pdf-viewer {
-  width: 100%;
   height: 650px;
   margin-top: 15px;
   background: #f5f8fa;
@@ -894,9 +1280,19 @@ button {
   box-shadow: var(--shadow-soft);
 }
 
-/* ==========================================
-   AUTRES ÉCRANS
-========================================== */
+/* Les outils du lecteur restent accessibles */
+#pdfReaderContainer button {
+  max-width: 100%;
+}
+
+/* ==========================================================
+   CONTENEURS DES AUTRES PAGES
+========================================================== */
+
+#pageContent {
+  width: 100%;
+  padding-bottom: 15px;
+}
 
 #moduleGrid,
 #moreGrid,
@@ -914,37 +1310,63 @@ button {
   border-radius: 20px;
 }
 
-[hidden] {
-  display: none !important;
-}
-
-/* ==========================================
+/* ==========================================================
    RESPONSIVE — PETITS IPHONES
-========================================== */
+========================================================== */
 
 @media (max-width: 390px) {
+
   .topbar {
     padding: 12px 14px;
   }
 
+  .brand-mark {
+    width: 41px;
+    height: 41px;
+    flex-basis: 41px;
+  }
+
+  .brand-text h1 {
+    font-size: 13px;
+  }
+
+  .brand-text p {
+    font-size: 8px;
+  }
+
   .hero {
-    min-height: 195px;
+    min-height: 200px;
     margin: 12px 11px 17px;
-    padding: 20px 15px;
+    padding: 19px 14px;
+  }
+
+  .hero h2 {
+    font-size: clamp(20px,5.8vw,25px);
+  }
+
+  .hero p {
+    font-size: 10px;
   }
 
   .hero-art {
-    flex-basis: 90px;
-    width: 90px;
+    flex-basis: 91px;
+    width: 91px;
   }
 
   .hero-heart {
-    font-size: 54px;
+    width: 78px;
+    height: 92px;
   }
 
   .hero-water-ring {
-    width: 95px;
-    height: 95px;
+    width: 96px;
+    height: 96px;
+  }
+
+  .hero-button {
+    gap: 5px;
+    padding: 9px 9px;
+    font-size: 9px;
   }
 
   .quick-section {
@@ -952,13 +1374,12 @@ button {
   }
 
   .quick-grid {
-    gap: 15px 6px;
+    gap: 16px 5px;
   }
 
   .drop-icon {
-    width: 53px;
-    height: 53px;
-    font-size: 22px;
+    width: 54px;
+    height: 61px;
   }
 
   .quick-label {
@@ -992,18 +1413,19 @@ button {
   }
 }
 
-/* ==========================================
+/* ==========================================================
    TABLETTES ET GRANDS ÉCRANS
-========================================== */
+========================================================== */
 
 @media (min-width: 600px) {
+
   .app-shell {
     padding-left: 12px;
     padding-right: 12px;
   }
 
   .hero {
-    min-height: 245px;
+    min-height: 250px;
     padding: 32px;
   }
 
@@ -1014,7 +1436,8 @@ button {
   }
 
   .hero-heart {
-    font-size: 85px;
+    width: 125px;
+    height: 140px;
   }
 
   .hero-water-ring {
@@ -1023,13 +1446,16 @@ button {
   }
 
   .quick-grid {
-    gap: 22px;
+    gap: 23px;
   }
 
   .drop-icon {
-    width: 68px;
-    height: 68px;
-    font-size: 28px;
+    width: 69px;
+    height: 78px;
+  }
+
+  .quick-label {
+    font-size: 11px;
   }
 
   .module-grid {
@@ -1037,15 +1463,9 @@ button {
   }
 }
 
-/* ==========================================
-   ACCESSIBILITÉ
-========================================== */
-
-button:focus-visible,
-input:focus-visible {
-  outline: 3px solid rgba(22,185,176,.45);
-  outline-offset: 3px;
-}
+/* ==========================================================
+   ACCESSIBILITÉ ET ANIMATIONS
+========================================================== */
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -1053,6 +1473,7 @@ input:focus-visible {
   *::after {
     scroll-behavior: auto !important;
     animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: .01ms !important;
   }
 }
