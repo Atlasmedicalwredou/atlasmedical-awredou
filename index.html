@@ -1,264 +1,549 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#dff5ff">
-  <meta name="description" content="Atlas Médical by @wredou — apprendre, réviser et réussir.">
-
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="apple-touch-icon" sizes="180x180" href="./9669E3DB-0FBB-4664-848B-4874AA643D4F.png">
-  <link rel="stylesheet" href="./styles.css?v=3">
+  <meta name="description" content="Atlas Médical by @wredou — Apprendre, Réviser, Réussir">
 
   <title>Atlas Médical by @wredou</title>
+
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css?v=5">
 </head>
 
 <body>
-<div class="app-shell">
 
-  <!-- EN-TÊTE -->
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="Accueil Atlas Médical">
-      <span class="brand-mark">♥</span>
-      <span>
-        <strong>Atlas Médical</strong>
-        <small>Apprendre · Réviser · Réussir</small>
-      </span>
-    </a>
+  <div class="app-shell">
 
-    <button class="icon-btn" id="installBtn" hidden aria-label="Installer">
-      ⇩
-    </button>
-  </header>
+    <!-- =================================
+         EN-TÊTE ET IDENTITÉ ATLAS
+    ================================== -->
 
-  <main id="main">
+    <header class="topbar">
 
-    <!-- ACCUEIL -->
-    <section class="hero">
-      <div class="hero-content">
-        <p class="eyebrow">BIENVENUE SUR ATLAS MÉDICAL</p>
+      <div class="brand">
 
-        <h1>
-          Apprendre la médecine,
-          <span>autrement.</span>
-        </h1>
+        <div class="brand-mark" aria-label="Logo Atlas Médical">
+          <span class="brand-heart">♥</span>
+          <span class="brand-ecg">⌁</span>
+        </div>
 
-        <p>
-          Ton compagnon pour comprendre,
-          réviser et réussir en médecine.
+        <div class="brand-text">
+          <h1>Atlas Médical</h1>
+          <p>Apprendre · Réviser · Réussir</p>
+        </div>
+
+      </div>
+
+      <div class="topbar-actions">
+
+        <button
+          class="profile-button"
+          type="button"
+          data-shortcut="profile"
+          aria-label="Mon profil">
+          <span class="profile-icon">♟</span>
+        </button>
+
+        <button
+          id="installBtn"
+          class="install-button"
+          type="button"
+          hidden>
+          Installer
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- =================================
+         CONTENU PRINCIPAL
+    ================================== -->
+
+    <main id="mainContent">
+
+      <!-- ACCUEIL -->
+
+      <section id="homePage" class="home-page">
+
+        <!-- CARTE DE BIENVENUE -->
+
+        <section class="hero">
+
+          <div class="hero-content">
+
+            <h2>
+              Bienvenue dans Atlas Médical
+              <span>by @wredou 👋</span>
+            </h2>
+
+            <p>
+              Ton compagnon pour exceller
+              en médecine.
+            </p>
+
+            <button
+              class="hero-button"
+              type="button"
+              data-shortcut="atlas">
+
+              <span class="hero-play">▶</span>
+              <span>Commencer à apprendre</span>
+              <span class="hero-arrow">➜</span>
+
+            </button>
+
+          </div>
+
+          <!-- Illustration anatomique à habiller dans le CSS -->
+
+          <div class="hero-art" aria-hidden="true">
+            <div class="hero-water-ring"></div>
+            <div class="hero-heart"></div>
+            <span class="hero-bubble bubble-one"></span>
+            <span class="hero-bubble bubble-two"></span>
+            <span class="hero-bubble bubble-three"></span>
+          </div>
+
+        </section>
+
+
+        <!-- =================================
+             LES 8 ACCÈS RAPIDES
+        ================================== -->
+
+        <section class="quick-section">
+
+          <div class="section-head">
+
+            <div class="section-title">
+              <span class="section-drop">💧</span>
+              <h2>Accès rapide</h2>
+            </div>
+
+            <button
+              class="see-all-button"
+              type="button"
+              data-shortcut="atlas">
+              Voir tout <span>›</span>
+            </button>
+
+          </div>
+
+
+          <div class="quick-grid">
+
+            <!-- COURS -->
+
+            <button
+              class="quick-item"
+              type="button"
+              data-shortcut="atlas">
+
+              <span class="drop-icon">
+                <span class="quick-symbol">▤</span>
+              </span>
+
+              <span class="quick-label">Cours</span>
+
+            </button>
+
+
+            <!-- QUIZ -->
+
+            <button
+              class="quick-item"
+              type="button"
+              data-shortcut="quiz">
+
+              <span class="drop-icon">
+                <span class="quick-symbol">♧</span>
+              </span>
+
+              <span class="quick-label">Quiz</span>
+
+            </button>
+
+
+            <!-- RÉVISIONS -->
+
+            <button
+              class="quick-item"
+              type="button"
+              data-shortcut="saved">
+
+              <span class="drop-icon">
+                <span class="quick-symbol">⟳</span>
+              </span>
+
+              <span class="quick-label">Révisions</span>
+
+            </button>
+
+
+            <!-- ATLAS 3D -->
+
+            <button
+              class="quick-item"
+              type="button"
+              data-shortcut="atlas3d">
+
+              <span class="drop-icon">
+                <span class="quick-symbol">◇</span>
+              </span>
+
+              <span class="quick-label">Atlas 3D</span>
+
+            </button>
+
+
+            <!-- RECHERCHER -->
+
+            <button
+              class="quick-item"
+              type="button"
+              data-shortcut="search">
+
+              <span class="drop-icon">
+                <span class="quick-symbol">⌕</span>
+              </span>
+
+              <span class="quick-label">Rechercher</span>
+
+            </button>
+
+
+            <!-- FAVORIS -->
+
+            <button
+              class="quick-item"
+              type="button"
+              data-shortcut="saved">
+
+              <span class="drop-icon">
+                <span class="quick-symbol">★</span>
+              </span>
+
+              <span class="quick-label">Favoris</span>
+
+            </button>
+
+
+            <!-- OUTILS MÉDICAUX -->
+
+            <button
+              class="quick-item"
+              type="button"
+              data-shortcut="tools">
+
+              <span class="drop-icon">
+                <span class="quick-symbol">▦</span>
+              </span>
+
+              <span class="quick-label">Outils médicaux</span>
+
+            </button>
+
+
+            <!-- ESPACE ÉTUDIANT -->
+
+            <button
+              class="quick-item"
+              type="button"
+              data-shortcut="student">
+
+              <span class="drop-icon">
+                <span class="quick-symbol">♙</span>
+              </span>
+
+              <span class="quick-label">Espace étudiant</span>
+
+            </button>
+
+          </div>
+
+        </section>
+
+
+        <!-- =================================
+             MA PROGRESSION
+        ================================== -->
+
+        <section class="study-card">
+
+          <div class="study-heading">
+
+            <div class="study-title">
+              <span class="progress-symbol">▥</span>
+              <h2>Ma progression</h2>
+            </div>
+
+            <button
+              class="details-button"
+              type="button"
+              data-page="stats">
+              Détails <span>›</span>
+            </button>
+
+          </div>
+
+
+          <div class="study-content">
+
+            <div
+              class="progress-circle"
+              id="progressCircle"
+              role="progressbar"
+              aria-label="Progression globale"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0">
+
+              <div class="progress-circle-inner">
+                <strong id="progressPercent">0%</strong>
+              </div>
+
+            </div>
+
+
+            <div class="progress-description">
+
+              <p>Niveau global</p>
+
+              <strong id="progressLevel">
+                En progression
+              </strong>
+
+              <span id="progressMessage">
+                Continue tes efforts !
+              </span>
+
+            </div>
+
+
+            <div class="progress-decoration" aria-hidden="true">
+              <span class="progress-drop"></span>
+              <span class="progress-bubble"></span>
+            </div>
+
+          </div>
+
+        </section>
+
+      </section>
+
+
+      <!-- =================================
+           PAGES DYNAMIQUES
+           Cours, quiz, profil, outils, etc.
+      ================================== -->
+
+      <section
+        id="dynamicPage"
+        class="dynamic-page"
+        hidden>
+
+        <div class="section-head">
+
+          <div class="section-title">
+            <h2 id="pageTitle">Atlas Médical</h2>
+          </div>
+
+        </div>
+
+
+        <!-- RECHERCHE DES COURS -->
+
+        <div class="search-box">
+
+          <span aria-hidden="true">⌕</span>
+
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Rechercher un cours, un sujet..."
+            autocomplete="off">
+
+        </div>
+
+
+        <!-- NOMBRE DE MODULES -->
+
+        <div
+          class="module-count"
+          id="moduleCount">
+        </div>
+
+
+        <!-- GRILLE DES 8 MODULES -->
+
+        <div
+          class="module-grid"
+          id="moduleGrid">
+        </div>
+
+
+        <!-- CONTENU DES AUTRES PAGES -->
+
+        <div id="pageContent"></div>
+
+      </section>
+
+
+      <!-- =================================
+           BIBLIOTHÈQUE PDF
+      ================================== -->
+
+      <section
+        id="bibliotheque-pdf"
+        class="atlas-pdf-library"
+        hidden>
+
+        <div class="section-head">
+
+          <div class="section-title">
+            <h2>Bibliothèque PDF</h2>
+          </div>
+
+        </div>
+
+
+        <p class="library-description">
+          Consulte et organise tes documents médicaux.
         </p>
 
-        <button class="primary-btn hero-action" type="button" data-shortcut="atlas">
-          ▶ Commencer à apprendre
-          <span>➜</span>
-        </button>
-      </div>
 
-      <div class="hero-art" aria-hidden="true">
-        <div class="hero-water-ring"></div>
-        <div class="hero-heart">♥</div>
-        <span class="hero-bubble bubble-one"></span>
-        <span class="hero-bubble bubble-two"></span>
-        <span class="hero-bubble bubble-three"></span>
-      </div>
-    </section>
+        <div class="atlas-pdf-buttons">
 
-    <!-- ACCÈS RAPIDE -->
-    <section class="quick-section">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">TES OUTILS EN UN CLIC</p>
-          <h2>Accès rapide</h2>
-        </div>
-        <span class="count">08 outils</span>
-      </div>
+          <button
+            class="primary-btn"
+            type="button"
+            id="openPdfLibrary">
+            Ouvrir ma bibliothèque
+          </button>
 
-      <div class="quick-grid">
-
-        <button class="quick-item" type="button" data-shortcut="atlas">
-          <span class="drop-icon">▤</span>
-          <span class="quick-label">Cours</span>
-        </button>
-
-        <button class="quick-item" type="button" data-shortcut="quiz">
-          <span class="drop-icon">♧</span>
-          <span class="quick-label">Quiz</span>
-        </button>
-
-        <button class="quick-item" type="button" data-shortcut="saved">
-          <span class="drop-icon">⟳</span>
-          <span class="quick-label">Révisions</span>
-        </button>
-
-        <button class="quick-item" type="button" data-shortcut="atlas3d">
-          <span class="drop-icon">◇</span>
-          <span class="quick-label">Atlas 3D</span>
-        </button>
-
-        <button class="quick-item" type="button" data-shortcut="search">
-          <span class="drop-icon">⌕</span>
-          <span class="quick-label">Rechercher</span>
-        </button>
-
-        <button class="quick-item" type="button" data-shortcut="saved">
-          <span class="drop-icon">★</span>
-          <span class="quick-label">Favoris</span>
-        </button>
-
-        <button class="quick-item" type="button" data-shortcut="notes">
-          <span class="drop-icon">▤</span>
-          <span class="quick-label">Mes notes</span>
-        </button>
-
-        <button class="quick-item" type="button" data-shortcut="student">
-          <span class="drop-icon">♙</span>
-          <span class="quick-label">Espace étudiant</span>
-        </button>
-
-      </div>
-    </section>
-
-    <!-- PROGRESSION -->
-    <section class="study-card">
-      <div class="study-heading">
-        <div>
-          <p class="eyebrow">TON PARCOURS</p>
-          <h2>Ma progression</h2>
-        </div>
-        <span class="progress-symbol">▥</span>
-      </div>
-
-      <div class="study-content">
-        <div class="progress-ring" id="progressRing">
-          <span id="progressNumber">0</span>
-          <small>%</small>
         </div>
 
-        <div class="progress-description">
-          <p>Niveau global</p>
-          <strong id="progressText">Continue tes révisions !</strong>
-        </div>
-      </div>
-    </section>
 
-    <!-- MODULES -->
-    <section class="modules-section">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">APPRENDRE ET COMPRENDRE</p>
-          <h2>Les modules</h2>
-        </div>
-        <span class="count" id="moduleCount">08 modules</span>
-      </div>
+        <!-- LECTEUR PDF INTÉGRÉ -->
 
-      <label class="search-box" id="searchBox">
-        <span aria-hidden="true">⌕</span>
-        <input
-          id="searchInput"
-          type="search"
-          placeholder="Rechercher un cours, un syndrome, un ECG…"
-          autocomplete="off">
-      </label>
+        <div id="pdfReaderContainer"></div>
 
-      <div id="moduleGrid" class="module-grid" aria-live="polite"></div>
-    </section>
+      </section>
 
-    <!-- BIBLIOTHÈQUE MÉDICALE -->
-    <section id="bibliotheque-pdf" class="atlas-pdf-library">
-      <p class="eyebrow">RESSOURCES PÉDAGOGIQUES</p>
-      <h2>📚 Ma bibliothèque médicale</h2>
+    </main>
 
-      <p>
-        Consulte les trois tomes de l'Atlas cardiovasculaire
-        et les fiches patients.
-      </p>
 
-      <div class="atlas-pdf-buttons">
+    <!-- =================================
+         NAVIGATION INFÉRIEURE
+    ================================== -->
 
-        <button type="button"
-          onclick="AtlasPDFReader.open('./documents/Atlas_CardiovasTome1_v1F.pdf', 'Atlas cardiovasculaire — Tome 1')">
-          📘 Tome 1
-        </button>
+    <nav
+      class="bottom-nav"
+      aria-label="Navigation principale">
 
-        <button type="button"
-          onclick="AtlasPDFReader.open('./documents/Atlas_Cardiovas_Tome2_v1F.pdf', 'Atlas cardiovasculaire — Tome 2')">
-          📗 Tome 2
-        </button>
+      <button
+        class="nav-item active"
+        type="button"
+        data-page="home">
 
-        <button type="button"
-          onclick="AtlasPDFReader.open('./documents/Atlas_Cardiovas%20Tome%203.1.VF.pdf', 'Atlas cardiovasculaire — Tome 3')">
-          📙 Tome 3
-        </button>
+        <span class="nav-icon">⌂</span>
+        <span>Accueil</span>
 
-        <button type="button"
-          onclick="AtlasPDFReader.open('./documents/Proteger_mon_coeur_fiches_patient.pdf', 'Protéger mon cœur — Fiches patients')">
-          ❤️ Fiches patients
-        </button>
+      </button>
 
-      </div>
 
-      <p class="disclaimer">
-        Les documents s'ouvrent dans le lecteur PDF intégré à Atlas Médical.
-      </p>
-    </section>
+      <button
+        class="nav-item"
+        type="button"
+        data-page="atlas">
 
-    <p class="disclaimer">
-      Outil pédagogique. Ne remplace pas les recommandations officielles,
-      la supervision clinique ni le jugement d’un professionnel de santé.
-    </p>
+        <span class="nav-icon">▤</span>
+        <span>Bibliothèque</span>
 
-  </main>
+      </button>
 
-  <!-- NAVIGATION PRINCIPALE -->
-  <nav class="bottom-nav" aria-label="Navigation principale">
 
-    <button class="nav-item active" data-page="home" type="button">
-      <span>⌂</span>
-      <small>Accueil</small>
-    </button>
+      <button
+        class="nav-item"
+        type="button"
+        data-page="stats">
 
-    <button class="nav-item" data-page="atlas" type="button">
-      <span>▤</span>
-      <small>Bibliothèque</small>
-    </button>
+        <span class="nav-icon">▥</span>
+        <span>Statistiques</span>
 
-    <button class="nav-item" data-page="stats" type="button">
-      <span>▥</span>
-      <small>Statistiques</small>
-    </button>
+      </button>
 
-    <button class="nav-item" data-page="more" type="button">
-      <span>⚙</span>
-      <small>Paramètres</small>
-    </button>
 
-  </nav>
+      <button
+        class="nav-item"
+        type="button"
+        data-page="more">
 
-</div>
+        <span class="nav-icon">⚙</span>
+        <span>Paramètres</span>
 
-<!-- FENÊTRE DES MODULES -->
-<dialog id="moduleDialog" class="module-dialog">
-  <div class="dialog-top">
-    <span class="dialog-tag" id="dialogTag">MODULE</span>
-    <button class="icon-btn close-btn" id="closeDialog" aria-label="Fermer">
-      ×
-    </button>
+      </button>
+
+    </nav>
+
   </div>
-  <div id="dialogContent"></div>
-</dialog>
 
-<!-- NOTIFICATIONS -->
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<!-- SCRIPTS -->
-<script src="./pdf-reader.js" defer></script>
-<script src="./calculators.js" defer></script>
-<script src="./news.js" defer></script>
-<script src="./scores.js" defer></script>
-<script src="./student-db.js" defer></script>
-<script src="./student-space.js" defer></script>
-<script src="./app.js" defer></script>
+  <!-- =================================
+       FENÊTRE DES MODULES
+  ================================== -->
+
+  <div
+    id="moduleDialog"
+    class="module-dialog"
+    aria-hidden="true"
+    hidden>
+
+    <div class="module-dialog-content">
+
+      <button
+        id="closeModuleDialog"
+        class="dialog-close"
+        type="button"
+        aria-label="Fermer">
+        ×
+      </button>
+
+      <div id="moduleDialogBody"></div>
+
+    </div>
+
+  </div>
+
+
+  <!-- =================================
+       NOTIFICATIONS
+  ================================== -->
+
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite">
+  </div>
+
+
+  <!-- =================================
+       SCRIPTS EXISTANTS
+  ================================== -->
+
+  <script src="./pdf-reader.js" defer></script>
+  <script src="./calculators.js" defer></script>
+  <script src="./news.js" defer></script>
+  <script src="./scores.js" defer></script>
+  <script src="./student-db.js" defer></script>
+  <script src="./student-space.js" defer></script>
+  <script src="./app.js" defer></script>
 
 </body>
 </html>
