@@ -4,47 +4,153 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#102b46">
-  <meta name="description" content="Atlas Médical by @wredou — apprendre, comprendre, mémoriser et pratiquer.">
+  <meta name="theme-color" content="#dff5ff">
+  <meta name="description" content="Atlas Médical by @wredou — apprendre, réviser et réussir.">
+
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="apple-touch-icon" sizes="180x180" href="./9669E3DB-0FBB-4664-848B-4874AA643D4F.png">
-  <link rel="stylesheet" href="./styles.css?v=2">
+  <link rel="stylesheet" href="./styles.css?v=3">
+
   <title>Atlas Médical by @wredou</title>
 </head>
 
 <body>
-  <div class="app-shell">
+<div class="app-shell">
 
-    <header class="topbar">
-      <a class="brand" href="#" aria-label="Accueil Atlas Médical">
-        <span class="brand-mark">✚</span>
-        <span>
-          <strong>ATLAS MÉDICAL</strong>
-          <small>by @wredou</small>
-        </span>
-      </a>
-      <button class="icon-btn" id="installBtn" hidden aria-label="Installer l’application">⇩</button>
-    </header>
+  <!-- EN-TÊTE -->
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Accueil Atlas Médical">
+      <span class="brand-mark">♥</span>
+      <span>
+        <strong>Atlas Médical</strong>
+        <small>Apprendre · Réviser · Réussir</small>
+      </span>
+    </a>
 
-    <main id="main">
+    <button class="icon-btn" id="installBtn" hidden aria-label="Installer">
+      ⇩
+    </button>
+  </header>
 
-      <section class="hero">
-        <p class="eyebrow">TON COMPAGNON D’APPRENTISSAGE</p>
-        <h1>La médecine,<br><span>plus claire.</span></h1>
-        <p>Apprendre. Comprendre. Mémoriser. Pratiquer.</p>
-        <div class="hero-chip">
-          <span class="pulse"></span>
-          Premier parcours : cardiovasculaire
-        </div>
-      </section>
+  <main id="main">
 
-      <section class="section-head">
+    <!-- ACCUEIL -->
+    <section class="hero">
+      <div class="hero-content">
+        <p class="eyebrow">BIENVENUE SUR ATLAS MÉDICAL</p>
+
+        <h1>
+          Apprendre la médecine,
+          <span>autrement.</span>
+        </h1>
+
+        <p>
+          Ton compagnon pour comprendre,
+          réviser et réussir en médecine.
+        </p>
+
+        <button class="primary-btn hero-action" type="button" data-shortcut="atlas">
+          ▶ Commencer à apprendre
+          <span>➜</span>
+        </button>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="hero-water-ring"></div>
+        <div class="hero-heart">♥</div>
+        <span class="hero-bubble bubble-one"></span>
+        <span class="hero-bubble bubble-two"></span>
+        <span class="hero-bubble bubble-three"></span>
+      </div>
+    </section>
+
+    <!-- ACCÈS RAPIDE -->
+    <section class="quick-section">
+      <div class="section-head">
         <div>
-          <p class="eyebrow">COMMENCER À EXPLORER</p>
+          <p class="eyebrow">TES OUTILS EN UN CLIC</p>
+          <h2>Accès rapide</h2>
+        </div>
+        <span class="count">08 outils</span>
+      </div>
+
+      <div class="quick-grid">
+
+        <button class="quick-item" type="button" data-shortcut="atlas">
+          <span class="drop-icon">▤</span>
+          <span class="quick-label">Cours</span>
+        </button>
+
+        <button class="quick-item" type="button" data-shortcut="quiz">
+          <span class="drop-icon">♧</span>
+          <span class="quick-label">Quiz</span>
+        </button>
+
+        <button class="quick-item" type="button" data-shortcut="saved">
+          <span class="drop-icon">⟳</span>
+          <span class="quick-label">Révisions</span>
+        </button>
+
+        <button class="quick-item" type="button" data-shortcut="atlas3d">
+          <span class="drop-icon">◇</span>
+          <span class="quick-label">Atlas 3D</span>
+        </button>
+
+        <button class="quick-item" type="button" data-shortcut="search">
+          <span class="drop-icon">⌕</span>
+          <span class="quick-label">Rechercher</span>
+        </button>
+
+        <button class="quick-item" type="button" data-shortcut="saved">
+          <span class="drop-icon">★</span>
+          <span class="quick-label">Favoris</span>
+        </button>
+
+        <button class="quick-item" type="button" data-shortcut="notes">
+          <span class="drop-icon">▤</span>
+          <span class="quick-label">Mes notes</span>
+        </button>
+
+        <button class="quick-item" type="button" data-shortcut="student">
+          <span class="drop-icon">♙</span>
+          <span class="quick-label">Espace étudiant</span>
+        </button>
+
+      </div>
+    </section>
+
+    <!-- PROGRESSION -->
+    <section class="study-card">
+      <div class="study-heading">
+        <div>
+          <p class="eyebrow">TON PARCOURS</p>
+          <h2>Ma progression</h2>
+        </div>
+        <span class="progress-symbol">▥</span>
+      </div>
+
+      <div class="study-content">
+        <div class="progress-ring" id="progressRing">
+          <span id="progressNumber">0</span>
+          <small>%</small>
+        </div>
+
+        <div class="progress-description">
+          <p>Niveau global</p>
+          <strong id="progressText">Continue tes révisions !</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULES -->
+    <section class="modules-section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">APPRENDRE ET COMPRENDRE</p>
           <h2>Les modules</h2>
         </div>
         <span class="count" id="moduleCount">08 modules</span>
-      </section>
+      </div>
 
       <label class="search-box" id="searchBox">
         <span aria-hidden="true">⌕</span>
@@ -55,140 +161,103 @@
           autocomplete="off">
       </label>
 
-      <section id="moduleGrid" class="module-grid" aria-live="polite"></section>
+      <div id="moduleGrid" class="module-grid" aria-live="polite"></div>
+    </section>
 
-      <!-- BIBLIOTHEQUE MEDICALE -->
-      <section id="bibliotheque-pdf" class="atlas-pdf-library">
+    <!-- BIBLIOTHÈQUE MÉDICALE -->
+    <section id="bibliotheque-pdf" class="atlas-pdf-library">
+      <p class="eyebrow">RESSOURCES PÉDAGOGIQUES</p>
+      <h2>📚 Ma bibliothèque médicale</h2>
 
-        <p class="eyebrow">RESSOURCES PÉDAGOGIQUES</p>
-        <h2>📚 Ma bibliothèque médicale</h2>
+      <p>
+        Consulte les trois tomes de l'Atlas cardiovasculaire
+        et les fiches patients.
+      </p>
 
-        <p>
-          Consulte les trois tomes de l'Atlas cardiovasculaire
-          et les fiches patients.
-        </p>
+      <div class="atlas-pdf-buttons">
 
-       
-<div class="atlas-pdf-buttons">
+        <button type="button"
+          onclick="AtlasPDFReader.open('./documents/Atlas_CardiovasTome1_v1F.pdf', 'Atlas cardiovasculaire — Tome 1')">
+          📘 Tome 1
+        </button>
 
-  <button type="button"
-    onclick="AtlasPDFReader.open('./documents/Atlas_CardiovasTome1_v1F.pdf', 'Atlas cardiovasculaire — Tome 1')">
-    📘 Tome 1
-  </button>
+        <button type="button"
+          onclick="AtlasPDFReader.open('./documents/Atlas_Cardiovas_Tome2_v1F.pdf', 'Atlas cardiovasculaire — Tome 2')">
+          📗 Tome 2
+        </button>
 
-  <button type="button"
-    onclick="AtlasPDFReader.open('./documents/Atlas_Cardiovas_Tome2_v1F.pdf', 'Atlas cardiovasculaire — Tome 2')">
-    📗 Tome 2
-  </button>
+        <button type="button"
+          onclick="AtlasPDFReader.open('./documents/Atlas_Cardiovas%20Tome%203.1.VF.pdf', 'Atlas cardiovasculaire — Tome 3')">
+          📙 Tome 3
+        </button>
 
-  <button type="button"
-    onclick="AtlasPDFReader.open('./documents/Atlas_Cardiovas%20Tome%203.1.VF.pdf', 'Atlas cardiovasculaire — Tome 3')">
-    📙 Tome 3
-  </button>
+        <button type="button"
+          onclick="AtlasPDFReader.open('./documents/Proteger_mon_coeur_fiches_patient.pdf', 'Protéger mon cœur — Fiches patients')">
+          ❤️ Fiches patients
+        </button>
 
-  <button type="button"
-    onclick="AtlasPDFReader.open('./documents/Proteger_mon_coeur_fiches_patient.pdf', 'Protéger mon cœur — Fiches patients')">
-    ❤️ Fiches patients
-  </button>
+      </div>
+
+      <p class="disclaimer">
+        Les documents s'ouvrent dans le lecteur PDF intégré à Atlas Médical.
+      </p>
+    </section>
+
+    <p class="disclaimer">
+      Outil pédagogique. Ne remplace pas les recommandations officielles,
+      la supervision clinique ni le jugement d’un professionnel de santé.
+    </p>
+
+  </main>
+
+  <!-- NAVIGATION PRINCIPALE -->
+  <nav class="bottom-nav" aria-label="Navigation principale">
+
+    <button class="nav-item active" data-page="home" type="button">
+      <span>⌂</span>
+      <small>Accueil</small>
+    </button>
+
+    <button class="nav-item" data-page="atlas" type="button">
+      <span>▤</span>
+      <small>Bibliothèque</small>
+    </button>
+
+    <button class="nav-item" data-page="stats" type="button">
+      <span>▥</span>
+      <small>Statistiques</small>
+    </button>
+
+    <button class="nav-item" data-page="more" type="button">
+      <span>⚙</span>
+      <small>Paramètres</small>
+    </button>
+
+  </nav>
 
 </div>
 
-
-          <button type="button"
-            onclick="window.location.href='./documents/Atlas_CardiovasTome1_v1F.pdf'">
-            📘 Tome 1
-          </button>
-
-          <button type="button"
-            onclick="window.location.href='./documents/Atlas_Cardiovas_Tome2_v1F.pdf'">
-            📗 Tome 2
-          </button>
-
-          <button type="button"
-            onclick="window.location.href='./documents/Atlas_Cardiovas%20Tome%203.1.VF.pdf'">
-            📙 Tome 3
-          </button>
-
-          <button type="button"
-            onclick="window.location.href='./documents/Proteger_mon_coeur_fiches_patient.pdf'">
-            ❤️ Fiches patients
-          </button>
-
-        </div>
-
-        <p class="disclaimer">
-          Les documents s'ouvrent dans le lecteur PDF de Safari.
-          Utilise les commandes du lecteur pour zoomer et parcourir les pages.
-        </p>
-
-      </section>
-      <!-- FIN BIBLIOTHEQUE -->
-
-      <section class="study-card">
-        <div>
-          <p class="eyebrow">TON ESPACE</p>
-          <h2>Reprendre mes révisions</h2>
-          <p id="progressText">
-            Tes favoris et ta progression seront conservés sur cet appareil.
-          </p>
-        </div>
-
-        <div class="progress-ring" id="progressRing">
-          <span id="progressNumber">0</span>
-          <small>%</small>
-        </div>
-      </section>
-
-      <p class="disclaimer">
-        Outil pédagogique. Ne remplace pas les recommandations officielles,
-        la supervision clinique ni le jugement d’un professionnel de santé.
-      </p>
-
-    </main>
-
-    <nav class="bottom-nav" aria-label="Navigation principale">
-
-      <button class="nav-item active" data-page="home">
-        <span>⌂</span><small>Accueil</small>
-      </button>
-
-      <button class="nav-item" data-page="atlas">
-        <span>▤</span><small>Atlas</small>
-      </button>
-
-      <button class="nav-item" data-page="calculators">
-        <span>∑</span><small>Calculs</small>
-      </button>
-
-      <button class="nav-item" data-page="news">
-        <span>▣</span><small>Actualités</small>
-      </button>
-
-      <button class="nav-item" data-page="more">
-        <span>☰</span><small>Plus</small>
-      </button>
-
-    </nav>
-
+<!-- FENÊTRE DES MODULES -->
+<dialog id="moduleDialog" class="module-dialog">
+  <div class="dialog-top">
+    <span class="dialog-tag" id="dialogTag">MODULE</span>
+    <button class="icon-btn close-btn" id="closeDialog" aria-label="Fermer">
+      ×
+    </button>
   </div>
+  <div id="dialogContent"></div>
+</dialog>
 
-  <dialog id="moduleDialog" class="module-dialog">
-    <div class="dialog-top">
-      <span class="dialog-tag" id="dialogTag">MODULE</span>
-      <button class="icon-btn close-btn" id="closeDialog" aria-label="Fermer">×</button>
-    </div>
-    <div id="dialogContent"></div>
-  </dialog>
+<!-- NOTIFICATIONS -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-  <!-- SCRIPTS DE L'APPLICATION -->
- <script src="./pdf-reader.js" defer></script>
+<!-- SCRIPTS -->
+<script src="./pdf-reader.js" defer></script>
 <script src="./calculators.js" defer></script>
 <script src="./news.js" defer></script>
 <script src="./scores.js" defer></script>
 <script src="./student-db.js" defer></script>
-  <script src="./student-space.js" defer></script>
+<script src="./student-space.js" defer></script>
 <script src="./app.js" defer></script>
 
 </body>
