@@ -1,8 +1,8 @@
 
 /* ==========================================
    ATLAS MÉDICAL BY @WREDOU
-   Navigation — Interface Liquid Glass
-   Version 2.0
+   Navigation — Organisation générale
+   Version 3.0
 ========================================== */
 
 const modules = [
@@ -240,9 +240,14 @@ function renderModules(list = modules) {
 ========================================== */
 
 function openModule(module) {
-  $("#dialogTag").textContent = "ATLAS CARDIOVASCULAIRE";
-
+  const tag = $("#dialogTag");
   const content = $("#dialogContent");
+  const dialog = $("#moduleDialog");
+
+  if (!content || !dialog) return;
+
+  if (tag) tag.textContent = "ATLAS CARDIOVASCULAIRE";
+
   content.replaceChildren();
 
   const title = document.createElement("h2");
@@ -298,15 +303,9 @@ function openModule(module) {
   note.textContent =
     "Version prototype : les fiches détaillées devront être rédigées, sourcées et validées avant diffusion.";
 
-  content.append(
-    title,
-    description,
-    list,
-    favoriteButton,
-    note
-  );
+  content.append(title, description, list, favoriteButton, note);
 
-  $("#moduleDialog").showModal();
+  dialog.showModal();
 }
 
 /* ==========================================
@@ -360,29 +359,30 @@ function showMainSections(options = {}) {
 }
 
 /* ==========================================
-   PAGE PLUS
+   OUTILS
+   Calculs — Scores — Actualités
 ========================================== */
 
-function renderMore() {
+function renderTools() {
   showMainSections({ modules: true });
+
   preparePage(
-    "Plus",
-    "TOUS TES OUTILS",
-    "8 rubriques"
+    "Mes outils",
+    "OUTILS MÉDICAUX",
+    "03 rubriques"
   );
 
-  const items = [
+  const grid = $("#moduleGrid");
+  if (!grid) return;
+
+  grid.replaceChildren();
+
+  const tools = [
     {
       icon: "∑",
-      title: "Calculatrices médicales",
-      description: "Outils de calcul clinique",
+      title: "Calculs médicaux",
+      description: "Calculatrices et outils cliniques",
       page: "calculators"
-    },
-    {
-      icon: "▣",
-      title: "Actualités médicales",
-      description: "Informations et actualités",
-      page: "news"
     },
     {
       icon: "◎",
@@ -391,48 +391,20 @@ function renderMore() {
       page: "scores"
     },
     {
-      icon: "☑",
-      title: "QCM et cas cliniques",
-      description: "Teste tes connaissances",
-      page: "quiz"
-    },
-    {
-      icon: "★",
-      title: "Mes favoris",
-      description: "Retrouve tes contenus enregistrés",
-      page: "saved"
-    },
-    {
-      icon: "♙",
-      title: "Mon espace étudiant",
-      description: "Cours, PDF, notes et enregistrements",
-      page: "student"
-    },
-    {
-      icon: "◉",
-      title: "Mon profil",
-      description: "Paramètres de ton espace",
-      page: "profile"
-    },
-    {
-      icon: "▤",
-      title: "Mes notes",
-      description: "Retrouve ton espace de travail",
-      page: "student"
+      icon: "▣",
+      title: "Actualités médicales",
+      description: "Informations médicales et nouveautés",
+      page: "news"
     }
   ];
 
-  const grid = $("#moduleGrid");
-  grid.replaceChildren();
-
-  items.forEach(item => {
+  tools.forEach(item => {
     const button = document.createElement("button");
     button.className = "module-card";
     button.type = "button";
 
     const icon = document.createElement("span");
     icon.className = "module-icon";
-    icon.style.backgroundColor = "#e0f5f1";
     icon.textContent = item.icon;
 
     const title = document.createElement("strong");
@@ -461,12 +433,14 @@ function renderExternalSection(type) {
   showMainSections({ modules: true });
 
   preparePage(
-    isCalculator ? "Calculatrices médicales" : "Actualités médicales",
-    isCalculator ? "OUTILS DE CALCUL CLINIQUE" : "ACTUALITÉS MÉDICALES",
+    isCalculator ? "Calculs médicaux" : "Actualités médicales",
+    isCalculator ? "OUTILS DE CALCUL CLINIQUE" : "INFORMATIONS MÉDICALES",
     isCalculator ? "Calculs" : "Actualités"
   );
 
   const grid = $("#moduleGrid");
+  if (!grid) return;
+
   grid.replaceChildren();
 
   const externalModule = isCalculator
@@ -509,6 +483,8 @@ function renderScores() {
   );
 
   const grid = $("#moduleGrid");
+  if (!grid) return;
+
   grid.replaceChildren();
 
   if (
@@ -530,7 +506,7 @@ function renderScores() {
 }
 
 /* ==========================================
-   QCM
+   QUIZ
 ========================================== */
 
 function renderQuiz() {
@@ -543,6 +519,7 @@ function renderQuiz() {
   );
 
   const grid = $("#moduleGrid");
+  if (!grid) return;
 
   grid.innerHTML = `
     <div class="quiz-card"
@@ -576,10 +553,14 @@ function renderQuiz() {
 
       button.classList.add(index === 0 ? "correct" : "wrong");
 
-      $("#quizFeedback").textContent =
-        index === 0
-          ? "Bonne réponse. Le nœud sinusal est le pacemaker physiologique dominant."
-          : "Pas tout à fait. La bonne réponse est le nœud sinusal.";
+      const feedback = $("#quizFeedback");
+
+      if (feedback) {
+        feedback.textContent =
+          index === 0
+            ? "Bonne réponse. Le nœud sinusal est le pacemaker physiologique dominant."
+            : "Pas tout à fait. La bonne réponse est le nœud sinusal.";
+      }
     });
 
     $("#quizOptions").appendChild(button);
@@ -587,19 +568,54 @@ function renderQuiz() {
 }
 
 /* ==========================================
-   PROFIL ET PARAMÈTRES
+   RÉVISIONS
+========================================== */
+
+function renderRevisions() {
+  showMainSections({ modules: true });
+
+  preparePage(
+    "Révisions",
+    "REPRENDS TES COURS",
+    "08 modules"
+  );
+
+  renderModules();
+}
+
+/* ==========================================
+   FAVORIS
+========================================== */
+
+function renderFavorites() {
+  showMainSections({ modules: true });
+
+  preparePage(
+    "Mes favoris",
+    "CONTENUS ENREGISTRÉS",
+    "Favoris"
+  );
+
+  renderModules(
+    modules.filter(module => saved.has(module.id))
+  );
+}
+
+/* ==========================================
+   PARAMÈTRES ET PROFIL
 ========================================== */
 
 function renderProfile() {
   showMainSections({ modules: true });
 
   preparePage(
-    "Paramètres",
+    "Mon profil",
     "ATLAS MÉDICAL BY @WREDOU",
     "Profil local"
   );
 
   const grid = $("#moduleGrid");
+  if (!grid) return;
 
   grid.innerHTML = `
     <div class="module-card" style="grid-column:1/-1">
@@ -613,13 +629,13 @@ function renderProfile() {
         Réinitialiser mes favoris
       </button>
       <p class="small-note">
-        Attention : cette action efface uniquement les favoris,
+        Cette action efface uniquement les favoris,
         pas les documents de ton espace étudiant.
       </p>
     </div>
   `;
 
-  $("#clearData").addEventListener("click", () => {
+  $("#clearData")?.addEventListener("click", () => {
     if (confirm("Effacer tous les favoris enregistrés sur cet appareil ?")) {
       try {
         localStorage.removeItem("atlas-favorites");
@@ -630,6 +646,38 @@ function renderProfile() {
       }
     }
   });
+}
+
+function renderSettings() {
+  showMainSections({ modules: true });
+
+  preparePage(
+    "Paramètres",
+    "PERSONNALISE TON ATLAS",
+    "Configuration"
+  );
+
+  const grid = $("#moduleGrid");
+  if (!grid) return;
+
+  grid.replaceChildren();
+
+  const profile = document.createElement("button");
+  profile.type = "button";
+  profile.className = "module-card";
+  profile.style.gridColumn = "1 / -1";
+
+  profile.innerHTML = `
+    <span class="module-icon">◉</span>
+    <strong>Mon profil</strong>
+    <small>Informations et préférences personnelles</small>
+  `;
+
+  profile.addEventListener("click", () => {
+    setPage("profile");
+  });
+
+  grid.appendChild(profile);
 }
 
 /* ==========================================
@@ -646,6 +694,8 @@ function renderStats() {
   );
 
   const grid = $("#moduleGrid");
+  if (!grid) return;
+
   grid.replaceChildren();
 
   const favoriteCard = document.createElement("div");
@@ -704,12 +754,13 @@ function renderStudent() {
   showMainSections({ modules: true });
 
   preparePage(
-    "Mon espace étudiant",
-    "ESPACE PERSONNEL LOCAL",
+    "Espace étudiant",
+    "TON ESPACE PERSONNEL",
     "Mes outils"
   );
 
   const grid = $("#moduleGrid");
+  if (!grid) return;
 
   if (
     window.AtlasStudentSpace &&
@@ -725,19 +776,39 @@ function renderStudent() {
 }
 
 /* ==========================================
-   NAVIGATION
+   NAVIGATION INFÉRIEURE
+========================================== */
+
+function updateNavigation(page) {
+  const activePage =
+    page === "calculators" ||
+    page === "scores" ||
+    page === "news" ||
+    page === "quiz" ||
+    page === "saved" ||
+    page === "revisions" ||
+    page === "student" ||
+    page === "profile" ||
+    page === "tools"
+      ? "more"
+      : page;
+
+  document.querySelectorAll(".nav-item").forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.page === activePage
+    );
+  });
+}
+
+/* ==========================================
+   NAVIGATION PRINCIPALE
 ========================================== */
 
 function setPage(page) {
   currentPage = page;
 
-  document.querySelectorAll(".nav-item").forEach(button => {
-    button.classList.toggle(
-      "active",
-      button.dataset.page === page ||
-      (page === "profile" && button.dataset.page === "more")
-    );
-  });
+  updateNavigation(page);
 
   const searchInput = $("#searchInput");
   if (searchInput) searchInput.value = "";
@@ -747,16 +818,9 @@ function setPage(page) {
       hero: true,
       quick: true,
       study: true,
-      modules: true
+      modules: false,
+      library: false
     });
-
-    preparePage(
-      "Les modules",
-      "COMMENCER À EXPLORER",
-      "08 modules"
-    );
-
-    renderModules();
   }
 
   else if (page === "atlas") {
@@ -766,8 +830,8 @@ function setPage(page) {
     });
 
     preparePage(
-      "Atlas cardiovasculaire",
-      "PARCOURS ET RESSOURCES",
+      "Cours",
+      "LES 8 MODULES CARDIOVASCULAIRES",
       "08 modules"
     );
 
@@ -779,7 +843,11 @@ function setPage(page) {
   }
 
   else if (page === "more") {
-    renderMore();
+    renderSettings();
+  }
+
+  else if (page === "tools") {
+    renderTools();
   }
 
   else if (page === "calculators" || page === "news") {
@@ -791,17 +859,11 @@ function setPage(page) {
   }
 
   else if (page === "saved") {
-    showMainSections({ modules: true });
+    renderFavorites();
+  }
 
-    preparePage(
-      "Mes favoris",
-      "CONTENUS ENREGISTRÉS",
-      "Favoris"
-    );
-
-    renderModules(
-      modules.filter(module => saved.has(module.id))
-    );
+  else if (page === "revisions") {
+    renderRevisions();
   }
 
   else if (page === "quiz") {
@@ -833,13 +895,13 @@ function setPage(page) {
 
   else {
     setPage("home");
+    return;
   }
 
-  if (page !== "home" && page !== "atlas") {
-    showElement(".search-box", false);
-  } else {
-    showElement(".search-box", true);
-  }
+  showElement(
+    ".search-box",
+    page === "home" || page === "atlas"
+  );
 
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
@@ -848,30 +910,72 @@ function setPage(page) {
    RACCOURCIS DE L'ACCUEIL
 ========================================== */
 
-document.querySelectorAll("[data-shortcut]").forEach(button => {
-  button.addEventListener("click", () => {
-    const shortcut = button.dataset.shortcut;
+function configureQuickAccess() {
+  const buttons = [
+    ...document.querySelectorAll("[data-shortcut]")
+  ];
 
-    const destinations = {
-      atlas: "atlas",
-      quiz: "quiz",
-      saved: "saved",
-      atlas3d: "atlas3d",
-      notes: "student",
-      student: "student"
-    };
+  const destinations = [
+    "atlas",
+    "quiz",
+    "revisions",
+    "atlas3d",
+    "search",
+    "saved",
+    "tools",
+    "student"
+  ];
 
-    if (shortcut === "search") {
-      setPage("atlas");
+  const labels = [
+    "Cours",
+    "Quiz",
+    "Révisions",
+    "Atlas 3D",
+    "Rechercher",
+    "Favoris",
+    "Outils",
+    "Espace étudiant"
+  ];
 
-      setTimeout(() => {
-        $("#searchInput")?.focus();
-      }, 100);
+  buttons.forEach((button, index) => {
+    const destination = destinations[index];
+    const label = labels[index];
 
-      return;
+    const labelElement = button.querySelector(".quick-label");
+    if (labelElement) labelElement.textContent = label;
+
+    if (destination === "tools") {
+      const icon = button.querySelector(".drop-icon");
+      if (icon) icon.textContent = "∑";
     }
 
-    setPage(destinations[shortcut] || "more");
+    button.addEventListener("click", () => {
+      if (destination === "search") {
+        setPage("atlas");
+
+        setTimeout(() => {
+          $("#searchInput")?.focus();
+        }, 100);
+
+        return;
+      }
+
+      setPage(destination || "home");
+    });
+  });
+}
+
+configureQuickAccess();
+
+/* ==========================================
+   ACCÈS RAPIDE AU PROFIL
+========================================== */
+
+document.querySelectorAll(
+  "[data-profile], .profile-btn"
+).forEach(button => {
+  button.addEventListener("click", () => {
+    setPage("profile");
   });
 });
 
@@ -912,7 +1016,7 @@ document.querySelectorAll(".nav-item").forEach(button => {
 ========================================== */
 
 $("#closeDialog")?.addEventListener("click", () => {
-  $("#moduleDialog").close();
+  $("#moduleDialog")?.close();
 });
 
 $("#moduleDialog")?.addEventListener("click", event => {
@@ -943,7 +1047,9 @@ $("#installBtn")?.addEventListener("click", async () => {
   await deferredPrompt.userChoice;
 
   deferredPrompt = null;
-  $("#installBtn").hidden = true;
+
+  const button = $("#installBtn");
+  if (button) button.hidden = true;
 });
 
 /* ==========================================
