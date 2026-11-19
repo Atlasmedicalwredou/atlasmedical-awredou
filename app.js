@@ -1,7 +1,8 @@
 
 /* ==========================================
    ATLAS MÉDICAL BY @WREDOU
-   Navigation et fonctionnement principal
+   Navigation — Interface Liquid Glass
+   Version 2.0
 ========================================== */
 
 const modules = [
@@ -122,7 +123,7 @@ const modules = [
       "Correction expliquée",
       "Révision des erreurs"
     ],
-    detail: "Entraîne-toi avec des questions et des cas cliniques. Les contenus finaux seront relus et référencés."
+    detail: "Entraîne-toi avec des questions et des cas cliniques."
   }
 ];
 
@@ -172,7 +173,6 @@ function saveFavorites(nextSaved) {
 
 function toast(message) {
   const element = $("#toast");
-
   if (!element) return;
 
   element.textContent = message;
@@ -193,15 +193,18 @@ function renderModules(list = modules) {
 
   grid.replaceChildren();
 
-  $("#moduleCount").textContent =
-    String(list.length).padStart(2, "0") + " modules";
+  const count = $("#moduleCount");
+
+  if (count) {
+    count.textContent =
+      String(list.length).padStart(2, "0") + " modules";
+  }
 
   if (!list.length) {
     const empty = document.createElement("div");
     empty.className = "empty";
     empty.textContent =
       "Aucun module trouvé. Essaie un autre mot-clé.";
-
     grid.appendChild(empty);
     return;
   }
@@ -209,6 +212,7 @@ function renderModules(list = modules) {
   list.forEach(module => {
     const button = document.createElement("button");
     button.className = "module-card";
+    button.type = "button";
 
     const icon = document.createElement("span");
     icon.className = "module-icon";
@@ -258,6 +262,7 @@ function openModule(module) {
 
   const favoriteButton = document.createElement("button");
   favoriteButton.className = "primary-btn";
+  favoriteButton.type = "button";
 
   function updateFavoriteButton() {
     favoriteButton.textContent = saved.has(module.id)
@@ -305,39 +310,53 @@ function openModule(module) {
 }
 
 /* ==========================================
-   GESTION DE L'AFFICHAGE
+   STRUCTURE DES PAGES
 ========================================== */
 
+function showElement(selector, visible) {
+  const element = $(selector);
+  if (element) {
+    element.style.display = visible ? "" : "none";
+  }
+}
+
 function preparePage(title, subtitle, count) {
-  $(".hero").style.display = "none";
-  $(".study-card").style.display = "none";
-  $(".search-box").style.display = "none";
+  const heading = $(".modules-section .section-head h2");
+  const eyebrow = $(".modules-section .section-head .eyebrow");
+  const grid = $("#moduleGrid");
 
-  $(".section-head h2").textContent = title;
-  $(".section-head .eyebrow").textContent = subtitle;
-
-  $("#moduleCount").textContent = count;
-  $("#moduleGrid").style.display = "grid";
+  if (heading) heading.textContent = title;
+  if (eyebrow) eyebrow.textContent = subtitle;
+  if ($("#moduleCount")) $("#moduleCount").textContent = count;
+  if (grid) grid.style.display = "grid";
 }
 
 function showPlaceholder(title, description) {
   const grid = $("#moduleGrid");
+  if (!grid) return;
+
   grid.replaceChildren();
 
   const card = document.createElement("div");
-  card.style.cssText =
-    "grid-column:1/-1;background:white;border:1px solid var(--line);border-radius:16px;padding:20px;";
+  card.className = "module-card";
+  card.style.gridColumn = "1 / -1";
 
   const heading = document.createElement("h3");
   heading.textContent = title;
 
   const paragraph = document.createElement("p");
-  paragraph.style.cssText =
-    "font-size:13px;color:var(--muted);line-height:1.7;";
   paragraph.textContent = description;
 
   card.append(heading, paragraph);
   grid.appendChild(card);
+}
+
+function showMainSections(options = {}) {
+  showElement(".hero", !!options.hero);
+  showElement(".quick-section", !!options.quick);
+  showElement(".study-card", !!options.study);
+  showElement(".modules-section", !!options.modules);
+  showElement("#bibliotheque-pdf", !!options.library);
 }
 
 /* ==========================================
@@ -345,16 +364,30 @@ function showPlaceholder(title, description) {
 ========================================== */
 
 function renderMore() {
-  preparePage("Plus", "OUTILS ET ESPACE PERSONNEL", "4 rubriques");
-
-  const grid = $("#moduleGrid");
-  grid.replaceChildren();
+  showMainSections({ modules: true });
+  preparePage(
+    "Plus",
+    "TOUS TES OUTILS",
+    "8 rubriques"
+  );
 
   const items = [
     {
+      icon: "∑",
+      title: "Calculatrices médicales",
+      description: "Outils de calcul clinique",
+      page: "calculators"
+    },
+    {
+      icon: "▣",
+      title: "Actualités médicales",
+      description: "Informations et actualités",
+      page: "news"
+    },
+    {
       icon: "◎",
       title: "Scores médicaux",
-      description: "Scores et classifications par spécialité",
+      description: "Scores et classifications",
       page: "scores"
     },
     {
@@ -370,16 +403,32 @@ function renderMore() {
       page: "saved"
     },
     {
-      icon: "▣",
+      icon: "♙",
       title: "Mon espace étudiant",
-      description: "Tes cours, documents, notes et enregistrements",
+      description: "Cours, PDF, notes et enregistrements",
+      page: "student"
+    },
+    {
+      icon: "◉",
+      title: "Mon profil",
+      description: "Paramètres de ton espace",
+      page: "profile"
+    },
+    {
+      icon: "▤",
+      title: "Mes notes",
+      description: "Retrouve ton espace de travail",
       page: "student"
     }
   ];
 
+  const grid = $("#moduleGrid");
+  grid.replaceChildren();
+
   items.forEach(item => {
     const button = document.createElement("button");
     button.className = "module-card";
+    button.type = "button";
 
     const icon = document.createElement("span");
     icon.className = "module-icon";
@@ -402,7 +451,6 @@ function renderMore() {
   });
 }
 
-
 /* ==========================================
    CALCULATRICES ET ACTUALITÉS
 ========================================== */
@@ -410,9 +458,11 @@ function renderMore() {
 function renderExternalSection(type) {
   const isCalculator = type === "calculators";
 
+  showMainSections({ modules: true });
+
   preparePage(
     isCalculator ? "Calculatrices médicales" : "Actualités médicales",
-    isCalculator ? "OUTILS DE CALCUL CLINIQUE" : "ACTUALITÉS AU SÉNÉGAL",
+    isCalculator ? "OUTILS DE CALCUL CLINIQUE" : "ACTUALITÉS MÉDICALES",
     isCalculator ? "Calculs" : "Actualités"
   );
 
@@ -431,7 +481,7 @@ function renderExternalSection(type) {
       externalModule.render(grid, { toast });
       return;
     } catch (error) {
-      console.error("Erreur de chargement du module :", error);
+      console.error("Erreur de chargement :", error);
     }
   }
 
@@ -440,8 +490,8 @@ function renderExternalSection(type) {
       ? "Calculatrices en préparation"
       : "Actualités médicales en préparation",
     isCalculator
-      ? "Les calculatrices seront progressivement intégrées. Les calculs seront effectués localement sur ton appareil."
-      : "Cette rubrique accueillera les actualités médicales du Sénégal provenant de sources institutionnelles et scientifiques fiables. Une connexion internet sera nécessaire pour actualiser les informations."
+      ? "Les calculatrices seront progressivement intégrées."
+      : "Cette rubrique accueillera les actualités médicales provenant de sources fiables."
   );
 }
 
@@ -450,6 +500,8 @@ function renderExternalSection(type) {
 ========================================== */
 
 function renderScores() {
+  showMainSections({ modules: true });
+
   preparePage(
     "Scores médicaux",
     "OUTILS D'ÉVALUATION CLINIQUE",
@@ -473,7 +525,7 @@ function renderScores() {
 
   showPlaceholder(
     "Scores médicaux indisponibles",
-    "Vérifie que le fichier scores.js est bien enregistré et chargé dans index.html."
+    "Vérifie que le fichier scores.js est bien chargé."
   );
 }
 
@@ -482,22 +534,25 @@ function renderScores() {
 ========================================== */
 
 function renderQuiz() {
+  showMainSections({ modules: true });
+
   preparePage(
     "Entraînement",
     "TESTE TES CONNAISSANCES",
     "QCM"
   );
 
-  $("#moduleGrid").innerHTML = `
+  const grid = $("#moduleGrid");
+
+  grid.innerHTML = `
     <div class="quiz-card"
-      style="grid-column:1/-1;border:1px solid var(--line);padding:18px;border-radius:16px">
+      style="grid-column:1/-1;padding:18px;border-radius:18px">
       <p class="eyebrow">QUESTION D’EXEMPLE</p>
-      <h3 style="font:700 17px Manrope">
+      <h3>
         Quel est le pacemaker physiologique principal du cœur ?
       </h3>
       <div id="quizOptions"></div>
-      <p id="quizFeedback" aria-live="polite"
-        style="font-size:12px;color:var(--muted)"></p>
+      <p id="quizFeedback" aria-live="polite"></p>
     </div>
   `;
 
@@ -511,6 +566,7 @@ function renderQuiz() {
   options.forEach((option, index) => {
     const button = document.createElement("button");
     button.className = "quiz-option";
+    button.type = "button";
     button.textContent = option;
 
     button.addEventListener("click", () => {
@@ -531,26 +587,35 @@ function renderQuiz() {
 }
 
 /* ==========================================
-   PROFIL LOCAL
+   PROFIL ET PARAMÈTRES
 ========================================== */
 
 function renderProfile() {
+  showMainSections({ modules: true });
+
   preparePage(
-    "Mon espace",
+    "Paramètres",
     "ATLAS MÉDICAL BY @WREDOU",
     "Profil local"
   );
 
-  $("#moduleGrid").innerHTML = `
-    <div style="grid-column:1/-1;background:#f0f8f7;border:1px solid #dcefeb;border-radius:16px;padding:20px">
-      <div style="font-size:26px">◉</div>
-      <h3 style="font:800 18px Manrope">Bienvenue dans ton atlas</h3>
-      <p style="font-size:12px;color:#718293;line-height:1.6">
-        Tu peux commencer sans créer de compte. Tes favoris sont conservés sur cet appareil. La synchronisation entre appareils et l’espace Premium seront ajoutés dans une prochaine version.
+  const grid = $("#moduleGrid");
+
+  grid.innerHTML = `
+    <div class="module-card" style="grid-column:1/-1">
+      <div class="module-icon">◉</div>
+      <h3>Bienvenue dans ton Atlas</h3>
+      <p>
+        Tu peux utiliser Atlas Médical sans créer de compte.
+        Tes favoris sont conservés sur cet appareil.
       </p>
-      <button class="secondary-btn" id="clearData">
+      <button class="secondary-btn" id="clearData" type="button">
         Réinitialiser mes favoris
       </button>
+      <p class="small-note">
+        Attention : cette action efface uniquement les favoris,
+        pas les documents de ton espace étudiant.
+      </p>
     </div>
   `;
 
@@ -568,48 +633,153 @@ function renderProfile() {
 }
 
 /* ==========================================
-   NAVIGATION PRINCIPALE
+   STATISTIQUES
+========================================== */
+
+function renderStats() {
+  showMainSections({ study: true, modules: true });
+
+  preparePage(
+    "Statistiques",
+    "TON PARCOURS D'APPRENTISSAGE",
+    "Bilan"
+  );
+
+  const grid = $("#moduleGrid");
+  grid.replaceChildren();
+
+  const favoriteCard = document.createElement("div");
+  favoriteCard.className = "module-card";
+
+  const favoriteIcon = document.createElement("span");
+  favoriteIcon.className = "module-icon";
+  favoriteIcon.textContent = "★";
+
+  const favoriteTitle = document.createElement("strong");
+  favoriteTitle.textContent = "Modules favoris";
+
+  const favoriteValue = document.createElement("p");
+  favoriteValue.textContent = String(saved.size);
+
+  favoriteCard.append(
+    favoriteIcon,
+    favoriteTitle,
+    favoriteValue
+  );
+
+  const totalCard = document.createElement("div");
+  totalCard.className = "module-card";
+
+  const totalIcon = document.createElement("span");
+  totalIcon.className = "module-icon";
+  totalIcon.textContent = "▤";
+
+  const totalTitle = document.createElement("strong");
+  totalTitle.textContent = "Modules disponibles";
+
+  const totalValue = document.createElement("p");
+  totalValue.textContent = String(modules.length);
+
+  totalCard.append(
+    totalIcon,
+    totalTitle,
+    totalValue
+  );
+
+  grid.append(favoriteCard, totalCard);
+
+  const note = document.createElement("p");
+  note.className = "small-note";
+  note.textContent =
+    "Les statistiques détaillées de progression seront ajoutées progressivement.";
+
+  grid.appendChild(note);
+}
+
+/* ==========================================
+   ESPACE ÉTUDIANT
+========================================== */
+
+function renderStudent() {
+  showMainSections({ modules: true });
+
+  preparePage(
+    "Mon espace étudiant",
+    "ESPACE PERSONNEL LOCAL",
+    "Mes outils"
+  );
+
+  const grid = $("#moduleGrid");
+
+  if (
+    window.AtlasStudentSpace &&
+    typeof window.AtlasStudentSpace.render === "function"
+  ) {
+    window.AtlasStudentSpace.render(grid, { toast });
+  } else {
+    showPlaceholder(
+      "Espace étudiant indisponible",
+      "Vérifie que student-db.js et student-space.js sont chargés."
+    );
+  }
+}
+
+/* ==========================================
+   NAVIGATION
 ========================================== */
 
 function setPage(page) {
   currentPage = page;
 
-  const activeTab =
-    ["quiz", "saved", "profile", "scores"].includes(page)
-      ? "more"
-      : page;
-
   document.querySelectorAll(".nav-item").forEach(button => {
     button.classList.toggle(
       "active",
-      button.dataset.page === activeTab
+      button.dataset.page === page ||
+      (page === "profile" && button.dataset.page === "more")
     );
   });
 
-  if (page === "home" || page === "atlas") {
-    $(".hero").style.display =
-      page === "home" ? "block" : "none";
+  const searchInput = $("#searchInput");
+  if (searchInput) searchInput.value = "";
 
-    $(".study-card").style.display =
-      page === "home" ? "flex" : "none";
+  if (page === "home") {
+    showMainSections({
+      hero: true,
+      quick: true,
+      study: true,
+      modules: true
+    });
 
-    $(".search-box").style.display = "flex";
+    preparePage(
+      "Les modules",
+      "COMMENCER À EXPLORER",
+      "08 modules"
+    );
 
-    $(".section-head h2").textContent =
-      page === "atlas" ? "Atlas cardiovasculaire" : "Les modules";
-
-    $(".section-head .eyebrow").textContent =
-      page === "atlas"
-        ? "PARCOURS CARDIOVASCULAIRE"
-        : "COMMENCER À EXPLORER";
-
-    $("#searchInput").placeholder =
-      page === "atlas"
-        ? "Rechercher dans l’atlas…"
-        : "Rechercher un cours, un syndrome, un ECG…";
-
-    $("#searchInput").value = "";
     renderModules();
+  }
+
+  else if (page === "atlas") {
+    showMainSections({
+      modules: true,
+      library: true
+    });
+
+    preparePage(
+      "Atlas cardiovasculaire",
+      "PARCOURS ET RESSOURCES",
+      "08 modules"
+    );
+
+    renderModules();
+  }
+
+  else if (page === "stats") {
+    renderStats();
+  }
+
+  else if (page === "more") {
+    renderMore();
   }
 
   else if (page === "calculators" || page === "news") {
@@ -620,11 +790,9 @@ function setPage(page) {
     renderScores();
   }
 
-  else if (page === "more") {
-    renderMore();
-  }
-
   else if (page === "saved") {
+    showMainSections({ modules: true });
+
     preparePage(
       "Mes favoris",
       "CONTENUS ENREGISTRÉS",
@@ -641,36 +809,77 @@ function setPage(page) {
   }
 
   else if (page === "profile") {
-  renderProfile();
-}
-
-else if (page === "student") {
-  preparePage(
-    "Mon espace étudiant",
-    "ESPACE PERSONNEL LOCAL",
-    "Mes outils"
-  );
-
-  const grid = $("#moduleGrid");
-
-  if (
-    window.AtlasStudentSpace &&
-    typeof window.AtlasStudentSpace.render === "function"
-  ) {
-    window.AtlasStudentSpace.render(grid, { toast });
-  } else {
-    showPlaceholder(
-  "Diagnostic de l'espace étudiant",
-  "AtlasStudentSpace : " + typeof window.AtlasStudentSpace +
-  " | AtlasStudentDB : " + typeof window.AtlasStudentDB
-);
+    renderProfile();
   }
+
+  else if (page === "student") {
+    renderStudent();
+  }
+
+  else if (page === "atlas3d") {
+    showMainSections({ modules: true });
+
+    preparePage(
+      "Atlas 3D",
+      "EXPLORATION ANATOMIQUE",
+      "À venir"
+    );
+
+    showPlaceholder(
+      "Atlas 3D en préparation",
+      "L'exploration anatomique en trois dimensions sera intégrée dans une prochaine étape."
+    );
+  }
+
+  else {
+    setPage("home");
+  }
+
+  if (page !== "home" && page !== "atlas") {
+    showElement(".search-box", false);
+  } else {
+    showElement(".search-box", true);
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
-}/* ==========================================
+
+/* ==========================================
+   RACCOURCIS DE L'ACCUEIL
+========================================== */
+
+document.querySelectorAll("[data-shortcut]").forEach(button => {
+  button.addEventListener("click", () => {
+    const shortcut = button.dataset.shortcut;
+
+    const destinations = {
+      atlas: "atlas",
+      quiz: "quiz",
+      saved: "saved",
+      atlas3d: "atlas3d",
+      notes: "student",
+      student: "student"
+    };
+
+    if (shortcut === "search") {
+      setPage("atlas");
+
+      setTimeout(() => {
+        $("#searchInput")?.focus();
+      }, 100);
+
+      return;
+    }
+
+    setPage(destinations[shortcut] || "more");
+  });
+});
+
+/* ==========================================
    RECHERCHE
 ========================================== */
 
-$("#searchInput").addEventListener("input", event => {
+$("#searchInput")?.addEventListener("input", event => {
   if (currentPage !== "home" && currentPage !== "atlas") {
     return;
   }
@@ -689,7 +898,7 @@ $("#searchInput").addEventListener("input", event => {
 });
 
 /* ==========================================
-   ÉVÉNEMENTS DE NAVIGATION
+   BOUTONS DE NAVIGATION
 ========================================== */
 
 document.querySelectorAll(".nav-item").forEach(button => {
@@ -702,27 +911,29 @@ document.querySelectorAll(".nav-item").forEach(button => {
    FERMETURE DU MODULE
 ========================================== */
 
-$("#closeDialog").addEventListener("click", () => {
+$("#closeDialog")?.addEventListener("click", () => {
   $("#moduleDialog").close();
 });
 
-$("#moduleDialog").addEventListener("click", event => {
+$("#moduleDialog")?.addEventListener("click", event => {
   if (event.target === $("#moduleDialog")) {
     $("#moduleDialog").close();
   }
 });
 
 /* ==========================================
-   INSTALLATION DE L'APPLICATION
+   INSTALLATION
 ========================================== */
 
 window.addEventListener("beforeinstallprompt", event => {
   event.preventDefault();
   deferredPrompt = event;
-  $("#installBtn").hidden = false;
+
+  const button = $("#installBtn");
+  if (button) button.hidden = false;
 });
 
-$("#installBtn").addEventListener("click", async () => {
+$("#installBtn")?.addEventListener("click", async () => {
   if (!deferredPrompt) {
     toast("Sur iPhone : Safari → Partager → Sur l’écran d’accueil.");
     return;
