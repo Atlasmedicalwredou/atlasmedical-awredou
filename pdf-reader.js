@@ -1,7 +1,8 @@
 
 /* =========================================
    ATLAS MÉDICAL — LECTEUR PDF INTÉGRÉ
-   Moteur PDF.js — version 1.3
+   Version 1.4 — Recherche dans les PDF
+   Moteur PDF.js
 ========================================= */
 
 (function () {
@@ -20,13 +21,22 @@
   let viewer = null;
   let canvas = null;
   let loadingPromise = null;
-  /* =================================
-     FAVORIS ET MARQUE-PAGES
-  ================================= */
 
   let bookmarks = [];
-let currentDocumentURL = "";
-let currentDocumentTitle = "";
+  let pageNotes = [];
+
+  let currentDocumentURL = "";
+  let currentDocumentTitle = "";
+
+  // Recherche
+  let searchResults = [];
+  let currentSearchIndex = -1;
+  let searchToken = 0;
+
+  /* =================================
+     STOCKAGE DES FAVORIS ET DES NOTES
+  ================================= */
+
   function loadBookmarks() {
     try {
       bookmarks = JSON.parse(
@@ -43,11 +53,6 @@ let currentDocumentTitle = "";
       JSON.stringify(bookmarks)
     );
   }
-     /* =================================
-     CARNET DE NOTES PERSONNELLES
-  ================================= */
-
-  let pageNotes = [];
 
   function loadPageNotes() {
     try {
@@ -65,8 +70,14 @@ let currentDocumentTitle = "";
       JSON.stringify(pageNotes)
     );
   }
+
+  /* =================================
+     CHARGEMENT DE PDF.JS
+  ================================= */
+
   function loadPDFJS() {
     if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = WORKER_URL;
       return Promise.resolve(window.pdfjsLib);
     }
 
@@ -78,6 +89,7 @@ let currentDocumentTitle = "";
 
       script.onload = () => {
         if (!window.pdfjsLib) {
+          loadingPromise = null;
           reject(new Error("PDF.js non chargé."));
           return;
         }
@@ -97,9 +109,14 @@ let currentDocumentTitle = "";
     return loadingPromise;
   }
 
+  /* =================================
+     CRÉATION DU LECTEUR
+  ================================= */
+
   function createViewer() {
-         loadBookmarks();   
-     loadPageNotes();
+    loadBookmarks();
+    loadPageNotes();
+
     if (viewer) return;
 
     const style = document.createElement("style");
@@ -163,8 +180,6 @@ let currentDocumentTitle = "";
         text-align: center;
       }
 
-      /* BARRE DE PROGRESSION */
-
       #atlas-pdf-app .pdf-progress {
         padding: 8px 14px;
         background: #183c5b;
@@ -191,8 +206,6 @@ let currentDocumentTitle = "";
         text-align: right;
         color: #e0f5f1;
       }
-
-      /* PANNEAU DES MINIATURES */
 
       #atlas-pdf-app .pdf-thumbnails[hidden] {
         display: none !important;
@@ -228,7 +241,7 @@ let currentDocumentTitle = "";
         align-items: center;
         gap: 6px;
         padding: 7px;
-        background: #ffffff;
+        background: white;
         border: 2px solid transparent;
         border-radius: 8px;
         color: #102b46;
@@ -248,8 +261,6 @@ let currentDocumentTitle = "";
       #atlas-pdf-app .pdf-thumbnail span {
         font-size: 12px;
       }
-
-      /* DOCUMENT PDF */
 
       #atlas-pdf-app .pdf-content {
         flex: 1;
@@ -284,7 +295,7 @@ let currentDocumentTitle = "";
     viewer.innerHTML = `
       <div class="pdf-header">
         <button type="button" id="atlas-pdf-close">
-          ← Back to Library
+          ← Retour
         </button>
 
         <div class="pdf-title" id="atlas-pdf-title">
@@ -306,18 +317,26 @@ let currentDocumentTitle = "";
         <button type="button" id="atlas-pdf-thumbnails">
           📑 Pages
         </button>
+
+        <button type="button" id="atlas-pdf-search">
+          🔎 Rechercher
+        </button>
+
         <button type="button" id="atlas-pdf-bookmark">
-  ☆ Favori
-</button>
-<button type="button" id="atlas-pdf-favorites">
-  ⭐ Mes favoris
-</button>
-<button type="button" id="atlas-pdf-notes">
-  📝 Mes notes
-</button>
-<button type="button" id="atlas-pdf-all-notes">
-  📚 Toutes mes notes
-</button>
+          ☆ Favori
+        </button>
+
+        <button type="button" id="atlas-pdf-favorites">
+          ⭐ Mes favoris
+        </button>
+
+        <button type="button" id="atlas-pdf-notes">
+          📝 Mes notes
+        </button>
+
+        <button type="button" id="atlas-pdf-all-notes">
+          📚 Toutes mes notes
+        </button>
       </div>
 
       <div class="pdf-progress">
@@ -342,12 +361,7 @@ let currentDocumentTitle = "";
 
         <div class="pdf-thumbnails-header">
           <strong>Pages du document</strong>
-
-          <button
-            type="button"
-            id="atlas-pdf-thumbnails-close">
-            ✕
-          </button>
+          <button type="button" id="atlas-pdf-thumbnails-close">✕</button>
         </div>
 
         <div
@@ -389,28 +403,33 @@ let currentDocumentTitle = "";
 
     viewer.querySelector("#atlas-pdf-thumbnails-close")
       .addEventListener("click", toggleThumbnails);
-     viewer.querySelector("#atlas-pdf-bookmark")
-  .addEventListener("click", toggleBookmark);
-viewer.querySelector("#atlas-pdf-favorites")
-  .addEventListener("click", showBookmarks);
-     viewer.querySelector("#atlas-pdf-notes")
-  .addEventListener("click", showNotes);
-     viewer.querySelector("#atlas-pdf-all-notes")
-  .addEventListener("click", showAllNotes);
+
+    viewer.querySelector("#atlas-pdf-search")
+      .addEventListener("click", showSearchPanel);
+
+    viewer.querySelector("#atlas-pdf-bookmark")
+      .addEventListener("click", toggleBookmark);
+
+    viewer.querySelector("#atlas-pdf-favorites")
+      .addEventListener("click", showBookmarks);
+
+    viewer.querySelector("#atlas-pdf-notes")
+      .addEventListener("click", showNotes);
+
+    viewer.querySelector("#atlas-pdf-all-notes")
+      .addEventListener("click", showAllNotes);
+
     document.addEventListener("keydown", keyboardNavigation);
   }
 
-  /* OUVRIR ET FERMER LES MINIATURES */
-  /* AJOUTER OU RETIRER UN FAVORI */
-  /* ACTUALISER L'ÉTAT DU BOUTON FAVORI */
+  /* =================================
+     FAVORIS
+  ================================= */
 
   function updateBookmarkButton() {
     if (!viewer) return;
 
-    const button = viewer.querySelector(
-      "#atlas-pdf-bookmark"
-    );
-
+    const button = viewer.querySelector("#atlas-pdf-bookmark");
     if (!button) return;
 
     const isSaved = bookmarks.some(item =>
@@ -418,10 +437,9 @@ viewer.querySelector("#atlas-pdf-favorites")
       item.page === currentPage
     );
 
-    button.textContent = isSaved
-      ? "★ Favori"
-      : "☆ Favori";
+    button.textContent = isSaved ? "★ Favori" : "☆ Favori";
   }
+
   function toggleBookmark() {
     if (!pdfDocument || !currentDocumentURL) return;
 
@@ -442,44 +460,33 @@ viewer.querySelector("#atlas-pdf-favorites")
     }
 
     saveBookmarks();
-
-    const button = viewer.querySelector(
-      "#atlas-pdf-bookmark"
-    );
-
-    button.textContent =
-      existingIndex !== -1 ? "☆ Favori" : "★ Favori";
+    updateBookmarkButton();
   }
-     /* AFFICHER LA BIBLIOTHÈQUE DES FAVORIS */
 
   function showBookmarks() {
     if (!viewer) return;
 
-    const oldPanel = viewer.querySelector(
-      "#atlas-pdf-bookmarks-panel"
-    );
-
+    const oldPanel = viewer.querySelector("#atlas-pdf-bookmarks-panel");
     if (oldPanel) oldPanel.remove();
 
     const panel = document.createElement("div");
     panel.id = "atlas-pdf-bookmarks-panel";
 
     panel.style.cssText = `
-      position: absolute;
-      inset: 0;
-      z-index: 10;
-      background: #102b46;
-      padding: 20px;
-      overflow-y: auto;
+      position:absolute;
+      inset:0;
+      z-index:10;
+      background:#102b46;
+      padding:20px;
+      overflow-y:auto;
     `;
 
     const header = document.createElement("div");
-
     header.style.cssText = `
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:20px;
     `;
 
     const title = document.createElement("strong");
@@ -487,10 +494,7 @@ viewer.querySelector("#atlas-pdf-favorites")
 
     const closeButton = document.createElement("button");
     closeButton.textContent = "✕";
-
-    closeButton.addEventListener("click", () => {
-      panel.remove();
-    });
+    closeButton.addEventListener("click", () => panel.remove());
 
     header.append(title, closeButton);
     panel.appendChild(header);
@@ -505,18 +509,17 @@ viewer.querySelector("#atlas-pdf-favorites")
       const entry = document.createElement("div");
 
       entry.style.cssText = `
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
-        padding: 12px;
-        margin-bottom: 10px;
-        background: #183c5b;
-        border-radius: 10px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:10px;
+        padding:12px;
+        margin-bottom:10px;
+        background:#183c5b;
+        border-radius:10px;
       `;
 
       const info = document.createElement("div");
-
       const name = document.createElement("strong");
       name.textContent = item.title;
 
@@ -527,7 +530,6 @@ viewer.querySelector("#atlas-pdf-favorites")
       info.append(name, page);
 
       const actions = document.createElement("div");
-
       const openButton = document.createElement("button");
       openButton.textContent = "Ouvrir";
 
@@ -554,40 +556,36 @@ viewer.querySelector("#atlas-pdf-favorites")
 
     viewer.appendChild(panel);
   }
-   
+
   /* =================================
-     AFFICHER LE CARNET DE NOTES
+     NOTES PERSONNELLES
   ================================= */
 
   function showNotes() {
     if (!viewer || !pdfDocument) return;
 
-    const oldPanel = viewer.querySelector(
-      "#atlas-pdf-notes-panel"
-    );
-
+    const oldPanel = viewer.querySelector("#atlas-pdf-notes-panel");
     if (oldPanel) oldPanel.remove();
 
     const panel = document.createElement("div");
     panel.id = "atlas-pdf-notes-panel";
 
     panel.style.cssText = `
-      position: absolute;
-      inset: 0;
-      z-index: 20;
-      background: #102b46;
-      padding: 20px;
-      overflow-y: auto;
-      color: white;
+      position:absolute;
+      inset:0;
+      z-index:20;
+      background:#102b46;
+      padding:20px;
+      overflow-y:auto;
+      color:white;
     `;
 
     const header = document.createElement("div");
-
     header.style.cssText = `
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:20px;
     `;
 
     const title = document.createElement("strong");
@@ -595,36 +593,30 @@ viewer.querySelector("#atlas-pdf-favorites")
 
     const closeButton = document.createElement("button");
     closeButton.textContent = "✕";
-
-    closeButton.addEventListener("click", () => {
-      panel.remove();
-    });
+    closeButton.addEventListener("click", () => panel.remove());
 
     header.append(title, closeButton);
     panel.appendChild(header);
 
     const pageInfo = document.createElement("p");
-    pageInfo.textContent =
-      `${currentDocumentTitle} — Page ${currentPage}`;
-
+    pageInfo.textContent = `${currentDocumentTitle} — Page ${currentPage}`;
     panel.appendChild(pageInfo);
 
     const textarea = document.createElement("textarea");
-
     textarea.placeholder =
       "Écris ici tes remarques, explications et éléments à mémoriser...";
 
     textarea.style.cssText = `
-      width: 100%;
-      min-height: 180px;
-      box-sizing: border-box;
-      padding: 14px;
-      border-radius: 10px;
-      border: 2px solid #2dd4bf;
-      background: white;
-      color: #102b46;
-      font-size: 16px;
-      resize: vertical;
+      width:100%;
+      min-height:180px;
+      box-sizing:border-box;
+      padding:14px;
+      border-radius:10px;
+      border:2px solid #2dd4bf;
+      background:white;
+      color:#102b46;
+      font-size:16px;
+      resize:vertical;
     `;
 
     const existingNote = pageNotes.find(item =>
@@ -632,22 +624,19 @@ viewer.querySelector("#atlas-pdf-favorites")
       item.page === currentPage
     );
 
-    textarea.value = existingNote
-      ? existingNote.content
-      : "";
-
+    textarea.value = existingNote ? existingNote.content : "";
     panel.appendChild(textarea);
 
     const saveButton = document.createElement("button");
     saveButton.textContent = "💾 Enregistrer ma note";
 
     saveButton.style.cssText = `
-      display: block;
-      width: 100%;
-      margin-top: 14px;
-      padding: 14px;
-      background: #2dd4bf;
-      color: #102b46;
+      display:block;
+      width:100%;
+      margin-top:14px;
+      padding:14px;
+      background:#2dd4bf;
+      color:#102b46;
     `;
 
     saveButton.addEventListener("click", () => {
@@ -659,15 +648,13 @@ viewer.querySelector("#atlas-pdf-favorites")
       );
 
       if (!content) {
-        if (index !== -1) {
-          pageNotes.splice(index, 1);
-        }
+        if (index !== -1) pageNotes.splice(index, 1);
       } else {
         const note = {
           url: currentDocumentURL,
           title: currentDocumentTitle,
           page: currentPage,
-          content: content,
+          content,
           date: new Date().toISOString()
         };
 
@@ -679,7 +666,6 @@ viewer.querySelector("#atlas-pdf-favorites")
       }
 
       savePageNotes();
-
       saveButton.textContent = "✓ Note enregistrée !";
 
       setTimeout(() => {
@@ -690,43 +676,38 @@ viewer.querySelector("#atlas-pdf-favorites")
     });
 
     panel.appendChild(saveButton);
-
     viewer.appendChild(panel);
   }
 
   /* =================================
-     BIBLIOTHÈQUE DE TOUTES LES NOTES
+     TOUTES LES NOTES
   ================================= */
 
   function showAllNotes() {
     if (!viewer) return;
 
-    const oldPanel = viewer.querySelector(
-      "#atlas-pdf-all-notes-panel"
-    );
-
+    const oldPanel = viewer.querySelector("#atlas-pdf-all-notes-panel");
     if (oldPanel) oldPanel.remove();
 
     const panel = document.createElement("div");
     panel.id = "atlas-pdf-all-notes-panel";
 
     panel.style.cssText = `
-      position: absolute;
-      inset: 0;
-      z-index: 30;
-      background: #102b46;
-      padding: 20px;
-      overflow-y: auto;
-      color: white;
+      position:absolute;
+      inset:0;
+      z-index:30;
+      background:#102b46;
+      padding:20px;
+      overflow-y:auto;
+      color:white;
     `;
 
     const header = document.createElement("div");
-
     header.style.cssText = `
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:20px;
     `;
 
     const title = document.createElement("strong");
@@ -734,18 +715,14 @@ viewer.querySelector("#atlas-pdf-favorites")
 
     const closeButton = document.createElement("button");
     closeButton.textContent = "✕";
-
-    closeButton.addEventListener("click", () => {
-      panel.remove();
-    });
+    closeButton.addEventListener("click", () => panel.remove());
 
     header.append(title, closeButton);
     panel.appendChild(header);
 
     if (pageNotes.length === 0) {
       const empty = document.createElement("p");
-      empty.textContent =
-        "Aucune note enregistrée pour le moment.";
+      empty.textContent = "Aucune note enregistrée pour le moment.";
       panel.appendChild(empty);
     }
 
@@ -757,10 +734,10 @@ viewer.querySelector("#atlas-pdf-favorites")
       const entry = document.createElement("div");
 
       entry.style.cssText = `
-        padding: 14px;
-        margin-bottom: 12px;
-        background: #183c5b;
-        border-radius: 10px;
+        padding:14px;
+        margin-bottom:12px;
+        background:#183c5b;
+        border-radius:10px;
       `;
 
       const documentTitle = document.createElement("strong");
@@ -772,9 +749,9 @@ viewer.querySelector("#atlas-pdf-favorites")
       const content = document.createElement("p");
       content.textContent = note.content;
       content.style.cssText = `
-        white-space: pre-wrap;
-        overflow-wrap: anywhere;
-        color: #e0f5f1;
+        white-space:pre-wrap;
+        overflow-wrap:anywhere;
+        color:#e0f5f1;
       `;
 
       const openButton = document.createElement("button");
@@ -819,6 +796,319 @@ viewer.querySelector("#atlas-pdf-favorites")
     viewer.appendChild(panel);
   }
 
+  /* =================================
+     RECHERCHE DANS LE PDF
+  ================================= */
+
+  function showSearchPanel() {
+    if (!viewer || !pdfDocument) return;
+
+    const oldPanel = viewer.querySelector("#atlas-pdf-search-panel");
+    if (oldPanel) {
+      oldPanel.remove();
+      return;
+    }
+
+    const panel = document.createElement("div");
+    panel.id = "atlas-pdf-search-panel";
+
+    panel.style.cssText = `
+      position:absolute;
+      inset:0;
+      z-index:40;
+      background:#102b46;
+      padding:20px;
+      overflow-y:auto;
+      color:white;
+    `;
+
+    const header = document.createElement("div");
+    header.style.cssText = `
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:18px;
+    `;
+
+    const title = document.createElement("strong");
+    title.textContent = "🔎 Rechercher dans ce cours";
+
+    const closeButton = document.createElement("button");
+    closeButton.textContent = "✕";
+    closeButton.addEventListener("click", () => panel.remove());
+
+    header.append(title, closeButton);
+    panel.appendChild(header);
+
+    const input = document.createElement("input");
+    input.type = "search";
+    input.placeholder = "Saisis un mot ou une expression...";
+    input.autocomplete = "off";
+
+    input.style.cssText = `
+      width:100%;
+      box-sizing:border-box;
+      padding:14px;
+      border-radius:10px;
+      border:2px solid #2dd4bf;
+      font-size:16px;
+      color:#102b46;
+      background:white;
+    `;
+
+    panel.appendChild(input);
+
+    const searchButton = document.createElement("button");
+    searchButton.textContent = "Rechercher";
+    searchButton.style.cssText = `
+      width:100%;
+      margin-top:10px;
+      padding:14px;
+      background:#2dd4bf;
+    `;
+
+    panel.appendChild(searchButton);
+
+    const status = document.createElement("p");
+    status.textContent = "La recherche porte sur le texte du PDF.";
+    status.style.cssText = `
+      color:#e0f5f1;
+      font-size:13px;
+      margin-top:14px;
+    `;
+
+    panel.appendChild(status);
+
+    const navigation = document.createElement("div");
+    navigation.style.cssText = `
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin:12px 0;
+    `;
+
+    const previousButton = document.createElement("button");
+    previousButton.textContent = "◀ Précédent";
+
+    const nextButton = document.createElement("button");
+    nextButton.textContent = "Suivant ▶";
+
+    navigation.append(previousButton, nextButton);
+    panel.appendChild(navigation);
+
+    const resultsList = document.createElement("div");
+    panel.appendChild(resultsList);
+
+    async function runSearch() {
+      const query = input.value.trim();
+
+      if (!query) {
+        status.textContent = "Saisis un mot ou une expression.";
+        resultsList.innerHTML = "";
+        return;
+      }
+
+      const thisToken = ++searchToken;
+      const documentBeingSearched = pdfDocument;
+
+      searchResults = [];
+      currentSearchIndex = -1;
+      resultsList.innerHTML = "";
+      previousButton.disabled = true;
+      nextButton.disabled = true;
+
+      status.textContent = "Recherche dans le document...";
+
+      try {
+        const normalizedQuery = query.toLocaleLowerCase();
+
+        for (
+          let pageNumber = 1;
+          pageNumber <= documentBeingSearched.numPages;
+          pageNumber++
+        ) {
+          if (
+            thisToken !== searchToken ||
+            documentBeingSearched !== pdfDocument
+          ) {
+            return;
+          }
+
+          const page = await documentBeingSearched.getPage(pageNumber);
+          const textContent = await page.getTextContent();
+
+          const fullText = textContent.items
+            .map(item => item.str || "")
+            .join(" ")
+            .replace(/\s+/g, " ")
+            .trim();
+
+          const normalizedText = fullText.toLocaleLowerCase();
+
+          let position = 0;
+
+          while (
+            (position = normalizedText.indexOf(
+              normalizedQuery,
+              position
+            )) !== -1
+          ) {
+            const start = Math.max(0, position - 65);
+            const end = Math.min(
+              fullText.length,
+              position + query.length + 85
+            );
+
+            let snippet = fullText.slice(start, end);
+
+            if (start > 0) snippet = "…" + snippet;
+            if (end < fullText.length) snippet += "…";
+
+            searchResults.push({
+              page: pageNumber,
+              snippet
+            });
+
+            position += Math.max(1, normalizedQuery.length);
+
+            // Limiter les résultats pour préserver les performances.
+            if (searchResults.length >= 300) break;
+          }
+
+          if (searchResults.length >= 300) break;
+        }
+
+        if (thisToken !== searchToken) return;
+
+        if (searchResults.length === 0) {
+          status.textContent =
+            "Aucun résultat trouvé. Vérifie l'orthographe ou essaie un autre mot.";
+
+          return;
+        }
+
+        status.textContent =
+          `${searchResults.length} résultat(s) trouvé(s).`;
+
+        currentSearchIndex = 0;
+        displaySearchResults();
+        openSearchResult(0);
+
+      } catch (error) {
+        console.error("Atlas recherche PDF :", error);
+        status.textContent =
+          "Une erreur est survenue pendant la recherche.";
+      }
+    }
+
+    function displaySearchResults() {
+      resultsList.innerHTML = "";
+
+      searchResults.forEach((result, index) => {
+        const entry = document.createElement("button");
+        entry.type = "button";
+
+        entry.style.cssText = `
+          display:block;
+          width:100%;
+          text-align:left;
+          margin:7px 0;
+          padding:12px;
+          background:#183c5b;
+          color:white;
+          border:1px solid #2dd4bf;
+          overflow-wrap:anywhere;
+        `;
+
+        const pageLabel = document.createElement("strong");
+        pageLabel.textContent = `Page ${result.page}`;
+
+        const snippet = document.createElement("div");
+        snippet.textContent = result.snippet;
+        snippet.style.cssText = `
+          margin-top:6px;
+          font-weight:normal;
+          font-size:13px;
+          line-height:1.5;
+        `;
+
+        entry.append(pageLabel, snippet);
+
+        entry.addEventListener("click", () => {
+          openSearchResult(index);
+        });
+
+        resultsList.appendChild(entry);
+      });
+
+      updateSearchNavigation();
+    }
+
+    function updateSearchNavigation() {
+      previousButton.disabled =
+        currentSearchIndex <= 0;
+
+      nextButton.disabled =
+        currentSearchIndex < 0 ||
+        currentSearchIndex >= searchResults.length - 1;
+
+      if (currentSearchIndex >= 0) {
+        status.textContent =
+          `${searchResults.length} résultat(s) — ` +
+          `${currentSearchIndex + 1} / ${searchResults.length}`;
+      }
+    }
+
+    function openSearchResult(index) {
+      if (!searchResults[index]) return;
+
+      currentSearchIndex = index;
+
+      const result = searchResults[index];
+
+      goToPage(result.page);
+      updateSearchNavigation();
+
+      const entries = resultsList.querySelectorAll("button");
+
+      entries.forEach((entry, entryIndex) => {
+        entry.style.background =
+          entryIndex === index ? "#28617e" : "#183c5b";
+      });
+    }
+
+    previousButton.addEventListener("click", () => {
+      if (currentSearchIndex > 0) {
+        openSearchResult(currentSearchIndex - 1);
+      }
+    });
+
+    nextButton.addEventListener("click", () => {
+      if (currentSearchIndex < searchResults.length - 1) {
+        openSearchResult(currentSearchIndex + 1);
+      }
+    });
+
+    searchButton.addEventListener("click", runSearch);
+
+    input.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        runSearch();
+      }
+    });
+
+    viewer.appendChild(panel);
+
+    setTimeout(() => input.focus(), 100);
+  }
+
+  /* =================================
+     MINIATURES
+  ================================= */
+
   function toggleThumbnails() {
     if (!viewer) return;
 
@@ -833,14 +1123,10 @@ viewer.querySelector("#atlas-pdf-favorites")
     }
   }
 
-  /* GÉNÉRER LES MINIATURES */
-
   async function generateThumbnails() {
     if (!pdfDocument || !viewer) return;
 
-    const list = viewer.querySelector(
-      "#atlas-pdf-thumbnails-list"
-    );
+    const list = viewer.querySelector("#atlas-pdf-thumbnails-list");
 
     if (list.dataset.generated === "true") return;
 
@@ -876,10 +1162,7 @@ viewer.querySelector("#atlas-pdf-favorites")
 
         const label = document.createElement("span");
         label.textContent = `Page ${number}`;
-
         thumbnail.appendChild(label);
-
-        /* CLIC SUR UNE MINIATURE */
 
         thumbnail.addEventListener("click", () => {
           list.querySelectorAll(".pdf-thumbnail").forEach(item => {
@@ -899,7 +1182,7 @@ viewer.querySelector("#atlas-pdf-favorites")
 
         await page.render({
           canvasContext: preview.getContext("2d"),
-          viewport: viewport
+          viewport
         }).promise;
       }
 
@@ -907,22 +1190,28 @@ viewer.querySelector("#atlas-pdf-favorites")
 
     } catch (error) {
       console.error("Atlas miniatures :", error);
-      list.textContent =
-        "Impossible de charger les miniatures.";
+      list.textContent = "Impossible de charger les miniatures.";
     }
   }
 
-  /* MESSAGE DU LECTEUR */
+  /* =================================
+     AFFICHAGE DES MESSAGES
+  ================================= */
 
   function showMessage(message) {
+    if (!viewer) return;
+
     const element = viewer.querySelector("#atlas-pdf-message");
 
     element.textContent = message;
     element.hidden = false;
-    canvas.hidden = true;
+
+    if (canvas) canvas.hidden = true;
   }
 
-  /* AFFICHER UNE PAGE */
+  /* =================================
+     AFFICHER UNE PAGE
+  ================================= */
 
   async function renderPage() {
     if (!pdfDocument || !viewer) return;
@@ -934,8 +1223,9 @@ viewer.querySelector("#atlas-pdf-favorites")
 
     const page = await pdfDocument.getPage(currentPage);
 
-    const content = viewer.querySelector("#atlas-pdf-content");
+    if (!viewer || !pdfDocument) return;
 
+    const content = viewer.querySelector("#atlas-pdf-content");
     const originalViewport = page.getViewport({ scale: 1 });
 
     const availableWidth = Math.max(
@@ -947,7 +1237,6 @@ viewer.querySelector("#atlas-pdf-favorites")
     const scale = Math.min(fitScale, 1.5) * zoom;
 
     const viewport = page.getViewport({ scale });
-
     const context = canvas.getContext("2d");
 
     canvas.width = Math.floor(viewport.width);
@@ -957,27 +1246,20 @@ viewer.querySelector("#atlas-pdf-favorites")
     canvas.style.height = `${Math.floor(viewport.height)}px`;
 
     canvas.hidden = false;
-
     viewer.querySelector("#atlas-pdf-message").hidden = true;
 
     viewer.querySelector("#atlas-pdf-info").textContent =
       `Page ${currentPage} / ${pdfDocument.numPages}`;
 
-    /* PROGRESSION */
-
     const progress = Math.round(
       (currentPage / pdfDocument.numPages) * 100
     );
 
-    viewer.querySelector(
-      "#atlas-pdf-progress-fill"
-    ).style.width = `${progress}%`;
+    viewer.querySelector("#atlas-pdf-progress-fill").style.width =
+      `${progress}%`;
 
-    viewer.querySelector(
-      "#atlas-pdf-progress-label"
-    ).textContent = `Lecture : ${progress}%`;
-
-    /* SYNCHRONISATION DES MINIATURES */
+    viewer.querySelector("#atlas-pdf-progress-label").textContent =
+      `Lecture : ${progress}%`;
 
     const thumbnails = viewer.querySelectorAll(".pdf-thumbnail");
 
@@ -987,7 +1269,9 @@ viewer.querySelector("#atlas-pdf-favorites")
         index + 1 === currentPage
       );
     });
-updateBookmarkButton();
+
+    updateBookmarkButton();
+
     viewer.querySelector("#atlas-pdf-prev").disabled =
       currentPage <= 1;
 
@@ -996,7 +1280,7 @@ updateBookmarkButton();
 
     const task = page.render({
       canvasContext: context,
-      viewport: viewport
+      viewport
     });
 
     renderTask = task;
@@ -1005,9 +1289,7 @@ updateBookmarkButton();
       await task.promise;
     } catch (error) {
       if (error.name !== "RenderingCancelledException") {
-        showMessage(
-          "Erreur pendant l'affichage de cette page."
-        );
+        showMessage("Erreur pendant l'affichage de cette page.");
       }
     } finally {
       if (renderTask === task) {
@@ -1016,7 +1298,9 @@ updateBookmarkButton();
     }
   }
 
-  /* NAVIGATION ENTRE LES PAGES */
+  /* =================================
+     NAVIGATION ENTRE LES PAGES
+  ================================= */
 
   async function goToPage(number) {
     if (!pdfDocument) return;
@@ -1030,9 +1314,7 @@ updateBookmarkButton();
       await renderPage();
 
       if (viewer) {
-        viewer.querySelector(
-          "#atlas-pdf-content"
-        ).scrollTop = 0;
+        viewer.querySelector("#atlas-pdf-content").scrollTop = 0;
       }
 
     } catch (error) {
@@ -1042,7 +1324,9 @@ updateBookmarkButton();
     }
   }
 
-  /* ZOOM */
+  /* =================================
+     ZOOM
+  ================================= */
 
   function changeZoom(amount) {
     zoom = Math.max(
@@ -1053,10 +1337,24 @@ updateBookmarkButton();
     renderPage();
   }
 
-  /* CLAVIER */
+  /* =================================
+     CLAVIER
+  ================================= */
 
   function keyboardNavigation(event) {
     if (!viewer) return;
+
+    const activeElement = document.activeElement;
+
+    if (
+      activeElement &&
+      (
+        activeElement.tagName === "INPUT" ||
+        activeElement.tagName === "TEXTAREA"
+      )
+    ) {
+      return;
+    }
 
     if (event.key === "Escape") close();
 
@@ -1069,9 +1367,15 @@ updateBookmarkButton();
     }
   }
 
-  /* FERMER LE LECTEUR */
+  /* =================================
+     FERMER LE LECTEUR
+  ================================= */
 
   function close() {
+    searchToken++;
+    searchResults = [];
+    currentSearchIndex = -1;
+
     if (renderTask) {
       renderTask.cancel();
       renderTask = null;
@@ -1096,21 +1400,32 @@ updateBookmarkButton();
     document.body.style.overflow = "";
   }
 
-  /* OUVRIR UN DOCUMENT */
+  /* =================================
+     OUVRIR UN DOCUMENT
+  ================================= */
 
   async function open(url, title) {
     createViewer();
-    currentDocumentURL = new URL(url, document.baseURI).href;
-    currentDocumentTitle = title || "Atlas Médical — Document";
+
+    searchToken++;
+    searchResults = [];
+    currentSearchIndex = -1;
+
+    currentDocumentURL = new URL(
+      url,
+      document.baseURI
+    ).href;
+
+    currentDocumentTitle =
+      title || "Atlas Médical — Document";
+
     document.body.style.overflow = "hidden";
 
     viewer.querySelector("#atlas-pdf-title").textContent =
-      title || "Atlas Médical — Document";
+      currentDocumentTitle;
 
     currentPage = 1;
     zoom = 1;
-
-    /* RÉINITIALISER LES MINIATURES */
 
     const list = viewer.querySelector(
       "#atlas-pdf-thumbnails-list"
@@ -1122,6 +1437,12 @@ updateBookmarkButton();
     viewer.querySelector(
       "#atlas-pdf-thumbnails-panel"
     ).hidden = true;
+
+    const oldSearchPanel = viewer.querySelector(
+      "#atlas-pdf-search-panel"
+    );
+
+    if (oldSearchPanel) oldSearchPanel.remove();
 
     showMessage("Chargement du document...");
 
@@ -1152,6 +1473,10 @@ updateBookmarkButton();
       );
     }
   }
+
+  /* =================================
+     API PUBLIQUE ATLAS MÉDICAL
+  ================================= */
 
   window.AtlasPDFReader = {
     open,
