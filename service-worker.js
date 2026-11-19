@@ -1,9 +1,10 @@
 
-const CACHE_NAME = "atlas-medical-v13";
+const CACHE_NAME = "atlas-medical-v14";
+
 const APP_FILES = [
   "./",
   "./index.html",
-  "./styles.css",
+  "./styles.css?v=2",
   "./app.js",
   "./calculators.js",
   "./news.js",
