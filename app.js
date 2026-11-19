@@ -2,8 +2,8 @@
 /* ==========================================
    ATLAS MÉDICAL BY @WREDOU
    Navigation — Organisation générale
-   Version 4.0
-   Architecture corrigée
+   Version 5.0
+   Réparation de l'affichage et des fenêtres
 ========================================== */
 
 "use strict";
@@ -197,6 +197,83 @@ function toast(message) {
 }
 
 /* ==========================================
+   AFFICHAGE ET MASQUAGE
+   Compatible avec l'attribut HTML hidden
+========================================== */
+
+function showElement(selector, visible) {
+  document.querySelectorAll(selector).forEach(element => {
+    element.hidden = !visible;
+    element.style.display = visible ? "" : "none";
+  });
+}
+
+/* ==========================================
+   STRUCTURE DES PAGES
+========================================== */
+
+function showMainSections(options = {}) {
+  const isLibrary = !!options.library;
+  const isDynamic = !!options.modules && !isLibrary;
+  const isHome = !isLibrary && !isDynamic;
+
+  showElement("#homePage", isHome);
+  showElement("#dynamicPage", isDynamic);
+  showElement("#bibliotheque-pdf", isLibrary);
+}
+
+/* ==========================================
+   PRÉPARATION DES PAGES
+========================================== */
+
+function preparePage(title, subtitle, count) {
+  showElement("#homePage", false);
+  showElement("#bibliotheque-pdf", false);
+  showElement("#dynamicPage", true);
+
+  const heading = $("#pageTitle");
+
+  if (heading) {
+    heading.textContent = title;
+  }
+
+  const eyebrow = $(".dynamic-page .eyebrow");
+
+  if (eyebrow && subtitle) {
+    eyebrow.textContent = subtitle;
+  }
+
+  const moduleCount = $("#moduleCount");
+
+  if (moduleCount) {
+    moduleCount.textContent = count;
+  }
+}
+
+function showPlaceholder(title, description) {
+  const grid = $("#moduleGrid");
+
+  if (!grid) return;
+
+  grid.replaceChildren();
+
+  const card = document.createElement("div");
+
+  card.className = "module-card";
+  card.style.gridColumn = "1 / -1";
+
+  const heading = document.createElement("h3");
+  heading.textContent = title;
+
+  const paragraph = document.createElement("p");
+  paragraph.textContent = description;
+
+  card.append(heading, paragraph);
+
+  grid.appendChild(card);
+}
+
+/* ==========================================
    AFFICHAGE DES MODULES
 ========================================== */
 
@@ -338,78 +415,46 @@ function openModule(module) {
     note
   );
 
-  if (typeof dialog.showModal === "function") {
-    dialog.showModal();
-  } else {
-    dialog.setAttribute("open", "");
-  }
+  /* Le conteneur HTML actuel est un div, pas un dialog natif. */
+
+  dialog.hidden = false;
+  dialog.style.display = "";
+  dialog.setAttribute("open", "");
+  dialog.setAttribute("aria-hidden", "false");
+  dialog.classList.add("open");
 }
 
 /* ==========================================
-   AFFICHAGE DES ÉLÉMENTS
+   FERMETURE DU MODULE
 ========================================== */
 
-function showElement(selector, visible) {
-  const element = $(selector);
+function closeModuleDialog() {
+  const dialog = $("#moduleDialog");
 
-  if (element) {
-    element.style.display = visible ? "" : "none";
+  if (!dialog) return;
+
+  dialog.classList.remove("open");
+  dialog.removeAttribute("open");
+  dialog.setAttribute("aria-hidden", "true");
+  dialog.hidden = true;
+  dialog.style.display = "none";
+}
+
+$("#closeModuleDialog")?.addEventListener(
+  "click",
+  closeModuleDialog
+);
+
+$("#closeDialog")?.addEventListener(
+  "click",
+  closeModuleDialog
+);
+
+$("#moduleDialog")?.addEventListener("click", event => {
+  if (event.target === $("#moduleDialog")) {
+    closeModuleDialog();
   }
-}
-
-function preparePage(title, subtitle, count) {
-  const heading =
-    $("#pageTitle") ||
-    $(".modules-section .section-head h2");
-
-  const eyebrow =
-    $(".modules-section .section-head .eyebrow");
-
-  if (heading) heading.textContent = title;
-
-  if (eyebrow) eyebrow.textContent = subtitle;
-
-  if ($("#moduleCount")) {
-    $("#moduleCount").textContent = count;
-  }
-
-  showElement(".modules-section", true);
-}
-
-function showPlaceholder(title, description) {
-  const grid = $("#moduleGrid");
-
-  if (!grid) return;
-
-  grid.replaceChildren();
-
-  const card = document.createElement("div");
-
-  card.className = "module-card";
-  card.style.gridColumn = "1 / -1";
-
-  const heading = document.createElement("h3");
-  heading.textContent = title;
-
-  const paragraph = document.createElement("p");
-  paragraph.textContent = description;
-
-  card.append(heading, paragraph);
-
-  grid.appendChild(card);
-}
-
-/* ==========================================
-   STRUCTURE DES PAGES
-========================================== */
-
-function showMainSections(options = {}) {
-  showElement(".hero", !!options.hero);
-  showElement(".quick-section", !!options.quick);
-  showElement(".study-card", !!options.study);
-  showElement(".modules-section", !!options.modules);
-  showElement("#bibliotheque-pdf", !!options.library);
-}
+});
 
 /* ==========================================
    OUTILS MÉDICAUX
@@ -772,7 +817,7 @@ function renderSettings() {
 ========================================== */
 
 function renderStats() {
-  showMainSections({ study: true, modules: true });
+  showMainSections({ modules: true });
 
   preparePage(
     "Statistiques",
@@ -907,14 +952,14 @@ function renderAtlas3D() {
 function renderLibrary() {
   showMainSections({ library: true });
 
-  const heading = $("#pageTitle");
+  const heading = $("#bibliotheque-pdf .section-title h2");
 
   if (heading) {
-    heading.textContent = "Bibliothèque";
+    heading.textContent = "Bibliothèque PDF";
   }
 
-  showElement(".search-box", false);
-  showElement(".modules-section", false);
+  showElement("#dynamicPage", false);
+  showElement("#homePage", false);
   showElement("#bibliotheque-pdf", true);
 }
 
@@ -927,9 +972,7 @@ function updateNavigation(page) {
 
   if (page === "library") {
     activePage = "atlas";
-  }
-
-  else if (
+  } else if (
     [
       "courses",
       "calculators",
@@ -970,19 +1013,12 @@ function setPage(page) {
     searchInput.value = "";
   }
 
-  showElement("#bibliotheque-pdf", false);
+  closeModuleDialog();
 
   if (page === "home") {
-    showMainSections({
-      hero: true,
-      quick: true,
-      study: true,
-      modules: false,
-      library: false
-    });
-  }
+    showMainSections({});
 
-  else if (page === "courses") {
+  } else if (page === "courses") {
     showMainSections({ modules: true });
 
     preparePage(
@@ -992,60 +1028,47 @@ function setPage(page) {
     );
 
     renderModules();
-  }
 
-  else if (page === "library") {
+  } else if (page === "library") {
     renderLibrary();
-  }
 
-  else if (page === "stats") {
+  } else if (page === "stats") {
     renderStats();
-  }
 
-  else if (page === "more") {
+  } else if (page === "more") {
     renderSettings();
-  }
 
-  else if (page === "tools") {
+  } else if (page === "tools") {
     renderTools();
-  }
 
-  else if (
+  } else if (
     page === "calculators" ||
     page === "news"
   ) {
     renderExternalSection(page);
-  }
 
-  else if (page === "scores") {
+  } else if (page === "scores") {
     renderScores();
-  }
 
-  else if (page === "saved") {
+  } else if (page === "saved") {
     renderFavorites();
-  }
 
-  else if (page === "revisions") {
+  } else if (page === "revisions") {
     renderRevisions();
-  }
 
-  else if (page === "quiz") {
+  } else if (page === "quiz") {
     renderQuiz();
-  }
 
-  else if (page === "profile") {
+  } else if (page === "profile") {
     renderProfile();
-  }
 
-  else if (page === "student") {
+  } else if (page === "student") {
     renderStudent();
-  }
 
-  else if (page === "atlas3d") {
+  } else if (page === "atlas3d") {
     renderAtlas3D();
-  }
 
-  else {
+  } else {
     setPage("home");
     return;
   }
@@ -1063,7 +1086,6 @@ function setPage(page) {
 
 /* ==========================================
    RACCOURCIS DE L'ACCUEIL
-   Association par attribut et intitulé
 ========================================== */
 
 function configureQuickAccess() {
@@ -1186,44 +1208,26 @@ document.querySelectorAll(".nav-item").forEach(button => {
   });
 });
 
+/* Bouton Détails de la progression */
+
+document.querySelectorAll(
+  '[data-page]:not(.nav-item)'
+).forEach(button => {
+  button.addEventListener("click", () => {
+    const destination = button.dataset.page;
+
+    if (destination) {
+      setPage(destination);
+    }
+  });
+});
+
 /* ==========================================
    OUVERTURE DE LA BIBLIOTHÈQUE PDF
 ========================================== */
 
 $("#openPdfLibrary")?.addEventListener("click", () => {
   setPage("library");
-});
-
-/* ==========================================
-   FERMETURE DU MODULE
-========================================== */
-
-function closeModuleDialog() {
-  const dialog = $("#moduleDialog");
-
-  if (!dialog) return;
-
-  if (typeof dialog.close === "function") {
-    dialog.close();
-  } else {
-    dialog.removeAttribute("open");
-  }
-}
-
-$("#closeDialog")?.addEventListener(
-  "click",
-  closeModuleDialog
-);
-
-$("#closeModuleDialog")?.addEventListener(
-  "click",
-  closeModuleDialog
-);
-
-$("#moduleDialog")?.addEventListener("click", event => {
-  if (event.target === $("#moduleDialog")) {
-    closeModuleDialog();
-  }
 });
 
 /* ==========================================
