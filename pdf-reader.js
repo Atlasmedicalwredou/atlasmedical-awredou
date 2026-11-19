@@ -1,7 +1,7 @@
 
 /* =========================================
    ATLAS MÉDICAL — LECTEUR PDF INTÉGRÉ
-   Version 1.4 — Recherche dans les PDF
+   Version 1.5 — Ouverture des résultats
    Moteur PDF.js
 ========================================= */
 
@@ -28,13 +28,12 @@
   let currentDocumentURL = "";
   let currentDocumentTitle = "";
 
-  // Recherche
   let searchResults = [];
   let currentSearchIndex = -1;
   let searchToken = 0;
 
   /* =================================
-     STOCKAGE DES FAVORIS ET DES NOTES
+     STOCKAGE
   ================================= */
 
   function loadBookmarks() {
@@ -72,7 +71,7 @@
   }
 
   /* =================================
-     CHARGEMENT DE PDF.JS
+     CHARGEMENT PDF.JS
   ================================= */
 
   function loadPDFJS() {
@@ -804,6 +803,7 @@
     if (!viewer || !pdfDocument) return;
 
     const oldPanel = viewer.querySelector("#atlas-pdf-search-panel");
+
     if (oldPanel) {
       oldPanel.remove();
       return;
@@ -973,7 +973,6 @@
 
             position += Math.max(1, normalizedQuery.length);
 
-            // Limiter les résultats pour préserver les performances.
             if (searchResults.length >= 300) break;
           }
 
@@ -985,16 +984,13 @@
         if (searchResults.length === 0) {
           status.textContent =
             "Aucun résultat trouvé. Vérifie l'orthographe ou essaie un autre mot.";
-
           return;
         }
 
         status.textContent =
           `${searchResults.length} résultat(s) trouvé(s).`;
 
-        currentSearchIndex = 0;
         displaySearchResults();
-        openSearchResult(0);
 
       } catch (error) {
         console.error("Atlas recherche PDF :", error);
@@ -1061,22 +1057,18 @@
       }
     }
 
-    function openSearchResult(index) {
+    async function openSearchResult(index) {
       if (!searchResults[index]) return;
-
-      currentSearchIndex = index;
 
       const result = searchResults[index];
 
-      goToPage(result.page);
-      updateSearchNavigation();
+      currentSearchIndex = index;
 
-      const entries = resultsList.querySelectorAll("button");
+      // Fermer le panneau pour rendre la page visible.
+      panel.remove();
 
-      entries.forEach((entry, entryIndex) => {
-        entry.style.background =
-          entryIndex === index ? "#28617e" : "#183c5b";
-      });
+      // Afficher la page choisie.
+      await goToPage(result.page);
     }
 
     previousButton.addEventListener("click", () => {
@@ -1195,7 +1187,7 @@
   }
 
   /* =================================
-     AFFICHAGE DES MESSAGES
+     MESSAGES
   ================================= */
 
   function showMessage(message) {
@@ -1299,7 +1291,7 @@
   }
 
   /* =================================
-     NAVIGATION ENTRE LES PAGES
+     NAVIGATION
   ================================= */
 
   async function goToPage(number) {
