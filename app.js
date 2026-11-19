@@ -2,7 +2,14 @@
 /* ==========================================
    ATLAS MÉDICAL BY @WREDOU
    Navigation — Organisation générale
-   Version 3.0
+   Version 4.0
+   Architecture corrigée
+========================================== */
+
+"use strict";
+
+/* ==========================================
+   MODULES CARDIOVASCULAIRES
 ========================================== */
 
 const modules = [
@@ -127,6 +134,10 @@ const modules = [
   }
 ];
 
+/* ==========================================
+   VARIABLES GÉNÉRALES
+========================================== */
+
 const $ = selector => document.querySelector(selector);
 
 let saved = new Set();
@@ -160,6 +171,7 @@ function saveFavorites(nextSaved) {
       "atlas-favorites",
       JSON.stringify([...nextSaved])
     );
+
     return true;
   } catch (error) {
     toast("Impossible d'enregistrer les favoris.");
@@ -173,6 +185,7 @@ function saveFavorites(nextSaved) {
 
 function toast(message) {
   const element = $("#toast");
+
   if (!element) return;
 
   element.textContent = message;
@@ -189,6 +202,7 @@ function toast(message) {
 
 function renderModules(list = modules) {
   const grid = $("#moduleGrid");
+
   if (!grid) return;
 
   grid.replaceChildren();
@@ -202,19 +216,23 @@ function renderModules(list = modules) {
 
   if (!list.length) {
     const empty = document.createElement("div");
+
     empty.className = "empty";
     empty.textContent =
       "Aucun module trouvé. Essaie un autre mot-clé.";
+
     grid.appendChild(empty);
     return;
   }
 
   list.forEach(module => {
     const button = document.createElement("button");
+
     button.className = "module-card";
     button.type = "button";
 
     const icon = document.createElement("span");
+
     icon.className = "module-icon";
     icon.style.backgroundColor = module.tone;
     icon.textContent = module.icon;
@@ -240,13 +258,19 @@ function renderModules(list = modules) {
 ========================================== */
 
 function openModule(module) {
-  const tag = $("#dialogTag");
-  const content = $("#dialogContent");
   const dialog = $("#moduleDialog");
+
+  const content =
+    $("#moduleDialogBody") ||
+    $("#dialogContent");
+
+  const tag = $("#dialogTag");
 
   if (!content || !dialog) return;
 
-  if (tag) tag.textContent = "ATLAS CARDIOVASCULAIRE";
+  if (tag) {
+    tag.textContent = "ATLAS CARDIOVASCULAIRE";
+  }
 
   content.replaceChildren();
 
@@ -266,6 +290,7 @@ function openModule(module) {
   });
 
   const favoriteButton = document.createElement("button");
+
   favoriteButton.className = "primary-btn";
   favoriteButton.type = "button";
 
@@ -289,6 +314,7 @@ function openModule(module) {
     if (!saveFavorites(nextSaved)) return;
 
     saved = nextSaved;
+
     updateFavoriteButton();
 
     toast(
@@ -299,44 +325,66 @@ function openModule(module) {
   });
 
   const note = document.createElement("p");
+
   note.className = "small-note";
   note.textContent =
     "Version prototype : les fiches détaillées devront être rédigées, sourcées et validées avant diffusion.";
 
-  content.append(title, description, list, favoriteButton, note);
+  content.append(
+    title,
+    description,
+    list,
+    favoriteButton,
+    note
+  );
 
-  dialog.showModal();
+  if (typeof dialog.showModal === "function") {
+    dialog.showModal();
+  } else {
+    dialog.setAttribute("open", "");
+  }
 }
 
 /* ==========================================
-   STRUCTURE DES PAGES
+   AFFICHAGE DES ÉLÉMENTS
 ========================================== */
 
 function showElement(selector, visible) {
   const element = $(selector);
+
   if (element) {
     element.style.display = visible ? "" : "none";
   }
 }
 
 function preparePage(title, subtitle, count) {
-  const heading = $(".modules-section .section-head h2");
-  const eyebrow = $(".modules-section .section-head .eyebrow");
-  const grid = $("#moduleGrid");
+  const heading =
+    $("#pageTitle") ||
+    $(".modules-section .section-head h2");
+
+  const eyebrow =
+    $(".modules-section .section-head .eyebrow");
 
   if (heading) heading.textContent = title;
+
   if (eyebrow) eyebrow.textContent = subtitle;
-  if ($("#moduleCount")) $("#moduleCount").textContent = count;
-  if (grid) grid.style.display = "grid";
+
+  if ($("#moduleCount")) {
+    $("#moduleCount").textContent = count;
+  }
+
+  showElement(".modules-section", true);
 }
 
 function showPlaceholder(title, description) {
   const grid = $("#moduleGrid");
+
   if (!grid) return;
 
   grid.replaceChildren();
 
   const card = document.createElement("div");
+
   card.className = "module-card";
   card.style.gridColumn = "1 / -1";
 
@@ -347,8 +395,13 @@ function showPlaceholder(title, description) {
   paragraph.textContent = description;
 
   card.append(heading, paragraph);
+
   grid.appendChild(card);
 }
+
+/* ==========================================
+   STRUCTURE DES PAGES
+========================================== */
 
 function showMainSections(options = {}) {
   showElement(".hero", !!options.hero);
@@ -359,20 +412,20 @@ function showMainSections(options = {}) {
 }
 
 /* ==========================================
-   OUTILS
-   Calculs — Scores — Actualités
+   OUTILS MÉDICAUX
 ========================================== */
 
 function renderTools() {
   showMainSections({ modules: true });
 
   preparePage(
-    "Mes outils",
-    "OUTILS MÉDICAUX",
+    "Outils médicaux",
+    "CALCULER · ÉVALUER · S'INFORMER",
     "03 rubriques"
   );
 
   const grid = $("#moduleGrid");
+
   if (!grid) return;
 
   grid.replaceChildren();
@@ -380,7 +433,7 @@ function renderTools() {
   const tools = [
     {
       icon: "∑",
-      title: "Calculs médicaux",
+      title: "Calculatrices médicales",
       description: "Calculatrices et outils cliniques",
       page: "calculators"
     },
@@ -393,17 +446,19 @@ function renderTools() {
     {
       icon: "▣",
       title: "Actualités médicales",
-      description: "Informations médicales et nouveautés",
+      description: "Informations et nouveautés",
       page: "news"
     }
   ];
 
   tools.forEach(item => {
     const button = document.createElement("button");
+
     button.className = "module-card";
     button.type = "button";
 
     const icon = document.createElement("span");
+
     icon.className = "module-icon";
     icon.textContent = item.icon;
 
@@ -433,12 +488,17 @@ function renderExternalSection(type) {
   showMainSections({ modules: true });
 
   preparePage(
-    isCalculator ? "Calculs médicaux" : "Actualités médicales",
-    isCalculator ? "OUTILS DE CALCUL CLINIQUE" : "INFORMATIONS MÉDICALES",
+    isCalculator
+      ? "Calculatrices médicales"
+      : "Actualités médicales",
+    isCalculator
+      ? "OUTILS DE CALCUL CLINIQUE"
+      : "INFORMATIONS MÉDICALES",
     isCalculator ? "Calculs" : "Actualités"
   );
 
   const grid = $("#moduleGrid");
+
   if (!grid) return;
 
   grid.replaceChildren();
@@ -483,6 +543,7 @@ function renderScores() {
   );
 
   const grid = $("#moduleGrid");
+
   if (!grid) return;
 
   grid.replaceChildren();
@@ -513,12 +574,13 @@ function renderQuiz() {
   showMainSections({ modules: true });
 
   preparePage(
-    "Entraînement",
+    "Quiz et entraînement",
     "TESTE TES CONNAISSANCES",
     "QCM"
   );
 
   const grid = $("#moduleGrid");
+
   if (!grid) return;
 
   grid.innerHTML = `
@@ -542,6 +604,7 @@ function renderQuiz() {
 
   options.forEach((option, index) => {
     const button = document.createElement("button");
+
     button.className = "quiz-option";
     button.type = "button";
     button.textContent = option;
@@ -551,7 +614,9 @@ function renderQuiz() {
         element.disabled = true;
       });
 
-      button.classList.add(index === 0 ? "correct" : "wrong");
+      button.classList.add(
+        index === 0 ? "correct" : "wrong"
+      );
 
       const feedback = $("#quizFeedback");
 
@@ -602,7 +667,7 @@ function renderFavorites() {
 }
 
 /* ==========================================
-   PARAMÈTRES ET PROFIL
+   PROFIL
 ========================================== */
 
 function renderProfile() {
@@ -615,6 +680,7 @@ function renderProfile() {
   );
 
   const grid = $("#moduleGrid");
+
   if (!grid) return;
 
   grid.innerHTML = `
@@ -636,10 +702,16 @@ function renderProfile() {
   `;
 
   $("#clearData")?.addEventListener("click", () => {
-    if (confirm("Effacer tous les favoris enregistrés sur cet appareil ?")) {
+    if (
+      confirm(
+        "Effacer tous les favoris enregistrés sur cet appareil ?"
+      )
+    ) {
       try {
         localStorage.removeItem("atlas-favorites");
+
         saved.clear();
+
         toast("Favoris effacés");
       } catch (error) {
         toast("Impossible d'effacer les favoris.");
@@ -647,6 +719,10 @@ function renderProfile() {
     }
   });
 }
+
+/* ==========================================
+   PARAMÈTRES
+========================================== */
 
 function renderSettings() {
   showMainSections({ modules: true });
@@ -658,20 +734,31 @@ function renderSettings() {
   );
 
   const grid = $("#moduleGrid");
+
   if (!grid) return;
 
   grid.replaceChildren();
 
   const profile = document.createElement("button");
+
   profile.type = "button";
   profile.className = "module-card";
   profile.style.gridColumn = "1 / -1";
 
-  profile.innerHTML = `
-    <span class="module-icon">◉</span>
-    <strong>Mon profil</strong>
-    <small>Informations et préférences personnelles</small>
-  `;
+  const icon = document.createElement("span");
+
+  icon.className = "module-icon";
+  icon.textContent = "◉";
+
+  const title = document.createElement("strong");
+  title.textContent = "Mon profil";
+
+  const description = document.createElement("small");
+
+  description.textContent =
+    "Informations et préférences personnelles";
+
+  profile.append(icon, title, description);
 
   profile.addEventListener("click", () => {
     setPage("profile");
@@ -694,14 +781,17 @@ function renderStats() {
   );
 
   const grid = $("#moduleGrid");
+
   if (!grid) return;
 
   grid.replaceChildren();
 
   const favoriteCard = document.createElement("div");
+
   favoriteCard.className = "module-card";
 
   const favoriteIcon = document.createElement("span");
+
   favoriteIcon.className = "module-icon";
   favoriteIcon.textContent = "★";
 
@@ -718,9 +808,11 @@ function renderStats() {
   );
 
   const totalCard = document.createElement("div");
+
   totalCard.className = "module-card";
 
   const totalIcon = document.createElement("span");
+
   totalIcon.className = "module-icon";
   totalIcon.textContent = "▤";
 
@@ -739,7 +831,9 @@ function renderStats() {
   grid.append(favoriteCard, totalCard);
 
   const note = document.createElement("p");
+
   note.className = "small-note";
+
   note.textContent =
     "Les statistiques détaillées de progression seront ajoutées progressivement.";
 
@@ -760,13 +854,25 @@ function renderStudent() {
   );
 
   const grid = $("#moduleGrid");
+
   if (!grid) return;
+
+  grid.replaceChildren();
 
   if (
     window.AtlasStudentSpace &&
     typeof window.AtlasStudentSpace.render === "function"
   ) {
-    window.AtlasStudentSpace.render(grid, { toast });
+    try {
+      window.AtlasStudentSpace.render(grid, { toast });
+    } catch (error) {
+      console.error("Erreur espace étudiant :", error);
+
+      showPlaceholder(
+        "Espace étudiant indisponible",
+        "Une erreur est survenue lors du chargement de ton espace."
+      );
+    }
   } else {
     showPlaceholder(
       "Espace étudiant indisponible",
@@ -776,22 +882,70 @@ function renderStudent() {
 }
 
 /* ==========================================
+   ATLAS 3D
+========================================== */
+
+function renderAtlas3D() {
+  showMainSections({ modules: true });
+
+  preparePage(
+    "Atlas 3D",
+    "EXPLORATION ANATOMIQUE",
+    "À venir"
+  );
+
+  showPlaceholder(
+    "Atlas 3D en préparation",
+    "L'exploration anatomique en trois dimensions sera intégrée dans une prochaine étape."
+  );
+}
+
+/* ==========================================
+   BIBLIOTHÈQUE PDF
+========================================== */
+
+function renderLibrary() {
+  showMainSections({ library: true });
+
+  const heading = $("#pageTitle");
+
+  if (heading) {
+    heading.textContent = "Bibliothèque";
+  }
+
+  showElement(".search-box", false);
+  showElement(".modules-section", false);
+  showElement("#bibliotheque-pdf", true);
+}
+
+/* ==========================================
    NAVIGATION INFÉRIEURE
 ========================================== */
 
 function updateNavigation(page) {
-  const activePage =
-    page === "calculators" ||
-    page === "scores" ||
-    page === "news" ||
-    page === "quiz" ||
-    page === "saved" ||
-    page === "revisions" ||
-    page === "student" ||
-    page === "profile" ||
-    page === "tools"
-      ? "more"
-      : page;
+  let activePage = page;
+
+  if (page === "library") {
+    activePage = "atlas";
+  }
+
+  else if (
+    [
+      "courses",
+      "calculators",
+      "scores",
+      "news",
+      "quiz",
+      "saved",
+      "revisions",
+      "student",
+      "profile",
+      "tools",
+      "atlas3d"
+    ].includes(page)
+  ) {
+    activePage = "home";
+  }
 
   document.querySelectorAll(".nav-item").forEach(button => {
     button.classList.toggle(
@@ -811,7 +965,12 @@ function setPage(page) {
   updateNavigation(page);
 
   const searchInput = $("#searchInput");
-  if (searchInput) searchInput.value = "";
+
+  if (searchInput) {
+    searchInput.value = "";
+  }
+
+  showElement("#bibliotheque-pdf", false);
 
   if (page === "home") {
     showMainSections({
@@ -823,11 +982,8 @@ function setPage(page) {
     });
   }
 
-  else if (page === "atlas") {
-    showMainSections({
-      modules: true,
-      library: true
-    });
+  else if (page === "courses") {
+    showMainSections({ modules: true });
 
     preparePage(
       "Cours",
@@ -836,6 +992,10 @@ function setPage(page) {
     );
 
     renderModules();
+  }
+
+  else if (page === "library") {
+    renderLibrary();
   }
 
   else if (page === "stats") {
@@ -850,7 +1010,10 @@ function setPage(page) {
     renderTools();
   }
 
-  else if (page === "calculators" || page === "news") {
+  else if (
+    page === "calculators" ||
+    page === "news"
+  ) {
     renderExternalSection(page);
   }
 
@@ -879,18 +1042,7 @@ function setPage(page) {
   }
 
   else if (page === "atlas3d") {
-    showMainSections({ modules: true });
-
-    preparePage(
-      "Atlas 3D",
-      "EXPLORATION ANATOMIQUE",
-      "À venir"
-    );
-
-    showPlaceholder(
-      "Atlas 3D en préparation",
-      "L'exploration anatomique en trois dimensions sera intégrée dans une prochaine étape."
-    );
+    renderAtlas3D();
   }
 
   else {
@@ -900,58 +1052,38 @@ function setPage(page) {
 
   showElement(
     ".search-box",
-    page === "home" || page === "atlas"
+    page === "courses"
   );
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
 
 /* ==========================================
    RACCOURCIS DE L'ACCUEIL
+   Association par attribut et intitulé
 ========================================== */
 
 function configureQuickAccess() {
-  const buttons = [
-    ...document.querySelectorAll("[data-shortcut]")
-  ];
+  const buttons = document.querySelectorAll("[data-shortcut]");
 
-  const destinations = [
-    "atlas",
-    "quiz",
-    "revisions",
-    "atlas3d",
-    "search",
-    "saved",
-    "tools",
-    "student"
-  ];
+  buttons.forEach(button => {
+    const destination = button.dataset.shortcut;
 
-  const labels = [
-    "Cours",
-    "Quiz",
-    "Révisions",
-    "Atlas 3D",
-    "Rechercher",
-    "Favoris",
-    "Outils",
-    "Espace étudiant"
-  ];
+    const labelElement =
+      button.querySelector(".quick-label");
 
-  buttons.forEach((button, index) => {
-    const destination = destinations[index];
-    const label = labels[index];
-
-    const labelElement = button.querySelector(".quick-label");
-    if (labelElement) labelElement.textContent = label;
-
-    if (destination === "tools") {
-      const icon = button.querySelector(".drop-icon");
-      if (icon) icon.textContent = "∑";
-    }
+    const visibleLabel = (
+      labelElement?.textContent ||
+      button.textContent ||
+      ""
+    ).trim().toLocaleLowerCase("fr");
 
     button.addEventListener("click", () => {
       if (destination === "search") {
-        setPage("atlas");
+        setPage("courses");
 
         setTimeout(() => {
           $("#searchInput")?.focus();
@@ -960,7 +1092,39 @@ function configureQuickAccess() {
         return;
       }
 
-      setPage(destination || "home");
+      if (destination === "atlas") {
+        setPage("courses");
+        return;
+      }
+
+      if (destination === "saved") {
+        if (visibleLabel.includes("révision")) {
+          setPage("revisions");
+        } else {
+          setPage("saved");
+        }
+
+        return;
+      }
+
+      if (destination === "tools") {
+        setPage("tools");
+        return;
+      }
+
+      if (destination === "profile") {
+        setPage("profile");
+        return;
+      }
+
+      if (destination === "student") {
+        setPage("student");
+        return;
+      }
+
+      if (destination) {
+        setPage(destination);
+      }
     });
   });
 }
@@ -968,11 +1132,11 @@ function configureQuickAccess() {
 configureQuickAccess();
 
 /* ==========================================
-   ACCÈS RAPIDE AU PROFIL
+   ACCÈS AU PROFIL
 ========================================== */
 
 document.querySelectorAll(
-  "[data-profile], .profile-btn"
+  "[data-profile], .profile-btn, .profile-button"
 ).forEach(button => {
   button.addEventListener("click", () => {
     setPage("profile");
@@ -980,15 +1144,17 @@ document.querySelectorAll(
 });
 
 /* ==========================================
-   RECHERCHE
+   RECHERCHE DES COURS
 ========================================== */
 
 $("#searchInput")?.addEventListener("input", event => {
-  if (currentPage !== "home" && currentPage !== "atlas") {
+  if (currentPage !== "courses") {
     return;
   }
 
-  const query = event.target.value.toLocaleLowerCase("fr");
+  const query = event.target.value
+    .toLocaleLowerCase("fr")
+    .trim();
 
   renderModules(
     modules.filter(module =>
@@ -996,32 +1162,67 @@ $("#searchInput")?.addEventListener("input", event => {
         module.title + " " +
         module.desc + " " +
         module.topics.join(" ")
-      ).toLocaleLowerCase("fr").includes(query)
+      )
+      .toLocaleLowerCase("fr")
+      .includes(query)
     )
   );
 });
 
 /* ==========================================
-   BOUTONS DE NAVIGATION
+   NAVIGATION INFÉRIEURE
 ========================================== */
 
 document.querySelectorAll(".nav-item").forEach(button => {
   button.addEventListener("click", () => {
-    setPage(button.dataset.page);
+    const destination = button.dataset.page;
+
+    if (destination === "atlas") {
+      setPage("library");
+      return;
+    }
+
+    setPage(destination || "home");
   });
+});
+
+/* ==========================================
+   OUVERTURE DE LA BIBLIOTHÈQUE PDF
+========================================== */
+
+$("#openPdfLibrary")?.addEventListener("click", () => {
+  setPage("library");
 });
 
 /* ==========================================
    FERMETURE DU MODULE
 ========================================== */
 
-$("#closeDialog")?.addEventListener("click", () => {
-  $("#moduleDialog")?.close();
-});
+function closeModuleDialog() {
+  const dialog = $("#moduleDialog");
+
+  if (!dialog) return;
+
+  if (typeof dialog.close === "function") {
+    dialog.close();
+  } else {
+    dialog.removeAttribute("open");
+  }
+}
+
+$("#closeDialog")?.addEventListener(
+  "click",
+  closeModuleDialog
+);
+
+$("#closeModuleDialog")?.addEventListener(
+  "click",
+  closeModuleDialog
+);
 
 $("#moduleDialog")?.addEventListener("click", event => {
   if (event.target === $("#moduleDialog")) {
-    $("#moduleDialog").close();
+    closeModuleDialog();
   }
 });
 
@@ -1031,25 +1232,36 @@ $("#moduleDialog")?.addEventListener("click", event => {
 
 window.addEventListener("beforeinstallprompt", event => {
   event.preventDefault();
+
   deferredPrompt = event;
 
   const button = $("#installBtn");
-  if (button) button.hidden = false;
+
+  if (button) {
+    button.hidden = false;
+  }
 });
 
 $("#installBtn")?.addEventListener("click", async () => {
   if (!deferredPrompt) {
-    toast("Sur iPhone : Safari → Partager → Sur l’écran d’accueil.");
+    toast(
+      "Sur iPhone : Safari → Partager → Sur l’écran d’accueil."
+    );
+
     return;
   }
 
   deferredPrompt.prompt();
+
   await deferredPrompt.userChoice;
 
   deferredPrompt = null;
 
   const button = $("#installBtn");
-  if (button) button.hidden = true;
+
+  if (button) {
+    button.hidden = true;
+  }
 });
 
 /* ==========================================
@@ -1063,8 +1275,11 @@ if (
   window.addEventListener("load", () => {
     navigator.serviceWorker
       .register("./service-worker.js")
-      .catch(() => {
-        toast("Installation hors ligne indisponible pour le moment.");
+      .catch(error => {
+        console.error(
+          "Service Worker indisponible :",
+          error
+        );
       });
   });
 }
