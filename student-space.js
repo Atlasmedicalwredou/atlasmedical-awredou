@@ -1,7 +1,7 @@
 
 /* ==========================================
    ATLAS MÉDICAL — ESPACE ÉTUDIANT
-   Version 1.4 — Scanner iOS et PDF local
+   Version 1.5 — Lecteur PDF intégré à Atlas
 ========================================== */
 
 (function () {
@@ -11,6 +11,7 @@
     "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
 
   let pdfLibraryPromise = null;
+  let activePDFURL = null;
 
   function createCard(icon, title, description, status) {
     const card = document.createElement("article");
@@ -67,7 +68,9 @@
 
       script.onerror = () => {
         pdfLibraryPromise = null;
-        reject(new Error("Impossible de charger la bibliothèque PDF. Vérifie ta connexion."));
+        reject(new Error(
+          "Impossible de charger la bibliothèque PDF. Vérifie ta connexion."
+        ));
       };
 
       document.head.appendChild(script);
@@ -180,11 +183,6 @@
     scannerDescription.style.cssText =
       "font-size:12px;line-height:1.6;color:var(--muted);";
 
-    /*
-      iOS : aucun attribut capture n'est imposé.
-      Safari peut proposer ses choix natifs :
-      appareil photo, photothèque ou fichiers.
-    */
     const cameraInput = document.createElement("input");
     cameraInput.type = "file";
     cameraInput.accept = "image/*";
@@ -483,7 +481,7 @@
       clearPagesButton
     );
 
-    /* IMPORTATION DES DOCUMENTS PDF */
+    /* DOCUMENTS PDF */
 
     const documentsBox = document.createElement("div");
     documentsBox.style.cssText = `
@@ -499,7 +497,7 @@
 
     const documentsDescription = document.createElement("p");
     documentsDescription.textContent =
-      "Sélectionne un cours PDF depuis les fichiers de ton appareil. Il sera enregistré dans ton espace local.";
+      "Tes cours sont conservés localement. Appuie sur Ouvrir pour les lire directement dans Atlas Médical.";
     documentsDescription.style.cssText =
       "font-size:12px;line-height:1.6;color:var(--muted);";
 
@@ -522,6 +520,47 @@
       "Aucun document enregistré pour le moment.";
     emptyMessage.style.cssText =
       "font-size:12px;color:var(--muted);";
+
+    /* OUVERTURE DANS LE LECTEUR ATLAS */
+
+    async function openPDF(record) {
+      try {
+        if (!record.file || typeof record.file.size !== "number") {
+          throw new Error(
+            "Le fichier PDF est introuvable dans le stockage local."
+          );
+        }
+
+        if (!window.AtlasPDFReader ||
+            typeof window.AtlasPDFReader.open !== "function") {
+          throw new Error(
+            "Le lecteur PDF Atlas n'est pas chargé."
+          );
+        }
+
+        if (activePDFURL) {
+          URL.revokeObjectURL(activePDFURL);
+          activePDFURL = null;
+        }
+
+        activePDFURL = URL.createObjectURL(record.file);
+
+        await window.AtlasPDFReader.open(
+          activePDFURL,
+          record.name || "Cours PDF"
+        );
+
+      } catch (error) {
+        console.error("Ouverture PDF Atlas :", error);
+
+        if (activePDFURL) {
+          URL.revokeObjectURL(activePDFURL);
+          activePDFURL = null;
+        }
+
+        notify(error.message || "Impossible d'ouvrir ce PDF.");
+      }
+    }
 
     async function refreshDocuments() {
       documentsList.replaceChildren();
@@ -552,7 +591,7 @@
           `;
 
           const information = document.createElement("div");
-          information.style.cssText = "min-width:0;";
+          information.style.cssText = "min-width:0;flex:1;";
 
           const name = document.createElement("strong");
           name.textContent = "📄 " + record.name;
@@ -567,6 +606,26 @@
 
           information.append(name, date);
 
+          const actions = document.createElement("div");
+          actions.style.cssText =
+            "display:flex;align-items:center;gap:6px;flex-shrink:0;";
+
+          const openButton = document.createElement("button");
+          openButton.type = "button";
+          openButton.textContent = "Ouvrir";
+          openButton.style.cssText = `
+            border:1px solid #b8d9ca;
+            background:#effaf4;
+            color:#176344;
+            border-radius:8px;
+            padding:8px;
+            font-size:11px;
+          `;
+
+          openButton.addEventListener("click", () => {
+            openPDF(record);
+          });
+
           const deleteButton = document.createElement("button");
           deleteButton.type = "button";
           deleteButton.textContent = "Supprimer";
@@ -577,7 +636,6 @@
             border-radius:8px;
             padding:8px;
             font-size:11px;
-            flex-shrink:0;
           `;
 
           deleteButton.addEventListener("click", async () => {
@@ -595,7 +653,8 @@
             }
           });
 
-          item.append(information, deleteButton);
+          actions.append(openButton, deleteButton);
+          item.append(information, actions);
           documentsList.appendChild(item);
         });
 
@@ -731,10 +790,16 @@
       refreshDocuments();
     }
 
-    /* LIBÉRATION DES APERÇUS SI LA PAGE EST QUITTÉE */
+    /* LIBÉRATION DES APERÇUS ET URL PDF À LA FERMETURE */
+
     const cleanup = () => {
       pages.forEach(page => URL.revokeObjectURL(page.url));
       pages = [];
+
+      if (activePDFURL) {
+        URL.revokeObjectURL(activePDFURL);
+        activePDFURL = null;
+      }
     };
 
     window.addEventListener("pagehide", cleanup, { once: true });
