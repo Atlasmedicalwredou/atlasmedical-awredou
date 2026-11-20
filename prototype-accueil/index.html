@@ -1,13 +1,11 @@
-
 <!doctype html>
 <html lang="fr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#d9efff">
+  <meta name="theme-color" content="#edf6fc">
   <meta name="description" content="Atlas Médical — Apprendre, réviser et réussir.">
   <title>Atlas Médical — Accueil</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -17,152 +15,81 @@
 </head>
 <body>
   <main class="am-app" id="accueil">
-    <div class="am-water-waves" aria-hidden="true">
-      <svg viewBox="0 0 430 420" preserveAspectRatio="none">
-        <path d="M-30 65 C70 5 130 115 220 72 S360 8 470 60 L470 0 L-30 0Z" fill="#fff" opacity=".34"/>
-        <path d="M-40 145 C55 80 130 190 230 140 S365 72 470 125" fill="none" stroke="#fff" stroke-width="10" opacity=".28"/>
-        <path d="M260 -20 C190 80 330 120 250 230 S330 330 450 270" fill="none" stroke="#70c8f5" stroke-width="24" opacity=".16"/>
-        <path d="M270 -20 C205 80 345 120 265 230 S345 330 465 270" fill="none" stroke="#fff" stroke-width="5" opacity=".48"/>
-      </svg>
-    </div>
-
-    <div class="am-bubbles" aria-hidden="true">
-      <i class="am-bubble am-bubble--one"></i>
-      <i class="am-bubble am-bubble--two"></i>
-      <i class="am-bubble am-bubble--three"></i>
-      <i class="am-bubble am-bubble--four"></i>
+    <div class="am-atmosphere" aria-hidden="true">
+      <span class="am-orb am-orb-one"></span><span class="am-orb am-orb-two"></span>
+      <span class="am-bubble am-bubble-one"></span><span class="am-bubble am-bubble-two"></span>
+      <span class="am-bubble am-bubble-three"></span><span class="am-bubble am-bubble-four"></span>
     </div>
 
     <header class="am-header">
       <a class="am-brand" href="#accueil" aria-label="Atlas Médical, accueil">
-        <span class="am-brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 100 86">
-            <path d="M50 79 12 43C-2 29 7 5 28 5c11 0 18 7 22 15C54 12 62 5 73 5c21 0 29 24 15 38Z" fill="url(#am-heart-gradient)"/>
-            <path d="M13 43h22l8-17 10 37 9-26 6 10h20" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-            <defs><linearGradient id="am-heart-gradient" x1="10" y1="5" x2="80" y2="80" gradientUnits="userSpaceOnUse"><stop stop-color="#20a9d2"/><stop offset="1" stop-color="#063b70"/></linearGradient></defs>
+        <span class="am-logo" aria-hidden="true">
+          <svg viewBox="0 0 72 72">
+            <defs><linearGradient id="am-logo-grad" x1="10" y1="8" x2="62" y2="65"><stop stop-color="#25c4d0"/><stop offset="1" stop-color="#07518a"/></linearGradient></defs>
+            <path d="M36 63 11 39C-1 27 7 8 23 8c6 0 11 3 13 9 3-6 8-9 14-9 16 0 24 19 12 31Z" fill="url(#am-logo-grad)"/>
+            <path d="M10 35h16l6-11 8 27 7-18 5 8h12" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </span>
-        <span class="am-brand-copy">
-          <strong>Atlas<br>Médical</strong>
-          <em>Apprendre • Réviser • Réussir</em>
-        </span>
+        <span class="am-brand-copy"><strong>Atlas Médical</strong><small>APPRENDRE • RÉVISER • RÉUSSIR</small></span>
       </a>
-      <button class="am-profile" type="button" aria-label="Profil étudiant">
-        <i class="fa-solid fa-user" aria-hidden="true"></i>
-      </button>
+      <button class="am-profile" type="button" aria-label="Ouvrir le profil"><i class="fa-regular fa-user"></i></button>
     </header>
 
-    <section class="am-hero am-glass" aria-labelledby="am-hero-title">
+    <section class="am-hero" aria-labelledby="am-hero-title">
+      <div class="am-hero-shine" aria-hidden="true"></div>
       <div class="am-hero-copy">
-        <h1 id="am-hero-title">Bienvenue sur<br>Atlas Médical 👋</h1>
-        <p>Ton compagnon pour exceller<br class="am-desktop-break"> en médecine.</p>
-        <a class="am-primary-button" href="#cours">
-          <i class="fa-solid fa-play" aria-hidden="true"></i>
-          <span>Commencer à apprendre</span>
-          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-        </a>
+        <span class="am-eyebrow"><i class="fa-solid fa-sparkles"></i> TON ESPACE MÉDICAL</span>
+        <h1 id="am-hero-title">Bienvenue sur<br>Atlas Médical <span>👋</span></h1>
+        <p>Ton compagnon pour apprendre, progresser et exceller en médecine.</p>
+        <a class="am-cta" href="#cours"><span class="am-cta-icon"><i class="fa-solid fa-play"></i></span> Commencer à apprendre <i class="fa-solid fa-arrow-right"></i></a>
       </div>
-
-      <div class="am-hero-art" aria-hidden="true">
-        <img
-          src="./heart-water.png..PNG"
-          alt=""
-          onerror="this.style.display='none'; this.nextElementSibling.hidden=false"
-        >
-        <div class="am-heart-fallback" hidden>
-          <i class="fa-solid fa-heart-pulse"></i>
-        </div>
-        <span class="am-art-bubble am-art-bubble--a"></span>
-        <span class="am-art-bubble am-art-bubble--b"></span>
-        <span class="am-art-bubble am-art-bubble--c"></span>
+      <div class="am-hero-visual" aria-hidden="true">
+        <span class="am-visual-halo"></span>
+        <img src="./heart-water.png..PNG" alt="" onerror="this.style.display='none';this.nextElementSibling.hidden=false">
+        <span class="am-heart-fallback" hidden><i class="fa-solid fa-heart-pulse"></i></span>
+        <i class="am-spark am-spark-a"></i><i class="am-spark am-spark-b"></i>
       </div>
+      <div class="am-hero-foot"><span><i class="fa-solid fa-shield-heart"></i> Ton apprentissage, à ton rythme</span><span class="am-online-dot"></span></div>
     </section>
 
     <section class="am-shortcuts" aria-labelledby="am-shortcuts-title">
-      <div class="am-section-heading">
-        <h2 id="am-shortcuts-title"><i class="fa-solid fa-droplet" aria-hidden="true"></i> Accès rapide</h2>
-        <a class="am-small-pill" href="#tout">Voir tout <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
+      <div class="am-section-head">
+        <div><span class="am-kicker">EXPLORE TON ATLAS</span><h2 id="am-shortcuts-title">Accès rapide</h2></div>
+        <a class="am-see-all" href="#tout">Voir tout <i class="fa-solid fa-arrow-right"></i></a>
       </div>
-
       <div class="am-shortcut-grid" id="tout">
-        <a class="am-shortcut" href="#cours">
-          <span class="am-drop"><i class="fa-solid fa-book-open" aria-hidden="true"></i></span>
-          <span class="am-shortcut-label">Cours</span>
-        </a>
-        <a class="am-shortcut" href="#quiz">
-          <span class="am-drop"><i class="fa-solid fa-brain" aria-hidden="true"></i></span>
-          <span class="am-shortcut-label">Quiz</span>
-        </a>
-        <a class="am-shortcut" href="#revisions">
-          <span class="am-drop"><i class="fa-solid fa-arrows-rotate" aria-hidden="true"></i></span>
-          <span class="am-shortcut-label">Révisions</span>
-        </a>
-        <a class="am-shortcut" href="#atlas-3d">
-          <span class="am-drop"><i class="fa-solid fa-cube" aria-hidden="true"></i></span>
-          <span class="am-shortcut-label">Atlas 3D</span>
-        </a>
-        <a class="am-shortcut" href="#rechercher">
-          <span class="am-drop"><i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i></span>
-          <span class="am-shortcut-label">Rechercher</span>
-        </a>
-        <a class="am-shortcut" href="#favoris">
-          <span class="am-drop"><i class="fa-solid fa-star" aria-hidden="true"></i></span>
-          <span class="am-shortcut-label">Favoris</span>
-        </a>
-        <a class="am-shortcut" href="#outils-medicaux">
-          <span class="am-drop"><i class="fa-solid fa-stethoscope" aria-hidden="true"></i></span>
-          <span class="am-shortcut-label">Outils médicaux</span>
-        </a>
-        <a class="am-shortcut" href="#espace-etudiant">
-          <span class="am-drop"><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i></span>
-          <span class="am-shortcut-label">Espace étudiant</span>
-        </a>
+        <a class="am-shortcut" href="#cours"><span class="am-drop"><i class="fa-solid fa-book-open"></i></span><strong>Cours</strong></a>
+        <a class="am-shortcut" href="#quiz"><span class="am-drop"><i class="fa-solid fa-brain"></i></span><strong>Quiz</strong></a>
+        <a class="am-shortcut" href="#revisions"><span class="am-drop"><i class="fa-solid fa-arrows-rotate"></i></span><strong>Révisions</strong></a>
+        <a class="am-shortcut" href="#atlas-3d"><span class="am-drop"><i class="fa-solid fa-cube"></i></span><strong>Atlas 3D</strong></a>
+        <a class="am-shortcut" href="#rechercher"><span class="am-drop"><i class="fa-solid fa-magnifying-glass"></i></span><strong>Rechercher</strong></a>
+        <a class="am-shortcut" href="#favoris"><span class="am-drop"><i class="fa-solid fa-star"></i></span><strong>Favoris</strong></a>
+        <a class="am-shortcut" href="#outils-medicaux"><span class="am-drop"><i class="fa-solid fa-stethoscope"></i></span><strong>Outils médicaux</strong></a>
+        <a class="am-shortcut" href="#espace-etudiant"><span class="am-drop"><i class="fa-solid fa-graduation-cap"></i></span><strong>Espace étudiant</strong></a>
       </div>
     </section>
 
-    <section class="am-progress am-glass" aria-labelledby="am-progress-title">
-      <div class="am-progress-top">
-        <h2 id="am-progress-title"><i class="fa-solid fa-chart-simple" aria-hidden="true"></i> Ma progression</h2>
-        <a class="am-small-pill" href="#statistiques">Détails <i class="fa-solid fa-chevron-right" aria-hidden="true"></i></a>
+    <section class="am-progress" aria-labelledby="am-progress-title">
+      <div class="am-progress-head">
+        <div><span class="am-kicker">CHAQUE JOUR COMPTE</span><h2 id="am-progress-title"><i class="fa-solid fa-chart-line"></i> Ma progression</h2></div>
+        <a class="am-see-all" href="#statistiques">Détails <i class="fa-solid fa-arrow-right"></i></a>
       </div>
-
-      <div class="am-progress-content">
+      <div class="am-progress-body">
         <div class="am-progress-ring" role="img" aria-label="Progression : 78 pour cent">
-          <svg viewBox="0 0 120 120" aria-hidden="true">
-            <defs><linearGradient id="am-progress-gradient" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#25c8bd"/><stop offset="1" stop-color="#078f9f"/></linearGradient></defs>
-            <circle class="am-ring-track" cx="60" cy="60" r="49"></circle>
-            <circle class="am-ring-value" cx="60" cy="60" r="49"></circle>
-          </svg>
-          <strong><span data-am-progress-number>78</span>%</strong>
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="am-ring-bg" cx="60" cy="60" r="49"/><circle class="am-ring-fill" cx="60" cy="60" r="49"/></svg>
+          <strong><span data-am-progress-number>78</span><small>%</small></strong>
         </div>
-
-        <div class="am-progress-label">
-          <span>Niveau global</span>
-          <strong data-am-progress-label>Excellent ! 🏆</strong>
-        </div>
-
-        <div class="am-progress-decoration" aria-hidden="true">
-          <div class="am-decoration-drop"><i class="fa-solid fa-heart-pulse"></i></div>
-          <span class="am-decoration-bubble"></span>
-          <span class="am-decoration-bubble am-decoration-bubble--small"></span>
-        </div>
+        <div class="am-progress-copy"><span>Ton niveau global</span><strong data-am-progress-label>Excellent ! 🏆</strong><small>Continue comme ça, tu avances bien.</small></div>
+        <div class="am-progress-symbol" aria-hidden="true"><i class="fa-solid fa-heart-pulse"></i></div>
       </div>
-      <div class="am-progress-wave" aria-hidden="true"></div>
+      <div class="am-progress-bottom"><span><i class="fa-solid fa-bolt"></i> Régularité</span><span>Un pas de plus chaque jour</span></div>
     </section>
 
     <nav class="am-bottom-nav" aria-label="Navigation principale">
-      <a class="am-nav-item is-active" href="#accueil" aria-current="page">
-        <i class="fa-solid fa-house" aria-hidden="true"></i><span>Accueil</span>
-      </a>
-      <a class="am-nav-item" href="#bibliotheque">
-        <i class="fa-solid fa-book-open" aria-hidden="true"></i><span>Bibliothèque</span>
-      </a>
-      <a class="am-nav-item" href="#statistiques">
-        <i class="fa-solid fa-chart-simple" aria-hidden="true"></i><span>Statistiques</span>
-      </a>
-      <a class="am-nav-item" href="#parametres">
-        <i class="fa-solid fa-gear" aria-hidden="true"></i><span>Paramètres</span>
-      </a>
+      <a class="am-nav-item is-active" href="#accueil" aria-current="page"><i class="fa-solid fa-house"></i><span>Accueil</span></a>
+      <a class="am-nav-item" href="#bibliotheque"><i class="fa-solid fa-book-open"></i><span>Bibliothèque</span></a>
+      <a class="am-nav-item" href="#statistiques"><i class="fa-solid fa-chart-column"></i><span>Statistiques</span></a>
+      <a class="am-nav-item" href="#parametres"><i class="fa-solid fa-gear"></i><span>Paramètres</span></a>
     </nav>
   </main>
 </body>
