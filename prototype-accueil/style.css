@@ -45,9 +45,64 @@ a{color:inherit;text-decoration:none}button{font:inherit}
 .am-see-all i{font-size:10px;color:#16a5b3}
 .am-shortcut-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px 9px}
 .am-shortcut{display:flex;min-width:0;flex-direction:column;align-items:center;gap:8px;text-align:center}
-.am-drop{position:relative;width:65px;height:74px;display:grid;place-items:center;color:#104e78;border:1px solid #ffffff;border-radius:50% 50% 50% 50%/63% 63% 37% 37%;background:radial-gradient(ellipse at 31% 16%,#fff 0 6%,#ffffff8c 15%,transparent 32%),radial-gradient(ellipse at 70% 82%,#43a8d15c,transparent 48%),linear-gradient(145deg,#faffff,#bceafa 43%,#73c9e9 76%,#e6fbff);box-shadow:0 8px 15px #287aa12b,inset 4px 5px 8px #ffffffed,inset -5px -7px 10px #1478a33b;transition:transform .18s ease}
-.am-drop:after{content:"";position:absolute;inset:4px;border:1px solid #ffffff70;border-radius:inherit}
-.am-drop i{position:relative;z-index:1;font-size:26px;filter:drop-shadow(0 1px 1px #fff9)}
+
+/* GOUTTES D'EAU 3D — volume, transparence et reflets */
+.am-drop{
+  position:relative;
+  isolation:isolate;
+  width:65px;
+  height:76px;
+  display:grid;
+  place-items:center;
+  color:#f8feff;
+  border:1px solid rgba(255,255,255,.96);
+  border-radius:50% 50% 48% 52% / 70% 70% 30% 30%;
+  clip-path:polygon(50% 0%,62% 14%,76% 30%,88% 47%,97% 64%,100% 78%,96% 89%,87% 96%,72% 100%,50% 100%,28% 100%,13% 96%,4% 89%,0 78%,3% 64%,12% 47%,24% 30%,38% 14%);
+  background:
+    radial-gradient(ellipse at 34% 17%,rgba(255,255,255,.98) 0 3%,rgba(255,255,255,.72) 5%,transparent 19%),
+    radial-gradient(ellipse at 72% 75%,rgba(8,104,163,.48),transparent 42%),
+    radial-gradient(ellipse at 27% 58%,rgba(255,255,255,.25),transparent 48%),
+    linear-gradient(145deg,#effeff 0%,#a8e9fa 23%,#45b5e3 52%,#087db7 78%,#d9faff 100%);
+  box-shadow:
+    0 10px 17px rgba(13,91,139,.25),
+    0 2px 5px rgba(255,255,255,.9),
+    inset 5px 7px 10px rgba(255,255,255,.95),
+    inset -7px -9px 13px rgba(0,75,130,.42),
+    inset 1px -2px 4px rgba(255,255,255,.85);
+  transition:transform .2s ease,filter .2s ease;
+}
+.am-drop:before{
+  content:"";
+  position:absolute;
+  z-index:0;
+  top:13%;
+  left:19%;
+  width:18%;
+  height:43%;
+  border-radius:50%;
+  transform:rotate(24deg);
+  background:linear-gradient(180deg,rgba(255,255,255,.98),rgba(255,255,255,.12));
+  filter:blur(.35px);
+  box-shadow:0 0 7px rgba(255,255,255,.75);
+}
+.am-drop:after{
+  content:"";
+  position:absolute;
+  z-index:0;
+  inset:5px 5px 4px;
+  border-radius:inherit;
+  background:linear-gradient(145deg,rgba(255,255,255,.28),transparent 34%,transparent 72%,rgba(255,255,255,.2));
+  box-shadow:inset 1px 1px 2px rgba(255,255,255,.82),inset -2px -3px 5px rgba(255,255,255,.18);
+  pointer-events:none;
+}
+.am-drop i{
+  position:relative;
+  z-index:1;
+  font-size:26px;
+  color:#f7fdff;
+  filter:drop-shadow(0 2px 2px rgba(0,61,105,.55)) drop-shadow(0 0 4px rgba(255,255,255,.75));
+  text-shadow:0 1px 1px rgba(0,54,95,.35);
+}
 .am-shortcut strong{display:flex;align-items:center;justify-content:center;width:100%;min-height:31px;padding:4px 2px;border:1px solid #ffffffed;border-radius:999px;background:linear-gradient(145deg,#ffffffd9,#eff9fbd1);box-shadow:0 4px 10px #2b71901a;color:#173e5e;font-size:10px;font-weight:900;line-height:1.05}
 .am-progress{position:relative;margin-top:28px;padding:18px 17px 13px;border:1px solid #ffffffed;border-radius:27px;overflow:hidden;background:linear-gradient(125deg,#ffffffc9,#d6eff8b8);box-shadow:var(--am-shadow),inset 0 1px 0 #fff}
 .am-progress-head{position:relative;z-index:2;margin-bottom:8px}.am-progress-head h2{display:flex;align-items:center;gap:8px;font-size:20px}.am-progress-head h2 i{font-size:18px;color:#1485a9}
@@ -66,6 +121,6 @@ a{color:inherit;text-decoration:none}button{font:inherit}
 .am-shortcut:focus-visible,.am-nav-item:focus-visible,.am-see-all:focus-visible,.am-cta:focus-visible,.am-profile:focus-visible{outline:3px solid #087ba6;outline-offset:3px}
 .am-shortcut:active .am-drop,.am-cta:active,.am-profile:active{transform:scale(.96)}
 @keyframes am-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-@media(min-width:600px){.am-app{padding-left:28px;padding-right:28px}.am-hero{min-height:330px}.am-hero-visual{height:265px}.am-drop{width:75px;height:85px}.am-shortcut strong{font-size:11px}}
-@media(max-width:380px){.am-app{padding-left:15px;padding-right:15px}.am-brand-copy strong{font-size:22px}.am-brand-copy small{font-size:8px;letter-spacing:.7px}.am-logo{width:51px;flex-basis:51px}.am-hero{min-height:280px;padding-left:16px}.am-hero-copy{width:70%}.am-hero h1{font-size:24px}.am-hero p{font-size:12px}.am-cta{gap:6px;padding:0 9px;font-size:10px}.am-hero-visual{right:-13px;width:46%;height:220px}.am-drop{width:59px;height:68px}.am-drop i{font-size:23px}.am-shortcut strong{font-size:9px}.am-progress-body{gap:9px}.am-progress-ring{width:100px;height:100px;flex-basis:100px}.am-progress-copy>strong{font-size:16px}.am-progress-symbol{width:57px;height:70px}.am-nav-item{font-size:9px}}
+@media(min-width:600px){.am-app{padding-left:28px;padding-right:28px}.am-hero{min-height:330px}.am-hero-visual{height:265px}.am-drop{width:75px;height:87px}.am-shortcut strong{font-size:11px}}
+@media(max-width:380px){.am-app{padding-left:15px;padding-right:15px}.am-brand-copy strong{font-size:22px}.am-brand-copy small{font-size:8px;letter-spacing:.7px}.am-logo{width:51px;flex-basis:51px}.am-hero{min-height:280px;padding-left:16px}.am-hero-copy{width:70%}.am-hero h1{font-size:24px}.am-hero p{font-size:12px}.am-cta{gap:6px;padding:0 9px;font-size:10px}.am-hero-visual{right:-13px;width:46%;height:220px}.am-drop{width:59px;height:69px}.am-drop i{font-size:23px}.am-shortcut strong{font-size:9px}.am-progress-body{gap:9px}.am-progress-ring{width:100px;height:100px;flex-basis:100px}.am-progress-copy>strong{font-size:16px}.am-progress-symbol{width:57px;height:70px}.am-nav-item{font-size:9px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
