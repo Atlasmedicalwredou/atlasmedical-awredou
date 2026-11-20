@@ -502,3 +502,116 @@ button { color: inherit; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* =========================================================
+   ATLAS MÉDICAL — CORRECTIONS FINALES ACCUEIL
+   Cœur aquatique + navigation iPhone
+========================================================= */
+
+/* Espace inférieur pour ne jamais masquer la progression */
+.am-app {
+  padding-bottom: calc(155px + var(--am-safe-bottom));
+}
+
+/* Carte d'accueil et illustration du cœur */
+.am-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.am-hero-copy {
+  width: 68%;
+  z-index: 3;
+}
+
+.am-hero-art {
+  top: 20px;
+  right: -3px;
+  width: 46%;
+  height: 255px;
+  z-index: 2;
+  overflow: visible;
+}
+
+.am-hero-art img {
+  width: 112%;
+  height: 100%;
+  max-height: 245px;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 9px 10px rgba(12,72,113,.2));
+}
+
+/* Bulles décoratives autour du cœur */
+.am-art-bubble {
+  z-index: 3;
+}
+
+/* Libellés des accès rapides */
+.am-shortcut-label {
+  min-height: 38px;
+  padding: 5px 3px;
+  text-wrap: balance;
+}
+
+/* Carte de progression */
+.am-progress {
+  margin-bottom: 25px;
+  isolation: isolate;
+}
+
+/* Navigation inférieure */
+.am-bottom-nav {
+  bottom: calc(10px + var(--am-safe-bottom));
+  padding: 7px;
+  gap: 5px;
+  min-height: 78px;
+}
+
+.am-nav-item {
+  min-height: 62px;
+}
+
+/* Écrans iPhone étroits */
+@media (max-width: 380px) {
+  .am-app {
+    padding-bottom: calc(150px + var(--am-safe-bottom));
+  }
+
+  .am-hero-art {
+    top: 25px;
+    right: -8px;
+    width: 43%;
+    height: 225px;
+  }
+
+  .am-hero-art img {
+    max-height: 215px;
+    width: 115%;
+  }
+
+  .am-hero-copy {
+    width: 70%;
+  }
+
+  .am-shortcut-label {
+    font-size: 10px;
+  }
+
+  .am-bottom-nav {
+    width: calc(100% - 16px);
+  }
+}
+
+/* Écrans plus larges */
+@media (min-width: 600px) {
+  .am-hero-art {
+    height: 285px;
+  }
+
+  .am-hero-art img {
+    max-height: 275px;
+  }
+}
+
