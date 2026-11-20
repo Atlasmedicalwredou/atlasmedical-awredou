@@ -615,3 +615,24 @@ button { color: inherit; }
   }
 }
 
+/* ATLAS MÉDICAL — NAVIGATION SANS CHEVAUCHEMENT */
+
+.am-app {
+  padding-bottom: calc(30px + var(--am-safe-bottom));
+}
+
+.am-bottom-nav {
+  position: sticky;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  width: 100%;
+  margin: 24px auto 12px;
+  z-index: 20;
+}
+
+.am-nav-item.is-active {
+  transform: none;
+}
+
+
