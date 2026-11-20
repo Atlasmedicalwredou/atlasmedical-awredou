@@ -1,26 +1,29 @@
 
 /* ==========================================================
    ATLAS MÉDICAL BY @WREDOU
-   DESIGN CLASSIQUE — VERSION B
-   Style original adapté à l'organisation actuelle
-   Sans Glass — Sans effets aquatiques
+   DESIGN CLASSIQUE PREMIUM — VERSION B
+   CSS nettoyé — Navigation et progression corrigées
 ========================================================== */
 
 :root {
   --navy: #102b46;
-  --navy-light: #193b59;
-  --turquoise: #16b8ae;
-  --turquoise-light: #e0f7f5;
+  --navy-light: #1c4966;
+  --turquoise: #13b8ad;
+  --turquoise-light: #e6f8f6;
   --white: #ffffff;
-  --background: #f3f7fa;
-  --text: #243447;
-  --muted: #718096;
-  --line: #e5edf2;
+  --background: #f1f6fa;
+  --text: #23394d;
+  --muted: #7b8d9d;
+  --line: #e4edf2;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 
-  --shadow: 0 4px 15px rgba(16,43,70,.06);
-  --shadow-hover: 0 8px 20px rgba(16,43,70,.10);
+  --shadow: 0 8px 24px rgba(16,43,70,.075);
+  --shadow-hover: 0 12px 28px rgba(16,43,70,.12);
 }
+
+/* ==========================================================
+   BASE
+========================================================== */
 
 * {
   box-sizing: border-box;
@@ -44,10 +47,7 @@ body {
   overflow-x: hidden;
 }
 
-button,
-input,
-textarea,
-select {
+button, input, textarea, select {
   font: inherit;
 }
 
@@ -77,7 +77,7 @@ textarea:focus-visible {
   max-width: 760px;
   min-height: 100vh;
   margin: 0 auto;
-  padding-bottom: calc(95px + var(--safe-bottom));
+  padding-bottom: 0;
   background: var(--background);
 }
 
@@ -86,6 +86,21 @@ textarea:focus-visible {
 .dynamic-page,
 .atlas-pdf-library {
   width: 100%;
+}
+
+/* Une seule réserve pour la navigation fixe.
+   Pas de réserve supplémentaire sur .app-shell
+   ni sur #homePage. */
+
+#mainContent {
+  padding-bottom: calc(100px + var(--safe-bottom));
+  overflow: visible;
+}
+
+#homePage {
+  padding-bottom: 0;
+  min-height: 0;
+  overflow: visible;
 }
 
 /* ==========================================================
@@ -99,16 +114,18 @@ textarea:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 15px 19px;
-  background: var(--navy);
+  min-height: 76px;
+  padding: 12px 18px;
   color: white;
+  background: linear-gradient(115deg,#102b46,#174563);
   border-bottom: 3px solid var(--turquoise);
+  box-shadow: 0 4px 15px rgba(16,43,70,.12);
 }
 
 .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
   min-width: 0;
   color: white;
 }
@@ -123,8 +140,9 @@ textarea:focus-visible {
   overflow: hidden;
   color: white;
   font-size: 25px;
-  border-radius: 13px;
-  background: var(--turquoise);
+  border-radius: 15px;
+  background: linear-gradient(145deg,#20c8bb,#109d9b);
+  box-shadow: 0 4px 12px rgba(19,184,173,.25);
 }
 
 .brand-heart {
@@ -140,19 +158,23 @@ textarea:focus-visible {
   font-weight: 900;
 }
 
+.brand-text {
+  min-width: 0;
+}
+
 .brand-text h1 {
   margin: 0;
   color: white;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 900;
-  letter-spacing: .3px;
+  letter-spacing: -.5px;
 }
 
 .brand-text p {
   margin: 1px 0 0;
-  color: #b8d4df;
+  color: #c3dce7;
   font-size: 9px;
-  letter-spacing: .25px;
+  letter-spacing: .4px;
 }
 
 .topbar-actions {
@@ -172,7 +194,7 @@ textarea:focus-visible {
   font-size: 22px;
   border: 1px solid rgba(255,255,255,.25);
   border-radius: 50%;
-  background: var(--navy-light);
+  background: rgba(255,255,255,.12);
 }
 
 .profile-button:active {
@@ -203,27 +225,26 @@ textarea:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  min-height: 225px;
-  margin: 17px 15px 21px;
-  padding: 25px 19px;
+  min-height: 205px;
+  margin: 16px 14px 30px;
+  padding: 26px 20px;
   overflow: hidden;
   isolation: isolate;
   color: white;
-  border: 0;
-  border-radius: 20px;
-  background: linear-gradient(140deg, #102b46, #1a526b);
-  box-shadow: 0 7px 18px rgba(16,43,70,.15);
+  border-radius: 26px;
+  background: linear-gradient(135deg,#102b46 0%,#174a68 65%,#176b78 100%);
+  box-shadow: 0 10px 25px rgba(16,43,70,.16);
 }
 
 .hero::before {
   content: "";
   position: absolute;
   z-index: -1;
-  width: 180px;
-  height: 180px;
-  right: -95px;
-  bottom: -115px;
-  border: 1px solid rgba(255,255,255,.12);
+  width: 220px;
+  height: 220px;
+  right: -105px;
+  bottom: -145px;
+  border: 1px solid rgba(255,255,255,.15);
   border-radius: 50%;
 }
 
@@ -231,43 +252,44 @@ textarea:focus-visible {
   content: "";
   position: absolute;
   z-index: -1;
-  top: -60px;
-  left: 35%;
-  width: 140px;
-  height: 140px;
+  top: -90px;
+  left: 60%;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
-  background: rgba(255,255,255,.035);
+  background: rgba(255,255,255,.045);
 }
 
 .hero-content {
   position: relative;
   z-index: 3;
-  flex: 1 1 60%;
+  flex: 1 1 100%;
   min-width: 0;
+  max-width: 100%;
 }
 
 .hero h2 {
   margin: 0 0 10px;
-  max-width: 310px;
+  max-width: 100%;
   color: white;
-  font-size: clamp(22px, 6vw, 31px);
-  line-height: 1.15;
-  letter-spacing: -.8px;
+  font-size: clamp(25px,6vw,32px);
+  line-height: 1.18;
+  letter-spacing: -.7px;
   font-weight: 850;
 }
 
 .hero h2 span {
   display: block;
   margin-top: 4px;
-  color: #55ded1;
+  color: #56e0d2;
   font-size: .8em;
 }
 
 .hero p {
-  max-width: 235px;
+  max-width: 290px;
   margin: 0 0 17px;
-  color: #d5e6ec;
-  font-size: 11px;
+  color: #d8eaf0;
+  font-size: 12px;
   line-height: 1.6;
 }
 
@@ -276,17 +298,17 @@ textarea:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 42px;
+  min-height: 44px;
   max-width: 100%;
-  padding: 10px 13px;
+  padding: 11px 17px;
   color: var(--navy);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 850;
   white-space: nowrap;
   border: 0;
-  border-radius: 10px;
+  border-radius: 12px;
   background: white;
-  box-shadow: none;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
 }
 
 .hero-button:active {
@@ -308,73 +330,10 @@ textarea:focus-visible {
   font-size: 16px;
 }
 
-/* Illustration du cœur */
+/* Illustration masquée comme demandé */
 
 .hero-art {
-  position: relative;
-  z-index: 2;
-  flex: 0 0 112px;
-  width: 112px;
-  height: 150px;
-  display: grid;
-  place-items: center;
-}
-
-.hero-water-ring {
-  position: absolute;
-  width: 105px;
-  height: 105px;
-  border: 2px solid rgba(255,255,255,.2);
-  border-radius: 50%;
-}
-
-.hero-heart {
-  position: relative;
-  z-index: 3;
-  width: 90px;
-  height: 105px;
-  display: grid;
-  place-items: center;
-  background-image: url("./images/heart-anatomical.png");
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter: drop-shadow(0 7px 8px rgba(0,0,0,.25));
-  animation: heartFloat 4s ease-in-out infinite;
-}
-
-.hero-bubble {
-  position: absolute;
-  display: block;
-  width: 9px;
-  height: 9px;
-  border: 1px solid rgba(255,255,255,.65);
-  border-radius: 50%;
-  background: rgba(255,255,255,.25);
-}
-
-.hero-bubble.bubble-one {
-  top: 10px;
-  right: 7px;
-}
-
-.hero-bubble.bubble-two {
-  bottom: 17px;
-  left: 1px;
-  width: 7px;
-  height: 7px;
-}
-
-.hero-bubble.bubble-three {
-  top: 40px;
-  left: -4px;
-  width: 6px;
-  height: 6px;
-}
-
-@keyframes heartFloat {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  display: none !important;
 }
 
 /* ==========================================================
@@ -414,13 +373,13 @@ textarea:focus-visible {
 .see-all-button,
 .details-button {
   flex-shrink: 0;
-  padding: 7px 11px;
-  color: var(--turquoise);
+  padding: 8px 12px;
+  color: #109e99;
   font-size: 10px;
   font-weight: 800;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  background: white;
+  border: 1px solid #dcefeb;
+  border-radius: 10px;
+  background: #f7fffe;
 }
 
 /* ==========================================================
@@ -428,18 +387,20 @@ textarea:focus-visible {
 ========================================================== */
 
 .quick-section {
-  padding: 0 17px;
+  padding: 0 16px;
 }
 
 .quick-section .section-head {
   padding: 8px 2px 15px;
+  margin-bottom: 12px;
 }
 
 .quick-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0,1fr));
-  gap: 20px 9px;
-  padding: 5px 0 13px;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  column-gap: 9px;
+  row-gap: 24px;
+  padding: 7px 0 17px;
 }
 
 .quick-item {
@@ -447,12 +408,13 @@ textarea:focus-visible {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  gap: 8px;
+  gap: 9px;
   min-width: 0;
-  padding: 0;
+  padding: 5px 2px;
   color: var(--text);
   text-align: center;
   border: 0;
+  border-radius: 16px;
   background: transparent;
 }
 
@@ -460,15 +422,16 @@ textarea:focus-visible {
   position: relative;
   display: grid;
   place-items: center;
-  width: 61px;
-  height: 61px;
-  margin-top: 3px;
-  color: var(--turquoise);
-  border: 1px solid #d5eeeb;
-  border-radius: 16px;
-  background: var(--turquoise-light);
-  box-shadow: 0 3px 9px rgba(16,43,70,.05);
-  transition: transform .2s, background .2s;
+  width: min(100%,72px);
+  aspect-ratio: 1;
+  height: auto;
+  margin-inline: auto;
+  color: #109e99;
+  border: 1px solid #d5eeea;
+  border-radius: 19px;
+  background: linear-gradient(145deg,#ffffff,#e5f7f5);
+  box-shadow: 0 5px 12px rgba(16,43,70,.07);
+  transition: transform .2s,background .2s;
 }
 
 .drop-icon::before,
@@ -483,24 +446,25 @@ textarea:focus-visible {
   place-items: center;
   width: 34px;
   height: 34px;
-  color: var(--navy);
-  font-size: 25px;
+  color: #174b63;
+  font-size: 27px;
   font-weight: 800;
 }
 
 .quick-label {
   display: block;
-  max-width: 88px;
-  color: #47677f;
-  font-size: 10px;
-  font-weight: 750;
+  max-width: 95px;
+  color: #35546b;
+  font-size: 13px;
+  font-weight: 800;
   line-height: 1.3;
   text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .quick-item:active .drop-icon {
-  transform: scale(.94);
-  background: #c9efeb;
+  transform: scale(.93);
+  background: #d9f4f0;
 }
 
 .quick-item:active .quick-label {
@@ -514,11 +478,11 @@ textarea:focus-visible {
 .study-card {
   position: relative;
   display: block;
-  margin: 24px 16px;
-  padding: 18px;
+  margin: 23px 16px 20px;
+  padding: 20px;
   overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 18px;
+  border: 1px solid #e5edf2;
+  border-radius: 21px;
   background: white;
   box-shadow: var(--shadow);
 }
@@ -528,7 +492,7 @@ textarea:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 17px;
+  margin-bottom: 19px;
 }
 
 .study-title {
@@ -538,11 +502,11 @@ textarea:focus-visible {
 }
 
 .study-title h2 {
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .progress-symbol {
-  color: var(--turquoise);
+  color: #12aaa5;
   font-size: 20px;
 }
 
@@ -557,32 +521,32 @@ textarea:focus-visible {
 .progress-circle {
   --progress: 0%;
   position: relative;
-  flex: 0 0 77px;
-  width: 77px;
-  height: 77px;
+  flex: 0 0 83px;
+  width: 83px;
+  height: 83px;
   display: grid;
   place-items: center;
   border-radius: 50%;
   background:
-    radial-gradient(circle, white 57%, transparent 59%),
+    radial-gradient(circle,white 57%,transparent 59%),
     conic-gradient(
-      var(--turquoise) var(--progress),
-      #e5edf2 var(--progress)
+      #13b8ad var(--progress),
+      #e9f0f4 var(--progress)
     );
 }
 
 .progress-circle-inner {
   display: grid;
   place-items: center;
-  width: 61px;
-  height: 61px;
+  width: 66px;
+  height: 66px;
   border-radius: 50%;
   background: white;
 }
 
 .progress-circle strong {
   color: var(--navy);
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 900;
 }
 
@@ -597,17 +561,17 @@ textarea:focus-visible {
 .progress-description p {
   margin: 0;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .progress-description strong {
   color: var(--navy);
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .progress-description span {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .progress-decoration {
@@ -639,14 +603,15 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-height: 49px;
   margin: 7px 17px 16px;
   padding: 0 14px;
   color: var(--turquoise);
   font-size: 20px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
+  border: 1px solid #e2ebf0;
+  border-radius: 14px;
   background: white;
-  box-shadow: var(--shadow);
+  box-shadow: 0 5px 15px rgba(16,43,70,.05);
 }
 
 .search-box input {
@@ -654,7 +619,7 @@ textarea:focus-visible {
   min-width: 0;
   padding: 13px 0;
   color: var(--text);
-  font-size: 12px;
+  font-size: 13px;
   border: 0;
   outline: none;
   background: transparent;
@@ -676,9 +641,9 @@ textarea:focus-visible {
 
 .module-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0,1fr));
-  gap: 12px;
-  padding: 0 16px 18px;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 14px;
+  padding: 0 16px 20px;
 }
 
 .module-card {
@@ -686,17 +651,17 @@ textarea:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 8px;
-  min-height: 145px;
-  padding: 15px;
+  gap: 10px;
+  min-height: 155px;
+  padding: 16px;
   overflow: hidden;
   text-align: left;
   color: var(--text);
   background: white;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  transition: transform .2s, box-shadow .2s;
+  border: 1px solid #e5edf2;
+  border-radius: 18px;
+  box-shadow: 0 5px 15px rgba(16,43,70,.055);
+  transition: transform .2s,box-shadow .2s;
 }
 
 .module-card::after {
@@ -717,25 +682,25 @@ textarea:focus-visible {
   z-index: 1;
   display: grid;
   place-items: center;
-  width: 43px;
-  height: 43px;
-  color: var(--navy);
+  width: 46px;
+  height: 46px;
+  color: #117c83;
   font-size: 21px;
-  border-radius: 12px;
-  background: var(--turquoise-light);
+  border-radius: 14px;
+  background: #e5f7f5;
   border: 0;
-  box-shadow: none;
 }
 
 .module-card strong {
-  font-size: 12px;
+  color: #173c57;
+  font-size: 13px;
   line-height: 1.35;
 }
 
 .module-card small {
   color: var(--muted);
   font-size: 10px;
-  line-height: 1.45;
+  line-height: 1.55;
 }
 
 /* ==========================================================
@@ -744,9 +709,9 @@ textarea:focus-visible {
 
 .atlas-pdf-library {
   margin: 22px 16px;
-  padding: 19px;
-  border: 1px solid var(--line);
-  border-radius: 18px;
+  padding: 21px;
+  border: 1px solid #e4edf2;
+  border-radius: 20px;
   background: white;
   box-shadow: var(--shadow);
 }
@@ -754,7 +719,7 @@ textarea:focus-visible {
 .atlas-pdf-library h2 {
   margin: 4px 0 9px;
   color: var(--navy);
-  font-size: 18px;
+  font-size: 19px;
 }
 
 .library-description {
@@ -774,9 +739,9 @@ textarea:focus-visible {
   color: var(--navy);
   font-size: 11px;
   font-weight: 750;
-  border: 1px solid var(--line);
-  border-radius: 11px;
-  background: var(--turquoise-light);
+  border: 1px solid #d8efeb;
+  border-radius: 13px;
+  background: #e9f8f6;
   box-shadow: none;
 }
 
@@ -788,24 +753,27 @@ textarea:focus-visible {
 .secondary-btn {
   position: relative;
   width: 100%;
+  min-height: 46px;
   margin-top: 11px;
   padding: 13px 16px;
   border: 0;
-  border-radius: 11px;
+  border-radius: 13px;
   font-size: 12px;
   font-weight: 800;
+  letter-spacing: .15px;
   box-shadow: none;
   transition: transform .2s;
 }
 
 .primary-btn {
   color: white;
-  background: var(--turquoise);
+  background: linear-gradient(110deg,#16b8ae,#109c9e);
+  box-shadow: 0 5px 12px rgba(19,184,173,.18);
 }
 
 .secondary-btn {
   color: white;
-  background: var(--navy);
+  background: linear-gradient(110deg,#102b46,#1b4a68);
 }
 
 .primary-btn:active,
@@ -819,7 +787,7 @@ textarea:focus-visible {
 
 .bottom-nav {
   position: fixed;
-  z-index: 20;
+  z-index: 1000;
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
@@ -827,10 +795,10 @@ textarea:focus-visible {
   align-items: center;
   justify-content: space-around;
   width: min(100%,760px);
-  padding: 9px 8px calc(9px + var(--safe-bottom));
-  background: rgba(255,255,255,.98);
-  border-top: 1px solid var(--line);
-  box-shadow: 0 -4px 15px rgba(16,43,70,.06);
+  padding: 10px 8px calc(10px + var(--safe-bottom));
+  background: #fff;
+  border-top: 1px solid #e4edf2;
+  box-shadow: 0 -5px 18px rgba(16,43,70,.075);
 }
 
 .nav-item {
@@ -841,28 +809,30 @@ textarea:focus-visible {
   justify-content: center;
   gap: 5px;
   min-width: 0;
-  min-height: 52px;
-  padding: 5px 3px;
+  min-height: 55px;
+  padding: 10px 3px;
   color: #81909f;
   background: transparent;
   border: 0;
-  border-radius: 10px;
-  transition: color .2s, background .2s;
+  border-radius: 17px;
+  transition: color .2s,background .2s;
 }
 
 .nav-item span:first-child {
-  font-size: 21px;
+  font-size: 22px;
   line-height: 1;
 }
 
 .nav-item span:last-child {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 750;
+  line-height: 1.2;
+  text-align: center;
 }
 
 .nav-item.active {
-  color: var(--turquoise);
-  background: var(--turquoise-light);
+  color: #0d9f9b;
+  background: #e8f8f6;
 }
 
 .nav-item:active {
@@ -886,7 +856,7 @@ textarea:focus-visible {
   color: var(--text);
   background: white;
   border: 1px solid var(--line);
-  border-radius: 20px;
+  border-radius: 22px;
   box-shadow: 0 15px 45px rgba(0,0,0,.2);
 }
 
@@ -999,7 +969,8 @@ textarea:focus-visible {
   text-align: center;
   background: white;
   border: 1px solid var(--line);
-  border-radius: 15px;
+  border-radius: 17px;
+  box-shadow: var(--shadow);
 }
 
 .disclaimer {
@@ -1021,8 +992,7 @@ textarea:focus-visible {
   font-size: 12px;
   text-align: center;
   background: var(--navy);
-  border: 0;
-  border-radius: 11px;
+  border-radius: 13px;
   box-shadow: var(--shadow);
   opacity: 0;
   pointer-events: none;
@@ -1085,7 +1055,7 @@ textarea:focus-visible {
    RESPONSIVE — PETITS IPHONES
 ========================================================== */
 
-@media (max-width: 390px) {
+@media (max-width:390px) {
 
   .topbar {
     padding: 12px 14px;
@@ -1106,32 +1076,17 @@ textarea:focus-visible {
   }
 
   .hero {
-    min-height: 200px;
-    margin: 12px 11px 17px;
-    padding: 19px 14px;
+    min-height: 190px;
+    margin: 15px 12px 21px;
+    padding: 22px 17px;
   }
 
   .hero h2 {
-    font-size: clamp(20px,5.8vw,25px);
+    font-size: 25px;
   }
 
   .hero p {
     font-size: 10px;
-  }
-
-  .hero-art {
-    flex-basis: 91px;
-    width: 91px;
-  }
-
-  .hero-heart {
-    width: 78px;
-    height: 92px;
-  }
-
-  .hero-water-ring {
-    width: 96px;
-    height: 96px;
   }
 
   .hero-button {
@@ -1145,16 +1100,16 @@ textarea:focus-visible {
   }
 
   .quick-grid {
-    gap: 16px 5px;
+    gap: 16px 6px;
   }
 
   .drop-icon {
-    width: 54px;
-    height: 54px;
+    width: min(100%,57px);
+    border-radius: 17px;
   }
 
   .quick-label {
-    font-size: 9px;
+    font-size: 11px;
   }
 
   .module-grid {
@@ -1173,8 +1128,8 @@ textarea:focus-visible {
   }
 
   .study-card {
-    margin: 20px 12px;
-    padding: 15px;
+    margin: 20px 12px 20px;
+    padding: 16px;
   }
 
   .atlas-pdf-library {
@@ -1188,7 +1143,7 @@ textarea:focus-visible {
    TABLETTES ET GRANDS ÉCRANS
 ========================================================== */
 
-@media (min-width: 600px) {
+@media (min-width:600px) {
 
   .app-shell {
     padding-left: 12px;
@@ -1196,24 +1151,8 @@ textarea:focus-visible {
   }
 
   .hero {
-    min-height: 250px;
-    padding: 32px;
-  }
-
-  .hero-art {
-    flex-basis: 155px;
-    width: 155px;
-    height: 175px;
-  }
-
-  .hero-heart {
-    width: 125px;
-    height: 140px;
-  }
-
-  .hero-water-ring {
-    width: 145px;
-    height: 145px;
+    min-height: 225px;
+    padding: 34px;
   }
 
   .quick-grid {
@@ -1221,12 +1160,7 @@ textarea:focus-visible {
   }
 
   .drop-icon {
-    width: 69px;
-    height: 69px;
-  }
-
-  .quick-label {
-    font-size: 11px;
+    width: 72px;
   }
 
   .module-grid {
@@ -1248,833 +1182,3 @@ textarea:focus-visible {
     transition-duration: .01ms !important;
   }
 }
-/* SUPPRESSION DU CŒUR ANATOMIQUE FLOTTANT */
-
-.hero-art {
-  display: none !important;
-}
-
-.hero-content {
-  flex: 1 1 100%;
-  max-width: 100%;
-}
-
-/* ==========================================================
-   ATLAS MÉDICAL — PREMIUM MEDICAL DESIGN
-   Évolution graphique — Version B
-   CSS uniquement — Fonctionnalités préservées
-========================================================== */
-
-:root {
-  --navy: #102b46;
-  --navy-light: #1c4966;
-  --turquoise: #13b8ad;
-  --turquoise-light: #e6f8f6;
-  --background: #f1f6fa;
-  --text: #23394d;
-  --muted: #7b8d9d;
-  --line: #e4edf2;
-  --shadow: 0 8px 24px rgba(16,43,70,.075);
-  --shadow-hover: 0 12px 28px rgba(16,43,70,.12);
-}
-
-/* FOND GÉNÉRAL */
-
-body {
-  background: #f1f6fa;
-  color: var(--text);
-}
-
-.app-shell {
-  background: #f1f6fa;
-}
-
-/* EN-TÊTE PLUS RAFFINÉ */
-
-.topbar {
-  padding: 16px 19px;
-  background: linear-gradient(115deg,#102b46,#174563);
-  border-bottom: 3px solid #16b8ae;
-  box-shadow: 0 4px 15px rgba(16,43,70,.12);
-}
-
-.brand-mark {
-  border-radius: 15px;
-  background: linear-gradient(145deg,#20c8bb,#109d9b);
-  box-shadow: 0 4px 12px rgba(19,184,173,.25);
-}
-
-.brand-text h1 {
-  font-size: 16px;
-  letter-spacing: .5px;
-}
-
-.brand-text p {
-  color: #c3dce7;
-  letter-spacing: .4px;
-}
-
-.profile-button {
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.25);
-}
-
-/* CARTE DE BIENVENUE */
-
-.hero {
-  min-height: 205px;
-  margin: 19px 16px 25px;
-  padding: 26px 23px;
-  border-radius: 23px;
-  background: linear-gradient(135deg,#102b46 0%,#174a68 65%,#176b78 100%);
-  box-shadow: 0 10px 25px rgba(16,43,70,.16);
-}
-
-.hero::before {
-  width: 220px;
-  height: 220px;
-  right: -105px;
-  bottom: -145px;
-  border: 1px solid rgba(255,255,255,.15);
-}
-
-.hero::after {
-  width: 170px;
-  height: 170px;
-  top: -90px;
-  left: 60%;
-  background: rgba(255,255,255,.045);
-}
-
-.hero-content {
-  flex: 1 1 100%;
-  max-width: 100%;
-}
-
-.hero h2 {
-  max-width: 100%;
-  font-size: clamp(25px,6vw,32px);
-  line-height: 1.18;
-  letter-spacing: -.7px;
-}
-
-.hero h2 span {
-  color: #56e0d2;
-}
-
-.hero p {
-  max-width: 290px;
-  font-size: 12px;
-  line-height: 1.7;
-  color: #d8eaf0;
-}
-
-.hero-button {
-  min-height: 44px;
-  padding: 11px 17px;
-  border-radius: 12px;
-  color: #102b46;
-  font-size: 11px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.12);
-}
-
-.hero-play {
-  background: #16b8ae;
-}
-
-/* TITRES DE SECTIONS */
-
-.section-head {
-  padding: 19px 19px 14px;
-}
-
-.section-title h2,
-.section-head h2 {
-  font-size: 18px;
-  letter-spacing: -.4px;
-}
-
-.section-drop {
-  color: #12aaa5;
-}
-
-.see-all-button,
-.details-button {
-  padding: 8px 12px;
-  color: #109e99;
-  font-size: 10px;
-  border: 1px solid #dcefeb;
-  border-radius: 10px;
-  background: #f7fffe;
-}
-
-/* ACCÈS RAPIDES — CARTES MODERNISÉES */
-
-.quick-section {
-  padding: 0 17px;
-}
-
-.quick-grid {
-  gap: 19px 11px;
-  padding: 7px 0 17px;
-}
-
-.quick-item {
-  gap: 9px;
-  padding: 5px 2px;
-  border-radius: 16px;
-}
-
-.drop-icon {
-  width: 65px;
-  height: 65px;
-  margin-top: 0;
-  color: #109e99;
-  border: 1px solid #d5eeea;
-  border-radius: 19px;
-  background: linear-gradient(145deg,#ffffff,#e5f7f5);
-  box-shadow:
-    0 5px 12px rgba(16,43,70,.07),
-    inset 0 1px 0 white;
-}
-
-.quick-symbol {
-  color: #174b63;
-  font-size: 27px;
-}
-
-.quick-label {
-  max-width: 95px;
-  color: #35546b;
-  font-size: 10px;
-  font-weight: 800;
-  line-height: 1.4;
-}
-
-.quick-item:active .drop-icon {
-  transform: scale(.93);
-  background: #d9f4f0;
-}
-
-/* PROGRESSION */
-
-.study-card {
-  margin: 23px 16px;
-  padding: 20px;
-  border: 1px solid #e5edf2;
-  border-radius: 21px;
-  background: #fff;
-  box-shadow: var(--shadow);
-}
-
-.study-heading {
-  margin-bottom: 19px;
-}
-
-.study-title h2 {
-  font-size: 17px;
-}
-
-.progress-symbol {
-  color: #12aaa5;
-}
-
-.progress-circle {
-  flex-basis: 83px;
-  width: 83px;
-  height: 83px;
-  background:
-    radial-gradient(circle,white 57%,transparent 59%),
-    conic-gradient(
-      #13b8ad var(--progress),
-      #e9f0f4 var(--progress)
-    );
-}
-
-.progress-circle-inner {
-  width: 66px;
-  height: 66px;
-}
-
-.progress-circle strong {
-  font-size: 20px;
-}
-
-.progress-description strong {
-  font-size: 15px;
-}
-
-.progress-description p,
-.progress-description span {
-  font-size: 11px;
-}
-
-/* CARTES DES MODULES */
-
-.module-grid {
-  gap: 14px;
-  padding: 0 16px 20px;
-}
-
-.module-card {
-  min-height: 155px;
-  padding: 16px;
-  gap: 10px;
-  border-radius: 18px;
-  border: 1px solid #e5edf2;
-  background: #fff;
-  box-shadow: 0 5px 15px rgba(16,43,70,.055);
-}
-
-.module-icon {
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  color: #117c83;
-  background: #e5f7f5;
-}
-
-.module-card strong {
-  color: #173c57;
-  font-size: 13px;
-}
-
-.module-card small {
-  font-size: 10px;
-  line-height: 1.55;
-}
-
-/* RECHERCHE */
-
-.search-box {
-  min-height: 49px;
-  border-radius: 14px;
-  border: 1px solid #e2ebf0;
-  box-shadow: 0 5px 15px rgba(16,43,70,.05);
-}
-
-.search-box input {
-  font-size: 13px;
-}
-
-/* BIBLIOTHÈQUE */
-
-.atlas-pdf-library {
-  padding: 21px;
-  border-radius: 20px;
-  border: 1px solid #e4edf2;
-  box-shadow: var(--shadow);
-}
-
-.atlas-pdf-library h2 {
-  font-size: 19px;
-}
-
-.atlas-pdf-buttons button {
-  border-radius: 13px;
-  background: #e9f8f6;
-  border-color: #d8efeb;
-}
-
-/* BOUTONS */
-
-.primary-btn,
-.secondary-btn {
-  min-height: 46px;
-  border-radius: 13px;
-  font-size: 12px;
-  letter-spacing: .15px;
-}
-
-.primary-btn {
-  background: linear-gradient(110deg,#16b8ae,#109c9e);
-  box-shadow: 0 5px 12px rgba(19,184,173,.18);
-}
-
-.secondary-btn {
-  background: linear-gradient(110deg,#102b46,#1b4a68);
-}
-
-/* NAVIGATION INFÉRIEURE */
-
-.bottom-nav {
-  padding: 9px 9px calc(9px + var(--safe-bottom));
-  background: #fff;
-  border-top: 1px solid #e4edf2;
-  box-shadow: 0 -5px 18px rgba(16,43,70,.075);
-}
-
-.nav-item {
-  min-height: 55px;
-  gap: 6px;
-  border-radius: 13px;
-}
-
-.nav-item span:first-child {
-  font-size: 22px;
-}
-
-.nav-item span:last-child {
-  font-size: 9px;
-}
-
-.nav-item.active {
-  color: #0d9f9b;
-  background: #e8f8f6;
-}
-
-/* PETITES AMÉLIORATIONS GÉNÉRALES */
-
-.module-dialog {
-  border-radius: 22px;
-}
-
-.empty {
-  border-radius: 17px;
-  box-shadow: var(--shadow);
-}
-
-.toast {
-  border-radius: 13px;
-  background: #102b46;
-}
-
-/* ADAPTATION PETITS ÉCRANS */
-
-@media (max-width:390px) {
-  .hero {
-    min-height: 190px;
-    margin: 15px 12px 21px;
-    padding: 22px 17px;
-  }
-
-  .hero h2 {
-    font-size: 25px;
-  }
-
-  .quick-grid {
-    gap: 16px 6px;
-  }
-
-  .drop-icon {
-    width: 57px;
-    height: 57px;
-    border-radius: 17px;
-  }
-
-  .study-card {
-    margin: 20px 12px;
-    padding: 16px;
-  }
-
-  .module-card {
-    min-height: 145px;
-    padding: 13px;
-  }
-}
-
-/* TABLETTES */
-
-@media (min-width:600px) {
-  .hero {
-    min-height: 225px;
-    padding: 34px;
-  }
-
-  .drop-icon {
-    width: 72px;
-    height: 72px;
-  }
-}
-
-/* ==========================================
-   ATLAS MÉDICAL — FINITION PREMIUM MOBILE
-   Ajustement visuel uniquement
-   Version 1
-========================================== */
-
-@media (max-width: 600px) {
-
-  /* EN-TÊTE */
-  .topbar {
-    padding: 12px 18px;
-    min-height: 76px;
-    gap: 12px;
-  }
-
-  .brand {
-    gap: 12px;
-    min-width: 0;
-  }
-
-  .brand-mark {
-    flex-shrink: 0;
-  }
-
-  .brand-text {
-    min-width: 0;
-  }
-
-  .brand-text h1 {
-    letter-spacing: -0.5px;
-  }
-
-  .profile-button {
-    flex-shrink: 0;
-  }
-
-  /* ACCUEIL */
-  #mainContent {
-    padding-bottom: calc(110px + var(--safe-bottom));
-  }
-
-  .home-page {
-    padding-bottom: 24px;
-  }
-
-  /* CARTE DE BIENVENUE */
-  .hero {
-    margin: 16px 14px 30px;
-    padding: 26px 20px;
-    border-radius: 26px;
-    min-height: 0;
-  }
-
-  .hero-content {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .hero-content h2 {
-    font-size: clamp(27px, 7vw, 36px);
-    line-height: 1.16;
-    letter-spacing: -1px;
-  }
-
-  .hero-content p {
-    line-height: 1.5;
-  }
-
-  .hero-button {
-    max-width: 100%;
-    min-height: 54px;
-    border-radius: 18px;
-  }
-
-  /* ACCÈS RAPIDES */
-  .quick-section {
-    padding: 0 16px;
-  }
-
-  .section-head {
-    gap: 10px;
-    margin-bottom: 22px;
-  }
-
-  .section-title {
-    font-size: clamp(22px, 6vw, 28px);
-    letter-spacing: -0.6px;
-  }
-
-  .see-all-button {
-    flex-shrink: 0;
-    padding: 11px 14px;
-    border-radius: 16px;
-  }
-
-  .quick-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: 9px;
-    row-gap: 24px;
-  }
-
-  .quick-item {
-    min-width: 0;
-    gap: 9px;
-  }
-
-  .drop-icon {
-    width: min(100%, 72px);
-    aspect-ratio: 1;
-    height: auto;
-    margin-inline: auto;
-    border-radius: 23px;
-  }
-
-  .quick-symbol {
-    font-size: 27px;
-  }
-
-  .quick-label {
-    font-size: 13px;
-    line-height: 1.3;
-    text-align: center;
-    overflow-wrap: anywhere;
-  }
-
-  /* CARTE DE PROGRESSION */
-  .study-card {
-    margin: 30px 16px 24px;
-    border-radius: 24px;
-  }
-
-  /* NAVIGATION INFÉRIEURE */
-  .bottom-nav {
-    padding: 10px 8px calc(10px + var(--safe-bottom));
-  }
-
-  .nav-item {
-    min-width: 0;
-    padding: 10px 3px;
-    border-radius: 17px;
-    gap: 5px;
-  }
-
-  .nav-item span {
-    font-size: 12px;
-    line-height: 1.2;
-    text-align: center;
-  }
-}
-
-/* LE CŒUR FLOTTANT RESTE MASQUÉ */
-.hero-art {
-  display: none !important;
-}
-
-.hero-content {
-  flex: 1 1 100%;
-  max-width: 100%;
-}
-
-/* ==========================================
-   ATLAS MÉDICAL — FINITION PREMIUM MOBILE
-   Ajustement visuel uniquement
-   Version 1
-========================================== */
-
-@media (max-width: 600px) {
-
-  /* EN-TÊTE */
-  .topbar {
-    padding: 12px 18px;
-    min-height: 76px;
-    gap: 12px;
-  }
-
-  .brand {
-    gap: 12px;
-    min-width: 0;
-  }
-
-  .brand-mark {
-    flex-shrink: 0;
-  }
-
-  .brand-text {
-    min-width: 0;
-  }
-
-  .brand-text h1 {
-    letter-spacing: -0.5px;
-  }
-
-  .profile-button {
-    flex-shrink: 0;
-  }
-
-  /* ACCUEIL */
-  #mainContent {
-    padding-bottom: calc(110px + var(--safe-bottom));
-  }
-
-  .home-page {
-    padding-bottom: 24px;
-  }
-
-  /* CARTE DE BIENVENUE */
-  .hero {
-    margin: 16px 14px 30px;
-    padding: 26px 20px;
-    border-radius: 26px;
-    min-height: 0;
-  }
-
-  .hero-content {
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .hero-content h2 {
-    font-size: clamp(27px, 7vw, 36px);
-    line-height: 1.16;
-    letter-spacing: -1px;
-  }
-
-  .hero-content p {
-    line-height: 1.5;
-  }
-
-  .hero-button {
-    max-width: 100%;
-    min-height: 54px;
-    border-radius: 18px;
-  }
-
-  /* ACCÈS RAPIDES */
-  .quick-section {
-    padding: 0 16px;
-  }
-
-  .section-head {
-    gap: 10px;
-    margin-bottom: 22px;
-  }
-
-  .section-title {
-    font-size: clamp(22px, 6vw, 28px);
-    letter-spacing: -0.6px;
-  }
-
-  .see-all-button {
-    flex-shrink: 0;
-    padding: 11px 14px;
-    border-radius: 16px;
-  }
-
-  .quick-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    column-gap: 9px;
-    row-gap: 24px;
-  }
-
-  .quick-item {
-    min-width: 0;
-    gap: 9px;
-  }
-
-  .drop-icon {
-    width: min(100%, 72px);
-    aspect-ratio: 1;
-    height: auto;
-    margin-inline: auto;
-    border-radius: 23px;
-  }
-
-  .quick-symbol {
-    font-size: 27px;
-  }
-
-  .quick-label {
-    font-size: 13px;
-    line-height: 1.3;
-    text-align: center;
-    overflow-wrap: anywhere;
-  }
-
-  /* CARTE DE PROGRESSION */
-  .study-card {
-    margin: 30px 16px 24px;
-    border-radius: 24px;
-  }
-
-  /* NAVIGATION INFÉRIEURE */
-  .bottom-nav {
-    padding: 10px 8px calc(10px + var(--safe-bottom));
-  }
-
-  .nav-item {
-    min-width: 0;
-    padding: 10px 3px;
-    border-radius: 17px;
-    gap: 5px;
-  }
-
-  .nav-item span {
-    font-size: 12px;
-    line-height: 1.2;
-    text-align: center;
-  }
-}
-
-/* LE CŒUR FLOTTANT RESTE MASQUÉ */
-.hero-art {
-  display: none !important;
-}
-
-.hero-content {
-  flex: 1 1 100%;
-  max-width: 100%;
-}
-
-/* ==========================================
-   ATLAS MÉDICAL — CORRECTION DÉFINITIVE
-   Espace de défilement sous la progression
-========================================== */
-
-/* La page complète peut défiler */
-html,
-body {
-  min-height: 100%;
-  height: auto;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Le contenu principal garde une vraie hauteur */
-.app-shell {
-  min-height: 100vh;
-  height: auto;
-  padding-bottom: 0 !important;
-}
-
-#mainContent {
-  display: block;
-  min-height: 0;
-  height: auto;
-  overflow: visible;
-  padding-bottom: 0 !important;
-}
-
-/* Réserve un espace après la carte de progression */
-#homePage {
-  display: flow-root;
-  min-height: 0;
-  height: auto;
-  overflow: visible;
-  padding-bottom: calc(125px + var(--safe-bottom)) !important;
-}
-
-/* La carte ne doit pas être coupée */
-.study-card {
-  position: relative;
-  margin-bottom: 20px !important;
-  overflow: visible;
-}
-
-/* Navigation fixe au-dessus du contenu */
-.bottom-nav {
-  position: fixed;
-  z-index: 1000;
-  bottom: 0;
-}
-/* ==========================================
-   ATLAS MÉDICAL — ESPACE SOUS LA NAVIGATION
-========================================== */
-
-.app-shell {
-  padding-bottom: calc(190px + env(safe-area-inset-bottom, 0px)) !important;
-}
-
-#mainContent,
-#homePage {
-  padding-bottom: calc(190px + env(safe-area-inset-bottom, 0px)) !important;
-  overflow: visible !important;
-}
-
-.bottom-nav {
-  position: fixed !important;
-  bottom: 0 !important;
-  z-index: 1000 !important;
-}
-
