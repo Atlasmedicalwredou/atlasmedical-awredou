@@ -2007,4 +2007,34 @@ body {
   max-width: 100%;
 }
 
+/* ==========================================
+   CORRECTION — NAVIGATION ET PROGRESSION
+========================================== */
+
+:root {
+  --atlas-bottom-space: 180px;
+}
+
+#mainContent {
+  padding-bottom: calc(
+    var(--atlas-bottom-space) + env(safe-area-inset-bottom, 0px)
+  ) !important;
+}
+
+.home-page {
+  padding-bottom: calc(
+    var(--atlas-bottom-space) + env(safe-area-inset-bottom, 0px)
+  ) !important;
+}
+
+.study-card {
+  margin-bottom: 35px !important;
+}
+
+/* La navigation reste au-dessus du contenu */
+.bottom-nav {
+  z-index: 1000;
+}
+
+
 
