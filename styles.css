@@ -2058,4 +2058,23 @@ body {
   z-index: 1000;
   bottom: 0;
 }
+/* ==========================================
+   ATLAS MÉDICAL — ESPACE SOUS LA NAVIGATION
+========================================== */
+
+.app-shell {
+  padding-bottom: calc(190px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+#mainContent,
+#homePage {
+  padding-bottom: calc(190px + env(safe-area-inset-bottom, 0px)) !important;
+  overflow: visible !important;
+}
+
+.bottom-nav {
+  position: fixed !important;
+  bottom: 0 !important;
+  z-index: 1000 !important;
+}
 
