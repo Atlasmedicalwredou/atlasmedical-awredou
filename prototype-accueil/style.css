@@ -635,4 +635,112 @@ button { color: inherit; }
   transform: none;
 }
 
+/* ATLAS MÉDICAL — ÉQUILIBRAGE FINAL MOBILE */
+
+.am-app {
+  padding-top: max(16px, env(safe-area-inset-top));
+  padding-bottom: calc(24px + var(--am-safe-bottom));
+}
+
+.am-header {
+  min-height: 92px;
+  margin-bottom: 12px;
+}
+
+.am-brand-mark {
+  width: 82px;
+  flex-basis: 82px;
+}
+
+.am-hero {
+  min-height: 270px;
+  margin-bottom: 20px;
+  padding-top: 20px;
+  padding-bottom: 18px;
+}
+
+.am-hero-art {
+  top: 12px;
+  height: 245px;
+}
+
+.am-hero-art img {
+  max-height: 235px;
+}
+
+.am-section-heading {
+  margin-bottom: 10px;
+}
+
+.am-section-heading h2 {
+  font-size: 21px;
+}
+
+.am-shortcut-grid {
+  row-gap: 12px;
+  column-gap: 7px;
+  margin-bottom: 18px;
+}
+
+.am-drop {
+  width: 66px;
+  height: 75px;
+}
+
+.am-drop i {
+  font-size: 28px;
+}
+
+.am-shortcut {
+  gap: 5px;
+}
+
+.am-shortcut-label {
+  min-height: 30px;
+  font-size: 11px;
+}
+
+.am-progress {
+  min-height: 195px;
+  margin-bottom: 18px;
+  padding: 15px;
+}
+
+.am-progress-content {
+  min-height: 130px;
+}
+
+.am-bottom-nav {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  transform: none;
+  width: 100%;
+  margin: 18px auto 8px;
+}
+
+.am-nav-item {
+  min-height: 58px;
+}
+
+@media (max-width: 380px) {
+  .am-hero {
+    min-height: 255px;
+  }
+
+  .am-hero-art {
+    height: 220px;
+  }
+
+  .am-hero-art img {
+    max-height: 210px;
+  }
+
+  .am-drop {
+    width: 60px;
+    height: 69px;
+  }
+}
+
+
 
