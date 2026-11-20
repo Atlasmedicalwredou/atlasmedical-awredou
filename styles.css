@@ -1248,3 +1248,13 @@ textarea:focus-visible {
     transition-duration: .01ms !important;
   }
 }
+/* SUPPRESSION DU CŒUR ANATOMIQUE FLOTTANT */
+
+.hero-art {
+  display: none !important;
+}
+
+.hero-content {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
