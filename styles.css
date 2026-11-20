@@ -2008,33 +2008,54 @@ body {
 }
 
 /* ==========================================
-   CORRECTION — NAVIGATION ET PROGRESSION
+   ATLAS MÉDICAL — CORRECTION DÉFINITIVE
+   Espace de défilement sous la progression
 ========================================== */
 
-:root {
-  --atlas-bottom-space: 180px;
+/* La page complète peut défiler */
+html,
+body {
+  min-height: 100%;
+  height: auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Le contenu principal garde une vraie hauteur */
+.app-shell {
+  min-height: 100vh;
+  height: auto;
+  padding-bottom: 0 !important;
 }
 
 #mainContent {
-  padding-bottom: calc(
-    var(--atlas-bottom-space) + env(safe-area-inset-bottom, 0px)
-  ) !important;
+  display: block;
+  min-height: 0;
+  height: auto;
+  overflow: visible;
+  padding-bottom: 0 !important;
 }
 
-.home-page {
-  padding-bottom: calc(
-    var(--atlas-bottom-space) + env(safe-area-inset-bottom, 0px)
-  ) !important;
+/* Réserve un espace après la carte de progression */
+#homePage {
+  display: flow-root;
+  min-height: 0;
+  height: auto;
+  overflow: visible;
+  padding-bottom: calc(125px + var(--safe-bottom)) !important;
 }
 
+/* La carte ne doit pas être coupée */
 .study-card {
-  margin-bottom: 35px !important;
+  position: relative;
+  margin-bottom: 20px !important;
+  overflow: visible;
 }
 
-/* La navigation reste au-dessus du contenu */
+/* Navigation fixe au-dessus du contenu */
 .bottom-nav {
+  position: fixed;
   z-index: 1000;
+  bottom: 0;
 }
-
-
 
