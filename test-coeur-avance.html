@@ -67,8 +67,21 @@
       box-shadow: 0 4px 12px #087f9130;
     }
 
-    #pericardiumToggle:active {
+    #pericardiumToggle:active,
+    #teachingBlocksToggle:active {
       transform: scale(0.98);
+    }
+
+    #teachingBlocksToggle {
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 20px;
+      color: #123653;
+      background: #d4edf3;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px #12365318;
     }
 
     #info {
@@ -131,6 +144,9 @@
     <button id="pericardiumToggle" type="button">
       Masquer le péricarde
     </button>
+    <button id="teachingBlocksToggle" type="button">
+      Afficher les blocs pédagogiques
+    </button>
   </div>
 
   <section id="info">
@@ -154,6 +170,7 @@
     const nameDisplay = document.getElementById("structureName");
     const statusDisplay = document.getElementById("status");
     const pericardiumToggle = document.getElementById("pericardiumToggle");
+    const teachingBlocksToggle = document.getElementById("teachingBlocksToggle");
 
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0xe5f5fa);
@@ -196,7 +213,10 @@
     let selectedObject = null;
     let originalMaterials = null;
     let pericardiumMeshes = [];
+    let teachingBlockMeshes = [];
     let pericardiumHidden = false;
+    // Les blocs pédagogiques agrandis sont masqués au premier affichage.
+    let teachingBlocksHidden = true;
 
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
@@ -215,6 +235,28 @@
       const normalized = normalizeName(name);
       return normalized.includes("pericardium") ||
              normalized.includes("epicardium");
+    }
+
+    function isTeachingBlockMesh(name) {
+      const normalized = normalizeName(name);
+      return normalized.includes("(wall block)") ||
+             normalized.includes("(atrial block)");
+    }
+
+    // Combine les deux commandes sans qu'elles se réactivent mutuellement.
+    function updateMeshVisibility() {
+      if (!heart) return;
+
+      heart.traverse((object) => {
+        if (!object.isMesh) return;
+
+        const hiddenAsTeachingBlock =
+          teachingBlocksHidden && teachingBlockMeshes.includes(object);
+        const hiddenAsPericardium =
+          pericardiumHidden && pericardiumMeshes.includes(object);
+
+        object.visible = !hiddenAsTeachingBlock && !hiddenAsPericardium;
+      });
     }
 
     function restoreSelection() {
@@ -265,18 +307,11 @@
 
       pericardiumHidden = !pericardiumHidden;
 
-      // Si le péricarde était sélectionné, on restaure son matériau
-      // avant de le masquer ou de le réafficher.
-      if (
-        selectedObject &&
-        pericardiumMeshes.includes(selectedObject)
-      ) {
+      if (selectedObject && pericardiumMeshes.includes(selectedObject)) {
         restoreSelection();
       }
 
-      for (const mesh of pericardiumMeshes) {
-        mesh.visible = !pericardiumHidden;
-      }
+      updateMeshVisibility();
 
       pericardiumToggle.textContent = pericardiumHidden
         ? "Réafficher le péricarde"
@@ -287,11 +322,40 @@
         : "Péricarde réaffiché";
 
       statusDisplay.textContent = pericardiumHidden
-        ? "Les enveloppes du péricarde sont masquées. Tu peux maintenant toucher les structures visibles à l'intérieur."
-        : "Les enveloppes du péricarde sont de nouveau visibles et restent dans le modèle.";
+        ? "Les enveloppes du péricarde sont masquées. Les blocs pédagogiques restent contrôlés séparément."
+        : "Les enveloppes du péricarde sont de nouveau visibles, sauf celles appartenant aux blocs pédagogiques encore masqués.";
+    }
+
+    function toggleTeachingBlocks() {
+      if (!teachingBlockMeshes.length) {
+        statusDisplay.textContent =
+          "Aucun bloc pédagogique n'a été identifié dans le modèle.";
+        return;
+      }
+
+      teachingBlocksHidden = !teachingBlocksHidden;
+
+      if (selectedObject && teachingBlockMeshes.includes(selectedObject)) {
+        restoreSelection();
+      }
+
+      updateMeshVisibility();
+
+      teachingBlocksToggle.textContent = teachingBlocksHidden
+        ? "Afficher les blocs pédagogiques"
+        : "Masquer les blocs pédagogiques";
+
+      nameDisplay.textContent = teachingBlocksHidden
+        ? "Blocs pédagogiques masqués"
+        : "Blocs pédagogiques affichés";
+
+      statusDisplay.textContent = teachingBlocksHidden
+        ? teachingBlockMeshes.length + " maillages pédagogiques masqués temporairement. Ils restent disponibles à tout moment."
+        : teachingBlockMeshes.length + " maillages pédagogiques affichés. Tu peux toucher leurs structures pour les identifier.";
     }
 
     pericardiumToggle.addEventListener("click", togglePericardium);
+    teachingBlocksToggle.addEventListener("click", toggleTeachingBlocks);
 
     async function initializeHeart() {
       try {
@@ -340,14 +404,24 @@
               if (isPericardiumMesh(object.name)) {
                 pericardiumMeshes.push(object);
               }
+
+              if (isTeachingBlockMesh(object.name)) {
+                teachingBlockMeshes.push(object);
+              }
             });
+
+            // On masque les blocs pédagogiques dès le chargement, sans
+            // supprimer les maillages ni modifier leurs géométries.
+            updateMeshVisibility();
 
             nameDisplay.textContent = "Cœur anatomique chargé !";
             statusDisplay.textContent =
               meshCount +
               " maillages détectés. " +
               pericardiumMeshes.length +
-              " enveloppes du péricarde identifiées. Touche une structure pour l'identifier.";
+              " enveloppes du péricarde identifiées. " +
+              teachingBlockMeshes.length +
+              " maillages pédagogiques séparés et masqués au départ. Touche une structure pour l'identifier.";
           },
 
           (progress) => {
