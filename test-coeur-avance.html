@@ -1,1 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Test — Atlas Cœur avancé</title>
 
+  <script>
+    self.ModelViewerElement = self.ModelViewerElement || {};
+    self.ModelViewerElement.meshoptDecoderLocation =
+      './meshopt_decoder.js';
+  </script>
+
+  <script type="module" src="./model-viewer.min.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #edf7fb;
+      color: #123653;
+    }
+
+    h1 {
+      font-size: 22px;
+    }
+
+    model-viewer {
+      display: block;
+      width: 100%;
+      height: 70vh;
+      min-height: 400px;
+      background: radial-gradient(circle, white, #dff3f8);
+      border-radius: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Atlas Médical — Cœur anatomique avancé</h1>
+  <p>Test du modèle anatomique comportant 154 structures séparées.</p>
+
+  <model-viewer
+    src="./models/heart-advanced-structured.glb"
+    alt="Cœur anatomique avancé"
+    camera-controls
+    auto-rotate
+    shadow-intensity="1"
+    exposure="1"
+    loading="eager">
+  </model-viewer>
+</body>
+</html>
