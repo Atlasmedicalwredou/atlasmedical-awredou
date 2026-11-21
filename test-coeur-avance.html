@@ -4,12 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Atlas Médical — Exploration du cœur</title>
+  <meta name="theme-color" content="#edf7fb">
 
-  
+  <title>Atlas Médical — Cœur anatomique avancé</title>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -23,7 +25,15 @@
       text-align: center;
     }
 
-    h1 { margin: 0 0 8px; font-size: 22px; }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 22px;
+    }
+
+    header p {
+      color: #527184;
+      font-size: 14px;
+    }
 
     #viewer {
       position: relative;
@@ -31,7 +41,7 @@
       height: 72vh;
       min-height: 420px;
       overflow: hidden;
-      background: radial-gradient(circle, #fff, #d9f0f7);
+      background: radial-gradient(circle, #ffffff, #d9f0f7);
     }
 
     #viewer canvas {
@@ -57,249 +67,485 @@
     }
 
     #status {
-      font-size: 13px;
       color: #527184;
+      font-size: 13px;
+      line-height: 1.5;
     }
   </style>
+
+  <!-- Correspondance des modules Three.js -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js"
+    }
+  }
+  </script>
+
+  <script>
+    window.addEventListener("error", function(event) {
+      const status = document.getElementById("status");
+
+      if (status) {
+        status.textContent =
+          "Erreur JavaScript : " + event.message;
+      }
+    });
+
+    window.addEventListener("unhandledrejection", function(event) {
+      const status = document.getElementById("status");
+
+      if (status) {
+        status.textContent =
+          "Erreur de chargement : " +
+          (event.reason?.message || event.reason);
+      }
+    });
+  </script>
 </head>
 
 <body>
 
-<header>
-  <h1>Atlas Médical — Cœur anatomique</h1>
-  <p>Exploration et sélection des structures</p>
-</header>
+  <header>
+    <h1>Atlas Médical — Cœur anatomique</h1>
+    <p>Exploration et sélection des structures</p>
+  </header>
 
-<div id="viewer"></div>
+  <div id="viewer"></div>
 
-<section id="info">
-  <div id="structureName">Chargement du cœur...</div>
-  <div id="status">Préparation du modèle anatomique</div>
-</section>
+  <section id="info">
+    <div id="structureName">
+      Chargement du cœur...
+    </div>
 
-<script type="module">
-  import * as THREE from
-    'https://cdn.jsdelivr.net/npm/three@0.187.0/build/three.module.js';
+    <div id="status">
+      Préparation du modèle anatomique.
+    </div>
+  </section>
 
-  import { OrbitControls } from
-    'https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/controls/OrbitControls.js';
+  <script type="module">
 
-  import { GLTFLoader } from
-    'https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/loaders/GLTFLoader.js';
-import { MeshoptDecoder } from
-  'https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/libs/meshopt_decoder.module.js';
-  const viewer = document.getElementById("viewer");
-  const nameDisplay = document.getElementById("structureName");
-  const statusDisplay = document.getElementById("status");
+    import * as THREE from "three";
 
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xe5f5fa);
+    import { OrbitControls } from
+      "https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/controls/OrbitControls.js";
 
-  const camera = new THREE.PerspectiveCamera(
-    40,
-    viewer.clientWidth / viewer.clientHeight,
-    0.001,
-    100
-  );
+    import { GLTFLoader } from
+      "https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/loaders/GLTFLoader.js";
 
-  const renderer = new THREE.WebGLRenderer({
-    antialias: true,
-    alpha: false
-  });
+    import { MeshoptDecoder } from
+      "https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/libs/meshopt_decoder.module.js";
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.setSize(viewer.clientWidth, viewer.clientHeight);
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  viewer.appendChild(renderer.domElement);
 
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.06;
+    const viewer = document.getElementById("viewer");
 
-  scene.add(new THREE.HemisphereLight(0xffffff, 0x7895a5, 2));
+    const nameDisplay =
+      document.getElementById("structureName");
 
-  const light = new THREE.DirectionalLight(0xffffff, 3);
-  light.position.set(2, 3, 4);
-  scene.add(light);
+    const statusDisplay =
+      document.getElementById("status");
 
-  const secondLight = new THREE.DirectionalLight(0xffffff, 1.5);
-  secondLight.position.set(-3, -2, -4);
-  scene.add(secondLight);
 
-  const loader = new GLTFLoader();
+    // SCÈNE 3D
 
-loader.setMeshoptDecoder(MeshoptDecoder);
-  let selectedObject = null;
-  let originalMaterials = null;
+    const scene = new THREE.Scene();
 
-  const raycaster = new THREE.Raycaster();
-  const pointer = new THREE.Vector2();
+    scene.background = new THREE.Color(0xe5f5fa);
 
-  loader.load(
-    "./models/heart-advanced-structured.glb",
 
-    (gltf) => {
-      const heart = gltf.scene;
-      scene.add(heart);
+    // CAMÉRA
 
-      const bounds = new THREE.Box3().setFromObject(heart);
-      const center = bounds.getCenter(new THREE.Vector3());
-      const size = bounds.getSize(new THREE.Vector3());
-      const maxSize = Math.max(size.x, size.y, size.z);
-
-      controls.target.copy(center);
-
-      camera.position.set(
-        center.x,
-        center.y,
-        center.z + maxSize * 2.5
-      );
-
-      camera.near = maxSize / 1000;
-      camera.far = maxSize * 100;
-      camera.updateProjectionMatrix();
-
-      controls.update();
-
-      let meshCount = 0;
-
-      heart.traverse((object) => {
-        if (object.isMesh) {
-          meshCount++;
-        }
-      });
-
-      nameDisplay.textContent = "Cœur chargé !";
-      statusDisplay.textContent =
-        meshCount + " maillages détectés. Touche une structure pour l'identifier.";
-
-    },
-
-    (progress) => {
-      if (progress.total > 0) {
-        const percent = Math.round(
-          progress.loaded / progress.total * 100
-        );
-
-        statusDisplay.textContent =
-          "Chargement : " + percent + "%";
-      }
-    },
-
-    (error) => {
-      console.error(error);
-      nameDisplay.textContent = "Erreur de chargement";
-      statusDisplay.textContent =
-        "Vérifie le fichier GLB et le décodeur Meshopt.";
-    }
-  );
-
-  function restoreSelection() {
-    if (!selectedObject || !originalMaterials) return;
-
-    selectedObject.material = originalMaterials;
-    selectedObject = null;
-    originalMaterials = null;
-  }
-
-  function selectStructure(object) {
-    restoreSelection();
-
-    selectedObject = object;
-
-    originalMaterials = object.material;
-
-    if (Array.isArray(object.material)) {
-      object.material = object.material.map((material) => {
-        const copy = material.clone();
-
-        if (copy.emissive) {
-          copy.emissive.set(0x00c9bd);
-          copy.emissiveIntensity = 0.8;
-        }
-
-        return copy;
-      });
-    } else {
-      object.material = object.material.clone();
-
-      if (object.material.emissive) {
-        object.material.emissive.set(0x00c9bd);
-        object.material.emissiveIntensity = 0.8;
-      }
-    }
-
-    nameDisplay.textContent =
-      object.name || "Structure anatomique";
-
-    statusDisplay.textContent =
-      "Structure sélectionnée et mise en évidence.";
-  }
-
-  let pointerStart = null;
-
-  renderer.domElement.addEventListener("pointerdown", (event) => {
-    pointerStart = {
-      x: event.clientX,
-      y: event.clientY
-    };
-  });
-
-  renderer.domElement.addEventListener("pointerup", (event) => {
-    if (!pointerStart) return;
-
-    const distance = Math.hypot(
-      event.clientX - pointerStart.x,
-      event.clientY - pointerStart.y
+    const camera = new THREE.PerspectiveCamera(
+      40,
+      viewer.clientWidth / viewer.clientHeight,
+      0.001,
+      100
     );
 
-    pointerStart = null;
 
-    if (distance > 6) return;
+    // RENDU
 
-    const rect = renderer.domElement.getBoundingClientRect();
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: false
+    });
 
-    pointer.x =
-      ((event.clientX - rect.left) / rect.width) * 2 - 1;
-
-    pointer.y =
-      -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-    raycaster.setFromCamera(pointer, camera);
-
-    const intersections = raycaster.intersectObjects(
-      scene.children,
-      true
+    renderer.setPixelRatio(
+      Math.min(window.devicePixelRatio, 2)
     );
-
-    const hit = intersections.find(
-      (item) => item.object.isMesh
-    );
-
-    if (hit) {
-      selectStructure(hit.object);
-    }
-  });
-
-  window.addEventListener("resize", () => {
-    camera.aspect = viewer.clientWidth / viewer.clientHeight;
-    camera.updateProjectionMatrix();
 
     renderer.setSize(
       viewer.clientWidth,
       viewer.clientHeight
     );
-  });
 
-  function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
-  }
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-  animate();
-</script>
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+
+    viewer.appendChild(renderer.domElement);
+
+
+    // ROTATION ET ZOOM
+
+    const controls = new OrbitControls(
+      camera,
+      renderer.domElement
+    );
+
+    controls.enableDamping = true;
+
+    controls.dampingFactor = 0.06;
+
+
+    // ÉCLAIRAGE
+
+    scene.add(
+      new THREE.HemisphereLight(
+        0xffffff,
+        0x7895a5,
+        2
+      )
+    );
+
+    const light = new THREE.DirectionalLight(
+      0xffffff,
+      3
+    );
+
+    light.position.set(2, 3, 4);
+
+    scene.add(light);
+
+    const secondLight = new THREE.DirectionalLight(
+      0xffffff,
+      1.5
+    );
+
+    secondLight.position.set(-3, -2, -4);
+
+    scene.add(secondLight);
+
+
+    // VARIABLES DE SÉLECTION
+
+    let heart = null;
+
+    let selectedObject = null;
+
+    let originalMaterials = null;
+
+    const raycaster = new THREE.Raycaster();
+
+    const pointer = new THREE.Vector2();
+
+
+    // CHARGEMENT DU MODÈLE
+
+    async function initializeHeart() {
+
+      try {
+
+        statusDisplay.textContent =
+          "Initialisation du moteur 3D et du décodeur Meshopt...";
+
+        await MeshoptDecoder.ready;
+
+        const loader = new GLTFLoader();
+
+        loader.setMeshoptDecoder(MeshoptDecoder);
+
+        statusDisplay.textContent =
+          "Chargement du modèle anatomique...";
+
+        loader.load(
+
+          "./models/heart-advanced-structured.glb",
+
+          (gltf) => {
+
+            heart = gltf.scene;
+
+            scene.add(heart);
+
+
+            // CADRAGE AUTOMATIQUE
+
+            const bounds = new THREE.Box3().setFromObject(heart);
+
+            const center =
+              bounds.getCenter(new THREE.Vector3());
+
+            const size =
+              bounds.getSize(new THREE.Vector3());
+
+            const maxSize = Math.max(
+              size.x,
+              size.y,
+              size.z
+            );
+
+            controls.target.copy(center);
+
+            camera.position.set(
+              center.x,
+              center.y,
+              center.z + maxSize * 2.5
+            );
+
+            camera.near = maxSize / 1000;
+
+            camera.far = maxSize * 100;
+
+            camera.updateProjectionMatrix();
+
+            controls.update();
+
+
+            // COMPTAGE DES STRUCTURES
+
+            let meshCount = 0;
+
+            heart.traverse((object) => {
+
+              if (object.isMesh) {
+                meshCount++;
+              }
+
+            });
+
+
+            nameDisplay.textContent =
+              "Cœur anatomique chargé !";
+
+            statusDisplay.textContent =
+              meshCount +
+              " maillages détectés. Touche une structure pour l'identifier.";
+
+          },
+
+          (progress) => {
+
+            if (progress.total > 0) {
+
+              const percent = Math.round(
+                progress.loaded / progress.total * 100
+              );
+
+              statusDisplay.textContent =
+                "Chargement du cœur : " + percent + "%";
+
+            }
+
+          },
+
+          (error) => {
+
+            console.error(
+              "Erreur GLB :",
+              error
+            );
+
+            nameDisplay.textContent =
+              "Impossible de charger le cœur";
+
+            statusDisplay.textContent =
+              error.message ||
+              "Vérifie le fichier GLB et le décodeur Meshopt.";
+
+          }
+
+        );
+
+      } catch (error) {
+
+        console.error(error);
+
+        nameDisplay.textContent =
+          "Erreur d'initialisation";
+
+        statusDisplay.textContent =
+          error.message;
+
+      }
+
+    }
+
+
+    // RESTAURATION DE LA STRUCTURE PRÉCÉDENTE
+
+    function restoreSelection() {
+
+      if (!selectedObject || !originalMaterials) {
+        return;
+      }
+
+      selectedObject.material = originalMaterials;
+
+      selectedObject = null;
+
+      originalMaterials = null;
+
+    }
+
+
+    // SÉLECTION D'UNE STRUCTURE
+
+    function selectStructure(object) {
+
+      restoreSelection();
+
+      selectedObject = object;
+
+      originalMaterials = object.material;
+
+      if (Array.isArray(object.material)) {
+
+        object.material = object.material.map(
+          (material) => {
+
+            const copy = material.clone();
+
+            if (copy.emissive) {
+
+              copy.emissive.set(0x00c9bd);
+
+              copy.emissiveIntensity = 0.8;
+
+            }
+
+            return copy;
+
+          }
+        );
+
+      } else {
+
+        object.material = object.material.clone();
+
+        if (object.material.emissive) {
+
+          object.material.emissive.set(0x00c9bd);
+
+          object.material.emissiveIntensity = 0.8;
+
+        }
+
+      }
+
+      nameDisplay.textContent =
+        object.name || "Structure anatomique";
+
+      statusDisplay.textContent =
+        "Structure sélectionnée et mise en évidence.";
+
+    }
+
+
+    // DÉTECTION DU TOUCHER
+
+    let pointerStart = null;
+
+    renderer.domElement.addEventListener(
+      "pointerdown",
+      (event) => {
+
+        pointerStart = {
+          x: event.clientX,
+          y: event.clientY
+        };
+
+      }
+    );
+
+
+    renderer.domElement.addEventListener(
+      "pointerup",
+      (event) => {
+
+        if (!pointerStart || !heart) {
+          pointerStart = null;
+          return;
+        }
+
+        const distance = Math.hypot(
+          event.clientX - pointerStart.x,
+          event.clientY - pointerStart.y
+        );
+
+        pointerStart = null;
+
+        // Ignorer les gestes de rotation
+
+        if (distance > 6) {
+          return;
+        }
+
+        const rect =
+          renderer.domElement.getBoundingClientRect();
+
+        pointer.x =
+          ((event.clientX - rect.left) / rect.width) * 2 - 1;
+
+        pointer.y =
+          -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+        raycaster.setFromCamera(pointer, camera);
+
+        const intersections =
+          raycaster.intersectObject(heart, true);
+
+        const hit = intersections.find(
+          (item) => item.object.isMesh
+        );
+
+        if (hit) {
+
+          selectStructure(hit.object);
+
+        }
+
+      }
+    );
+
+
+    // ADAPTATION À L'ÉCRAN
+
+    window.addEventListener("resize", () => {
+
+      camera.aspect =
+        viewer.clientWidth / viewer.clientHeight;
+
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(
+        viewer.clientWidth,
+        viewer.clientHeight
+      );
+
+    });
+
+
+    // ANIMATION DE LA SCÈNE
+
+    function animate() {
+
+      requestAnimationFrame(animate);
+
+      controls.update();
+
+      renderer.render(scene, camera);
+
+    }
+
+    animate();
+
+
+    // DÉMARRAGE
+
+    initializeHeart();
+
+  </script>
 
 </body>
 </html>
