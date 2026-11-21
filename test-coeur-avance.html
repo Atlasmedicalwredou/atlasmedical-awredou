@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Atlas Médical — Exploration du cœur</title>
 
-  <script src="./meshopt_decoder.js"></script>
+  
 
   <style>
     * { box-sizing: border-box; }
@@ -86,7 +86,8 @@
 
   import { GLTFLoader } from
     'https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/loaders/GLTFLoader.js';
-
+import { MeshoptDecoder } from
+  'https://cdn.jsdelivr.net/npm/three@0.187.0/examples/jsm/libs/meshopt_decoder.module.js';
   const viewer = document.getElementById("viewer");
   const nameDisplay = document.getElementById("structureName");
   const statusDisplay = document.getElementById("status");
@@ -128,14 +129,7 @@
 
   const loader = new GLTFLoader();
 
-  const meshopt = window.MeshoptDecoder;
-
-  if (!meshopt) {
-    throw new Error("Décodeur Meshopt introuvable.");
-  }
-
-  loader.setMeshoptDecoder(meshopt);
-
+loader.setMeshoptDecoder(MeshoptDecoder);
   let selectedObject = null;
   let originalMaterials = null;
 
