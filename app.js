@@ -930,19 +930,77 @@ function renderStudent() {
    ATLAS 3D
 ========================================== */
 
+
 function renderAtlas3D() {
   showMainSections({ modules: true });
 
   preparePage(
     "Atlas 3D",
     "EXPLORATION ANATOMIQUE",
-    "À venir"
+    "CŒUR 3D"
   );
 
-  showPlaceholder(
-    "Atlas 3D en préparation",
-    "L'exploration anatomique en trois dimensions sera intégrée dans une prochaine étape."
-  );
+  const grid = $("#moduleGrid");
+
+  if (!grid) return;
+
+  grid.innerHTML = `
+    <section style="
+      grid-column: 1 / -1;
+      width: 100%;
+      padding: 16px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, #e8f8fc, #ffffff);
+      box-sizing: border-box;
+    ">
+      <h3 style="color:#123653;margin:0 0 8px;">
+        Cœur anatomique en 3D
+      </h3>
+
+      <p style="color:#527184;margin:0 0 14px;">
+        Fais glisser pour tourner le cœur et utilise
+        la molette ou le pincement pour zoomer.
+      </p>
+
+      <model-viewer
+        src="./models/human-heart-optimized.glb"
+        alt="Modèle anatomique tridimensionnel du cœur humain"
+        camera-controls
+        auto-rotate
+        rotation-per-second="18deg"
+        shadow-intensity="1"
+        exposure="1"
+        interaction-prompt="auto"
+        loading="eager"
+        style="
+          display:block;
+          width:100%;
+          height: min(62vh, 560px);
+          min-height:340px;
+          background: radial-gradient(
+            circle,
+            #ffffff 0%,
+            #dff3f8 100%
+          );
+          border-radius:18px;
+        "
+      >
+        <p slot="error">
+          Le modèle 3D n'a pas pu être chargé.
+          Vérifie la connexion et le fichier du modèle.
+        </p>
+      </model-viewer>
+
+      <p style="
+        color:#527184;
+        font-size:12px;
+        text-align:center;
+        margin:12px 0 0;
+      ">
+        Modèle anatomique à visée pédagogique.
+      </p>
+    </section>
+  `;
 }
 
 /* ==========================================
